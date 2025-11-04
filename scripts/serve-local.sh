@@ -31,4 +31,4 @@ echo "Starting WordPress dev server at http://${HOST}:${PORT}"
 echo "Press Ctrl+C to stop."
 
 cd "${ROOT_DIR}"
-exec php ${PHP_FLAGS} -S "${HOST}:${PORT}" -t wordpress
+exec php ${PHP_FLAGS} -S "${HOST}:${PORT}" -t "${ROOT_DIR}"

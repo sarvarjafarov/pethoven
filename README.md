@@ -1,6 +1,6 @@
 # WordPress Installation
 
-The latest WordPress core files have been downloaded into the `wordpress/` directory and a starter `wp-config.php` has been created from the upstream sample.
+The WordPress core files now live at the project root and `wp-config.php` has been tailored to load credentials from `.env` files.
 
 ## Run locally with Docker
 
@@ -25,23 +25,23 @@ The latest WordPress core files have been downloaded into the `wordpress/` direc
 
 ## Next steps
 
-1. If you are not using Docker, create a MySQL (or MariaDB) database and user, then update the following settings inside `wordpress/wp-config.php`:
+1. If you are not using Docker, create a MySQL (or MariaDB) database and user, then update the following settings inside `wp-config.php` (or set them through `.env` files):
    - `DB_NAME`
    - `DB_USER`
    - `DB_PASSWORD`
    - `DB_HOST` (usually `localhost`)  
    When environment variables such as `WORDPRESS_DB_NAME` are present (e.g. via Docker Compose), the config file will use them automatically.
-2. Salts and keys have been pre-generated in `wordpress/wp-config.php` for this local environment; regenerate them from https://api.wordpress.org/secret-key/1.1/salt/ before deploying anywhere public.
+2. Salts and keys have been pre-generated in `wp-config.php` for this local environment; regenerate them from https://api.wordpress.org/secret-key/1.1/salt/ before deploying anywhere public.
 3. If you are running with a custom table prefix, adjust `$table_prefix` or set the `WORDPRESS_TABLE_PREFIX` environment variable.
-4. Serve the `wordpress` directory from a PHP-compatible web server (for example, `php -S localhost:8000 -t wordpress`) and follow the on-screen installer if not using Docker.
+4. Serve the project root from a PHP-compatible web server (for example, `php -S localhost:8000 -t .`) and follow the on-screen installer if not using Docker.
 5. Adjust filesystem permissions as required by your environment so WordPress can manage uploads and updates.
 
 With these steps complete, visiting the site URL in a browser will finalize the WordPress installation.
 
 ## Themes
 
-- The Astra parent theme is located in `wordpress/wp-content/themes/astra`.
-- A custom organic-focused child theme lives at `wordpress/wp-content/themes/astra-organic`. Activate it in the WordPress admin (`Appearance → Themes`) after finishing the installer.
+- The Astra parent theme is located in `wp-content/themes/astra`.
+- A custom organic-focused child theme lives at `wp-content/themes/astra-organic`. Activate it in the WordPress admin (`Appearance → Themes`) after finishing the installer.
 - The child theme depends on the Astra parent theme and applies earthy colors, button styles, and WooCommerce-friendly accents tailored to organic brands.
 
 ## Organic Store Template
@@ -55,23 +55,23 @@ With these steps complete, visiting the site URL in a browser will finalize the 
 3. Click “Import Template” → choose either full site or specific pages. Keep the WooCommerce sample products checked for a complete demo.
 4. After the import finishes, set the imported “Shop” page as the shop archive via `WooCommerce → Settings → Products`.
 5. Review the menus/widgets/pages and tweak colors via the WordPress Customizer as needed—the Astra Organic child theme styles will carry over the earthy palette.
-6. The must-use helper at `mu-plugins/organic-store-pages.php` ensures essential pages (Home, Shop, Cart, Checkout, My Account, Journal, Contact, About) exist and publishes them if missing. Edit these pages freely; the helper will not overwrite your content once created.
+6. The must-use helper at `wp-content/mu-plugins/organic-store-pages.php` ensures essential pages (Home, Shop, Cart, Checkout, My Account, Journal, Contact, About) exist and publishes them if missing. Edit these pages freely; the helper will not overwrite your content once created.
 
 ## Performance
 
 - `./scripts/serve-local.sh` bootstraps the PHP server with OPCache enabled; override flags via `PHP_FLAGS` if you need different settings.
-- `wordpress/wp-config.php` derives runtime toggles (cache, cron, script concatenation, memory limits) from environment variables and automatically relaxes settings when `WP_ENVIRONMENT_TYPE=local`.
-- A must-use plugin at `wordpress/wp-content/mu-plugins/performance-tweaks.php` trims emoji scripts, Google Fonts, query-string assets, and the comment reply script for leaner pages.
+- `wp-config.php` derives runtime toggles (cache, cron, script concatenation, memory limits) from environment variables and automatically relaxes settings when `WP_ENVIRONMENT_TYPE=local`.
+- A must-use plugin at `wp-content/mu-plugins/performance-tweaks.php` trims emoji scripts, Google Fonts, query-string assets, and the comment reply script for leaner pages.
 - Because cron is disabled in local mode, run scheduled tasks manually when needed: `wp cron event run --due-now` (via WP-CLI) or set `DISABLE_WP_CRON=false`.
 
 ## Prepare for production
 
-1. Update `wordpress/wp-config.php` with your production database credentials and set `WP_ENVIRONMENT_TYPE=production`. With this value `DISABLE_WP_CRON` automatically becomes `false` and script concatenation/compression are enabled.
+1. Update `wp-config.php` (or `.env.production`) with your production database credentials and set `WP_ENVIRONMENT_TYPE=production`. With this value `DISABLE_WP_CRON` automatically becomes `false` and script concatenation/compression are enabled.
 2. Replace the salts/keys in `wp-config.php` using https://api.wordpress.org/secret-key/1.1/salt/ for the live site.
 3. Remove demo content you do not plan to publish (sample posts, products, imported imagery) and upload your branding assets.
 4. Disable any local-only mu-plugins or helpers you don’t want in production (e.g. delete `performance-tweaks.php` if you prefer to keep Google Fonts).
 5. Regenerate thumbnails after swapping media (`wp media regenerate` via WP-CLI or a plugin) so migrated assets display crisply.
-6. Create a `.env.production` file alongside `wp-config.php` on the server (do not commit it) using `.env.production.example` as a guide; populate your Hostinger database credentials, domain, and any other overrides. The config loader will read `.env`, `.env.local`, and `.env.production` automatically if present.
+6. Create a `.env.production` file alongside `wp-config.php` on the server (do not commit it) using `.env.production.example` as a guide; populate your Hostinger database credentials, domain (`WP_HOME`, `WP_SITEURL`), and any other overrides. The config loader will read `.env`, `.env.local`, and `.env.production` automatically if present.
 
 ## Deploy to Hostinger
 
@@ -79,7 +79,7 @@ With these steps complete, visiting the site URL in a browser will finalize the 
    - In hPanel, add your domain and create a new site (WordPress or “Other”).
    - Under “Databases”, create a MySQL database and note the DB name, user, password, and host.
 2. **Prepare files**
-   - From the repository root, zip the contents of `wordpress/` (most Hostinger plans expect uploads directly into `public_html/`).
+   - From the repository root, zip the entire project (excluding `.git` if you are uploading manually). Hostinger expects the WordPress files directly inside `public_html/`.
    - Upload the archive via hPanel’s File Manager or SFTP, extract it into `public_html`, and ensure `wp-config.php` sits in the document root.
 3. **Configure `wp-config.php` on the server**
    - Set `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and adjust `DB_HOST` (Hostinger typically uses `localhost` or the server IP).
@@ -104,11 +104,12 @@ With these steps complete, visiting the site URL in a browser will finalize the 
    - `HOSTINGER_USERNAME` = `u722617394.seashell-opossum-486356.hostingersite.com`.
    - `HOSTINGER_PASSWORD` = *(the FTP/SFTP password you set in hPanel)*.
    - `HOSTINGER_REMOTE_DIR` = `public_html/` (include the trailing slash).
-2. The workflow at `.github/workflows/deploy-hostinger.yml` syncs the contents of the `wordpress/` directory to the remote `public_html/` folder on every push to `main`. Trigger it manually from the Actions tab via “Run workflow” when needed.
+2. The workflow at `.github/workflows/deploy-hostinger.yml` syncs the project root (excluding uploads, scripts, etc.) to the remote `public_html/` folder on every push to `main`. Trigger it manually from the Actions tab via “Run workflow” when needed.
 3. For a secure connection the workflow defaults to FTPS (`protocol: ftps`). If Hostinger requires SFTP, change the `protocol` value to `sftp` and optionally set the `port` input (e.g. `22`) in the workflow file.
 4. Dynamic media uploads are excluded (`wp-content/uploads/**`). Keep managing media within WordPress so that user uploads on production are not overwritten. Remove the exclude pattern if you prefer to version-control uploads.
-5. Remember that `.env` files are ignored by Git; create your `.env.production` (with DB credentials) directly on Hostinger after the first deployment.
-6. The first live deployment should start from a clean `public_html` (zip the `wordpress/` folder and upload/extract once, or run the action after confirming the directory is empty). After that, committing to `main` from VS Code will automatically sync changes to Hostinger.
+5. Remember that `.env` files are ignored by Git; create your `.env.production` (with DB credentials, domain, and SSL preference) directly on Hostinger after the first deployment.
+6. If you set `WP_HOME`/`WP_SITEURL` in `.env.production`, make sure the values match the domain serving WordPress (e.g. `https://seashell-opossum-486356.hostingersite.com`).
+7. The first live deployment should start from a clean `public_html` (zip the project root and upload/extract once, or run the action after confirming the directory is empty). After that, committing to `main` from VS Code will automatically sync changes to Hostinger.
 
 ## Post-deployment checklist
 

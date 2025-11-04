@@ -23,9 +23,16 @@ jobs:
           password: ${{ secrets.HOSTINGER_PASSWORD }}
           protocol: ftps
           server-dir: ${{ secrets.HOSTINGER_REMOTE_DIR }}
-          local-dir: wordpress/
+          local-dir: ./
           exclude: |
             wp-content/uploads/**
             wp-content/cache/**
             wp-content/upgrade/**
             wp-content/debug.log
+            .git/**
+            .github/**
+            scripts/**
+            docker-compose.yml
+            README.md
+            CNAME
+            .env*

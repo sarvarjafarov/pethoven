@@ -212,6 +212,20 @@ define( 'WP_MEMORY_LIMIT', wp_env_or_default( array( 'WP_MEMORY_LIMIT', 'WORDPRE
 define( 'WP_MAX_MEMORY_LIMIT', wp_env_or_default( array( 'WP_MAX_MEMORY_LIMIT', 'WORDPRESS_MAX_MEMORY' ), '256M' ) );
 define( 'EMPTY_TRASH_DAYS', max( 1, wp_env_int( array( 'EMPTY_TRASH_DAYS', 'WORDPRESS_EMPTY_TRASH_DAYS' ), $is_local ? 7 : 30 ) ) );
 
+$wp_home = wp_env_or_default( array( 'WP_HOME', 'WORDPRESS_HOME_URL' ), '' );
+if ( $wp_home ) {
+	define( 'WP_HOME', rtrim( $wp_home, '/' ) );
+}
+
+$wp_siteurl = wp_env_or_default( array( 'WP_SITEURL', 'WORDPRESS_SITE_URL' ), '' );
+if ( $wp_siteurl ) {
+	define( 'WP_SITEURL', rtrim( $wp_siteurl, '/' ) );
+}
+
+if ( wp_env_bool( array( 'FORCE_SSL_ADMIN', 'WORDPRESS_FORCE_SSL_ADMIN' ), ! $is_local ) ) {
+	define( 'FORCE_SSL_ADMIN', true );
+}
+
 /* Add any custom values between this line and the "stop editing" line. */
 
 
