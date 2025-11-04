@@ -1,0 +1,145 @@
+<?php
+/**
+ * The base configuration for WordPress
+ *
+ * The wp-config.php creation script uses this file during the installation.
+ * You don't have to use the website, you can copy this file to "wp-config.php"
+ * and fill in the values.
+ *
+ * This file contains the following configurations:
+ *
+ * * Database settings
+ * * Secret keys
+ * * Database table prefix
+ * * ABSPATH
+ *
+ * @link https://developer.wordpress.org/advanced-administration/wordpress/wp-config/
+ *
+ * @package WordPress
+ */
+
+// Helper to read environment variables for containerized/local setups.
+if ( ! function_exists( 'wp_env_or_default' ) ) {
+	function wp_env_or_default( $keys, $default = '' ) {
+		foreach ( (array) $keys as $key ) {
+			if ( ! $key ) {
+				continue;
+			}
+
+			$value = getenv( $key );
+
+			if ( false !== $value && '' !== $value ) {
+				return $value;
+			}
+		}
+
+		return $default;
+	}
+}
+
+if ( ! function_exists( 'wp_env_bool' ) ) {
+	function wp_env_bool( $keys, $default = false ) {
+		$value = wp_env_or_default( $keys, $default ? 'true' : 'false' );
+
+		return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+	}
+}
+
+if ( ! function_exists( 'wp_env_int' ) ) {
+	function wp_env_int( $keys, $default = 0 ) {
+		$value = wp_env_or_default( $keys, $default );
+
+		return (int) $value;
+	}
+}
+
+// ** Database settings - You can get this info from your web host ** //
+/** The name of the database for WordPress */
+define( 'DB_NAME', wp_env_or_default( array( 'WORDPRESS_DB_NAME', 'DB_NAME' ), 'wordpress' ) );
+
+/** Database username */
+define( 'DB_USER', wp_env_or_default( array( 'WORDPRESS_DB_USER', 'DB_USER' ), 'wordpress' ) );
+
+/** Database password */
+define( 'DB_PASSWORD', wp_env_or_default( array( 'WORDPRESS_DB_PASSWORD', 'DB_PASSWORD' ), 'wordpress' ) );
+
+/** Database hostname */
+define( 'DB_HOST', wp_env_or_default( array( 'WORDPRESS_DB_HOST', 'DB_HOST' ), 'localhost' ) );
+
+/** Database charset to use in creating database tables. */
+define( 'DB_CHARSET', 'utf8' );
+
+/** The database collate type. Don't change this if in doubt. */
+define( 'DB_COLLATE', '' );
+
+/**#@+
+ * Authentication unique keys and salts.
+ *
+ * Change these to different unique phrases! You can generate these using
+ * the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}.
+ *
+ * You can change these at any point in time to invalidate all existing cookies.
+ * This will force all users to have to log in again.
+ *
+ * @since 2.6.0
+ */
+define( 'AUTH_KEY',         'gz0Os4j1m.5JM9QVA)bFI#Ju}eWN?^p-NgYe>3hvaOLn=a?*2X~,wdsGM-z|6o|w' );
+define( 'SECURE_AUTH_KEY',  '&zr2pMM)[oLqDUs@fc>V 2pE~Wxv*{$q,tS5UlqM{(WL=DANC*67OhTy{d=Mg_E9' );
+define( 'LOGGED_IN_KEY',    'k!VA2][PSh|;r4PciIO+_+,Q5n-Pxm:7*G;_sbqmFYl1z;P#@T:FFKo_bZ#D:(DN' );
+define( 'NONCE_KEY',        'MG>|NEIr%6:QH^?HFRkH8Oa!>N-ewrXFfr0i,cxr0ARiJkBd~:+,;(,M,P=!n{1N' );
+define( 'AUTH_SALT',        '_5x`O7I*M-`~:>bV8}hoCqWYNpNa9|gl[OX0PA~bM2B_l}HEwvi&-g4X+:}9-]J}' );
+define( 'SECURE_AUTH_SALT', 'SqQ2[b,o?.S;Oj`xC_^{o@hW&+Q+MLW~<5:X}G@?Bf%qy~s?LC_dwnbYHL|oy?aS' );
+define( 'LOGGED_IN_SALT',   '1: ).v ([c<e(RJ`h-Q8AfE]A@(bl)|ScxpuOKu)oO%is-BNw,mVjV}o^zN7:+9W' );
+define( 'NONCE_SALT',       'iz-eh+_H+&=}H)K~;=a)7/Kp1jxHJ9 <VcyD.u+BJb/H?1Yk4m0`a%?+U/Uq3Lk9' );
+
+/**#@-*/
+
+/**
+ * WordPress database table prefix.
+ *
+ * You can have multiple installations in one database if you give each
+ * a unique prefix. Only numbers, letters, and underscores please!
+ *
+ * At the installation time, database tables are created with the specified prefix.
+ * Changing this value after WordPress is installed will make your site think
+ * it has not been installed.
+ *
+ * @link https://developer.wordpress.org/advanced-administration/wordpress/wp-config/#table-prefix
+ */
+$table_prefix = wp_env_or_default( array( 'WORDPRESS_TABLE_PREFIX', 'TABLE_PREFIX' ), 'wp_' );
+
+/**
+ * For developers: WordPress debugging mode.
+ *
+ * Change this to true to enable the display of notices during development.
+ * It is strongly recommended that plugin and theme developers use WP_DEBUG
+ * in their development environments.
+ *
+ * For information on other constants that can be used for debugging,
+ * visit the documentation.
+ *
+ * @link https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/
+ */
+/** Toggle debug mode via environment variable if available. */
+$wp_debug_env = wp_env_or_default( array( 'WP_DEBUG', 'WORDPRESS_DEBUG' ), '' );
+define( 'WP_DEBUG', '' === $wp_debug_env ? false : filter_var( $wp_debug_env, FILTER_VALIDATE_BOOLEAN ) );
+
+define( 'WP_ENVIRONMENT_TYPE', wp_env_or_default( array( 'WP_ENVIRONMENT_TYPE', 'WORDPRESS_ENV' ), 'local' ) );
+define( 'WP_CACHE', wp_env_bool( array( 'WP_CACHE', 'WORDPRESS_CACHE' ), true ) );
+define( 'DISABLE_WP_CRON', wp_env_bool( array( 'DISABLE_WP_CRON', 'WORDPRESS_DISABLE_CRON' ), true ) );
+define( 'AUTOSAVE_INTERVAL', max( 120, wp_env_int( array( 'AUTOSAVE_INTERVAL', 'WORDPRESS_AUTOSAVE_INTERVAL' ), 180 ) ) );
+define( 'WP_POST_REVISIONS', wp_env_int( array( 'WP_POST_REVISIONS', 'WORDPRESS_POST_REVISIONS' ), 5 ) );
+
+/* Add any custom values between this line and the "stop editing" line. */
+
+
+
+/* That's all, stop editing! Happy publishing. */
+
+/** Absolute path to the WordPress directory. */
+if ( ! defined( 'ABSPATH' ) ) {
+	define( 'ABSPATH', __DIR__ . '/' );
+}
+
+/** Sets up WordPress vars and included files. */
+require_once ABSPATH . 'wp-settings.php';
