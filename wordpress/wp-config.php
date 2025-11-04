@@ -18,6 +18,76 @@
  * @package WordPress
  */
 
+if ( ! function_exists( 'wp_load_env_file' ) ) {
+	/**
+	 * Parse simple KEY=VALUE .env-style files into environment variables.
+	 *
+	 * @param string $path File path.
+	 */
+	function wp_load_env_file( $path ) {
+		static $loaded = array();
+
+		if ( empty( $path ) || isset( $loaded[ $path ] ) || ! file_exists( $path ) || ! is_readable( $path ) ) {
+			return;
+		}
+
+		$loaded[ $path ] = true;
+
+		$lines = file( $path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file
+
+		if ( false === $lines ) {
+			return;
+		}
+
+		foreach ( $lines as $line ) {
+			$line = trim( $line );
+
+			if ( '' === $line || strpos( $line, '#' ) === 0 ) {
+				continue;
+			}
+
+			if ( ! preg_match( '/^\\s*([\\w\.]+)\\s*=\\s*(.*)\\s*$/', $line, $matches ) ) {
+				continue;
+			}
+
+			$key   = $matches[1];
+			$value = $matches[2];
+
+			if ( '' === $key ) {
+				continue;
+			}
+
+			$length = strlen( $value );
+
+			if ( $length >= 2 ) {
+				$first = substr( $value, 0, 1 );
+				$last  = substr( $value, -1 );
+
+				if ( ( '"' === $first && '"' === $last ) || ( '\'' === $first && '\'' === $last ) ) {
+					$value = substr( $value, 1, -1 );
+				}
+			}
+
+			putenv( $key . '=' . $value );
+			$_ENV[ $key ]    = $value;
+			$_SERVER[ $key ] = $value;
+		}
+	}
+}
+
+$env_paths = array(
+	__DIR__ . '/../.env',
+	__DIR__ . '/.env',
+	__DIR__ . '/../.env.local',
+	__DIR__ . '/.env.local',
+	__DIR__ . '/../.env.production',
+	__DIR__ . '/.env.production',
+);
+
+foreach ( $env_paths as $env_path ) {
+	wp_load_env_file( $env_path );
+}
+
 // Helper to read environment variables for containerized/local setups.
 if ( ! function_exists( 'wp_env_or_default' ) ) {
 	function wp_env_or_default( $keys, $default = '' ) {

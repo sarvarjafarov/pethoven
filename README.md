@@ -71,6 +71,7 @@ With these steps complete, visiting the site URL in a browser will finalize the 
 3. Remove demo content you do not plan to publish (sample posts, products, imported imagery) and upload your branding assets.
 4. Disable any local-only mu-plugins or helpers you don’t want in production (e.g. delete `performance-tweaks.php` if you prefer to keep Google Fonts).
 5. Regenerate thumbnails after swapping media (`wp media regenerate` via WP-CLI or a plugin) so migrated assets display crisply.
+6. Create a `.env.production` file alongside `wp-config.php` on the server (do not commit it) using `.env.production.example` as a guide; populate your Hostinger database credentials, domain, and any other overrides. The config loader will read `.env`, `.env.local`, and `.env.production` automatically if present.
 
 ## Deploy to Hostinger
 
@@ -106,7 +107,8 @@ With these steps complete, visiting the site URL in a browser will finalize the 
 2. The workflow at `.github/workflows/deploy-hostinger.yml` syncs the contents of the `wordpress/` directory to the remote `public_html/` folder on every push to `main`. Trigger it manually from the Actions tab via “Run workflow” when needed.
 3. For a secure connection the workflow defaults to FTPS (`protocol: ftps`). If Hostinger requires SFTP, change the `protocol` value to `sftp` and optionally set the `port` input (e.g. `22`) in the workflow file.
 4. Dynamic media uploads are excluded (`wp-content/uploads/**`). Keep managing media within WordPress so that user uploads on production are not overwritten. Remove the exclude pattern if you prefer to version-control uploads.
-5. The first live deployment should start from a clean `public_html` (zip the `wordpress/` folder and upload/extract once, or run the action after confirming the directory is empty). After that, committing to `main` from VS Code will automatically sync changes to Hostinger.
+5. Remember that `.env` files are ignored by Git; create your `.env.production` (with DB credentials) directly on Hostinger after the first deployment.
+6. The first live deployment should start from a clean `public_html` (zip the `wordpress/` folder and upload/extract once, or run the action after confirming the directory is empty). After that, committing to `main` from VS Code will automatically sync changes to Hostinger.
 
 ## Post-deployment checklist
 

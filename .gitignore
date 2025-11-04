@@ -1,0 +1,9 @@
+# Environment-specific config (create your own .env files locally/serverside)
+.env
+.env.*
+!.env.local.example
+!.env.production.example
+
+# OS junk
+.DS_Store
+Thumbs.db
