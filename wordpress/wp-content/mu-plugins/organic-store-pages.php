@@ -5,6 +5,10 @@
 
 define( 'ASTRA_ORGANIC_PAGE_SEED_VERSION', '1.0.0' );
 
+if ( ! function_exists( 'wp_get_nav_menu_object' ) ) {
+	require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
+}
+
 add_action( 'init', 'astra_organic_seed_pages', 30 );
 
 function astra_organic_seed_pages() {

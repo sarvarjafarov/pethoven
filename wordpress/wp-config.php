@@ -67,7 +67,7 @@ define( 'DB_PASSWORD', wp_env_or_default( array( 'WORDPRESS_DB_PASSWORD', 'DB_PA
 define( 'DB_HOST', wp_env_or_default( array( 'WORDPRESS_DB_HOST', 'DB_HOST' ), 'localhost' ) );
 
 /** Database charset to use in creating database tables. */
-define( 'DB_CHARSET', 'utf8' );
+define( 'DB_CHARSET', 'utf8mb4' );
 
 /** The database collate type. Don't change this if in doubt. */
 define( 'DB_COLLATE', '' );
@@ -124,11 +124,23 @@ $table_prefix = wp_env_or_default( array( 'WORDPRESS_TABLE_PREFIX', 'TABLE_PREFI
 $wp_debug_env = wp_env_or_default( array( 'WP_DEBUG', 'WORDPRESS_DEBUG' ), '' );
 define( 'WP_DEBUG', '' === $wp_debug_env ? false : filter_var( $wp_debug_env, FILTER_VALIDATE_BOOLEAN ) );
 
-define( 'WP_ENVIRONMENT_TYPE', wp_env_or_default( array( 'WP_ENVIRONMENT_TYPE', 'WORDPRESS_ENV' ), 'local' ) );
+$wp_environment_type = wp_env_or_default( array( 'WP_ENVIRONMENT_TYPE', 'WORDPRESS_ENV' ), 'local' );
+define( 'WP_ENVIRONMENT_TYPE', $wp_environment_type );
+
+$is_local = 'local' === $wp_environment_type || 'development' === $wp_environment_type;
+
 define( 'WP_CACHE', wp_env_bool( array( 'WP_CACHE', 'WORDPRESS_CACHE' ), true ) );
-define( 'DISABLE_WP_CRON', wp_env_bool( array( 'DISABLE_WP_CRON', 'WORDPRESS_DISABLE_CRON' ), true ) );
-define( 'AUTOSAVE_INTERVAL', max( 120, wp_env_int( array( 'AUTOSAVE_INTERVAL', 'WORDPRESS_AUTOSAVE_INTERVAL' ), 180 ) ) );
-define( 'WP_POST_REVISIONS', wp_env_int( array( 'WP_POST_REVISIONS', 'WORDPRESS_POST_REVISIONS' ), 5 ) );
+define( 'DISABLE_WP_CRON', wp_env_bool( array( 'DISABLE_WP_CRON', 'WORDPRESS_DISABLE_CRON' ), $is_local ) );
+define( 'AUTOSAVE_INTERVAL', max( 120, wp_env_int( array( 'AUTOSAVE_INTERVAL', 'WORDPRESS_AUTOSAVE_INTERVAL' ), $is_local ? 180 : 60 ) ) );
+define( 'WP_POST_REVISIONS', wp_env_int( array( 'WP_POST_REVISIONS', 'WORDPRESS_POST_REVISIONS' ), $is_local ? 5 : 10 ) );
+define( 'SCRIPT_DEBUG', wp_env_bool( array( 'SCRIPT_DEBUG', 'WORDPRESS_SCRIPT_DEBUG' ), $is_local ) );
+define( 'CONCATENATE_SCRIPTS', wp_env_bool( array( 'CONCATENATE_SCRIPTS', 'WORDPRESS_CONCAT_SCRIPTS' ), ! $is_local ) );
+define( 'COMPRESS_CSS', wp_env_bool( array( 'COMPRESS_CSS', 'WORDPRESS_COMPRESS_CSS' ), ! $is_local ) );
+define( 'COMPRESS_SCRIPTS', wp_env_bool( array( 'COMPRESS_SCRIPTS', 'WORDPRESS_COMPRESS_SCRIPTS' ), ! $is_local ) );
+define( 'ENFORCE_GZIP', wp_env_bool( array( 'ENFORCE_GZIP', 'WORDPRESS_ENFORCE_GZIP' ), ! $is_local ) );
+define( 'WP_MEMORY_LIMIT', wp_env_or_default( array( 'WP_MEMORY_LIMIT', 'WORDPRESS_MEMORY_LIMIT' ), '256M' ) );
+define( 'WP_MAX_MEMORY_LIMIT', wp_env_or_default( array( 'WP_MAX_MEMORY_LIMIT', 'WORDPRESS_MAX_MEMORY' ), '256M' ) );
+define( 'EMPTY_TRASH_DAYS', max( 1, wp_env_int( array( 'EMPTY_TRASH_DAYS', 'WORDPRESS_EMPTY_TRASH_DAYS' ), $is_local ? 7 : 30 ) ) );
 
 /* Add any custom values between this line and the "stop editing" line. */
 

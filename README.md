@@ -60,6 +60,58 @@ With these steps complete, visiting the site URL in a browser will finalize the 
 ## Performance
 
 - `./scripts/serve-local.sh` bootstraps the PHP server with OPCache enabled; override flags via `PHP_FLAGS` if you need different settings.
-- `wordpress/wp-config.php` now defaults to `WP_CACHE` and `DISABLE_WP_CRON` set to `true` in local mode. Adjust via `.env.local` as needed (set `WP_CACHE=false` or `DISABLE_WP_CRON=false`).
-- A must-use plugin at `wordpress/wp-content/mu-plugins/performance-tweaks.php` trims emoji scripts, Google Fonts, query-string assets, and the comment reply script for quicker local loads.
-- Because cron is disabled, run scheduled tasks manually when needed: `wp cron event run --due-now` (via WP-CLI) or temporarily set `DISABLE_WP_CRON=false`.
+- `wordpress/wp-config.php` derives runtime toggles (cache, cron, script concatenation, memory limits) from environment variables and automatically relaxes settings when `WP_ENVIRONMENT_TYPE=local`.
+- A must-use plugin at `wordpress/wp-content/mu-plugins/performance-tweaks.php` trims emoji scripts, Google Fonts, query-string assets, and the comment reply script for leaner pages.
+- Because cron is disabled in local mode, run scheduled tasks manually when needed: `wp cron event run --due-now` (via WP-CLI) or set `DISABLE_WP_CRON=false`.
+
+## Prepare for production
+
+1. Update `wordpress/wp-config.php` with your production database credentials and set `WP_ENVIRONMENT_TYPE=production`. With this value `DISABLE_WP_CRON` automatically becomes `false` and script concatenation/compression are enabled.
+2. Replace the salts/keys in `wp-config.php` using https://api.wordpress.org/secret-key/1.1/salt/ for the live site.
+3. Remove demo content you do not plan to publish (sample posts, products, imported imagery) and upload your branding assets.
+4. Disable any local-only mu-plugins or helpers you don’t want in production (e.g. delete `performance-tweaks.php` if you prefer to keep Google Fonts).
+5. Regenerate thumbnails after swapping media (`wp media regenerate` via WP-CLI or a plugin) so migrated assets display crisply.
+
+## Deploy to Hostinger
+
+1. **Create the hosting environment**
+   - In hPanel, add your domain and create a new site (WordPress or “Other”).
+   - Under “Databases”, create a MySQL database and note the DB name, user, password, and host.
+2. **Prepare files**
+   - From the repository root, zip the contents of `wordpress/` (most Hostinger plans expect uploads directly into `public_html/`).
+   - Upload the archive via hPanel’s File Manager or SFTP, extract it into `public_html`, and ensure `wp-config.php` sits in the document root.
+3. **Configure `wp-config.php` on the server**
+   - Set `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and adjust `DB_HOST` (Hostinger typically uses `localhost` or the server IP).
+   - Define `WP_ENVIRONMENT_TYPE` as `production`; optionally set `WP_HOME` and `WP_SITEURL` to your domain to prevent URL mismatches.
+4. **Migrate the database**
+   - Export your local database (`mysqldump wordpress > wordpress.sql` or via phpMyAdmin).
+   - Import the SQL file using Hostinger’s phpMyAdmin for the new database.
+   - Run a search-replace to swap local URLs for the live domain (phpMyAdmin’s SQL tab or WP-CLI, e.g. `wp search-replace 'http://127.0.0.1:8080' 'https://yourdomain.com'`).
+5. **Finalize in WordPress**
+   - Log into the live admin to flush permalinks (`Settings → Permalinks → Save`).
+   - Verify WooCommerce pages (`WooCommerce → Settings → Advanced`) still point to the correct URLs.
+   - Re-run Starter Templates if you want demo content refreshed on the live site.
+6. **Hostinger extras**
+   - Enable free SSL (hPanel → SSL) and force HTTPS in `Settings → General` or via `.htaccess`.
+   - Configure SMTP/email delivery (Hostinger Email or a transactional service) for order notifications.
+   - Set up a cron job in hPanel (`wp-cron.php`) if you intentionally set `DISABLE_WP_CRON=true`.
+
+## GitHub CI/CD to Hostinger
+
+1. In your GitHub repo, open `Settings → Secrets and variables → Actions` and add:
+   - `HOSTINGER_HOST` = `seashell-opossum-486356.hostingersite.com` (or the FTP IP).
+   - `HOSTINGER_USERNAME` = `u722617394.seashell-opossum-486356.hostingersite.com`.
+   - `HOSTINGER_PASSWORD` = *(the FTP/SFTP password you set in hPanel)*.
+   - `HOSTINGER_REMOTE_DIR` = `public_html/` (include the trailing slash).
+2. The workflow at `.github/workflows/deploy-hostinger.yml` syncs the contents of the `wordpress/` directory to the remote `public_html/` folder on every push to `main`. Trigger it manually from the Actions tab via “Run workflow” when needed.
+3. For a secure connection the workflow defaults to FTPS (`protocol: ftps`). If Hostinger requires SFTP, change the `protocol` value to `sftp` and optionally set the `port` input (e.g. `22`) in the workflow file.
+4. Dynamic media uploads are excluded (`wp-content/uploads/**`). Keep managing media within WordPress so that user uploads on production are not overwritten. Remove the exclude pattern if you prefer to version-control uploads.
+5. The first live deployment should start from a clean `public_html` (zip the `wordpress/` folder and upload/extract once, or run the action after confirming the directory is empty). After that, committing to `main` from VS Code will automatically sync changes to Hostinger.
+
+## Post-deployment checklist
+
+- Browse all key pages (Home, Shop, Cart, Checkout, My Account, Blog, Contact) to confirm layouts, menus, and forms load correctly.
+- Place a test order in WooCommerce (sandbox/offline mode) and ensure confirmation emails arrive.
+- Check performance with PageSpeed Insights or GTmetrix and enable additional caching/CDN if needed (LiteSpeed Cache is available on Hostinger).
+- Create regular backups (Hostinger Backups or a plugin like UpdraftPlus) before making future changes.
+- Monitor logs (`wp-content/debug.log` if `WP_DEBUG_LOG` is enabled) and the Hostinger error log for the first 24 hours to catch configuration issues.
