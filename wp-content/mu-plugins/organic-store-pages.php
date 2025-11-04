@@ -3,7 +3,8 @@
  * Ensure essential Organic Store pages exist and stay published.
  */
 
-define( 'ASTRA_ORGANIC_PAGE_SEED_VERSION', '1.0.0' );
+define( 'ASTRA_ORGANIC_PAGE_SEED_VERSION', '1.1.0' );
+define( 'ASTRA_ORGANIC_PAGE_SEED_OPTION', 'astra_organic_page_seed_state' );
 
 if ( ! function_exists( 'wp_get_nav_menu_object' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
@@ -25,14 +26,30 @@ function astra_organic_seed_pages() {
 		return;
 	}
 
+	if ( ! apply_filters( 'astra_organic_enable_page_seeder', true ) ) {
+		return;
+	}
+
+	$state = get_option( ASTRA_ORGANIC_PAGE_SEED_OPTION, array(
+		'version' => ASTRA_ORGANIC_PAGE_SEED_VERSION,
+		'pages'   => array(),
+	) );
+
+	$force_reseed = defined( 'ASTRA_ORGANIC_FORCE_RESEED' ) && ASTRA_ORGANIC_FORCE_RESEED;
+
+	if ( ASTRA_ORGANIC_PAGE_SEED_VERSION !== $state['version'] ) {
+		$force_reseed = true;
+	}
+
 	$pages       = astra_organic_required_pages();
 	$created_map = array();
 
 	foreach ( $pages as $slug => $config ) {
-		$page_id = astra_organic_ensure_page( $slug, $config );
+		$page_id = astra_organic_ensure_page( $slug, $config, $state, $force_reseed );
 
 		if ( $page_id ) {
 			$created_map[ $slug ] = $page_id;
+			$state['pages'][ $slug ] = $page_id;
 		}
 
 		if ( ! $page_id ) {
@@ -56,6 +73,9 @@ function astra_organic_seed_pages() {
 	if ( ! empty( $created_map ) ) {
 		astra_organic_sync_primary_menu( $pages, $created_map );
 	}
+
+	$state['version'] = ASTRA_ORGANIC_PAGE_SEED_VERSION;
+	update_option( ASTRA_ORGANIC_PAGE_SEED_OPTION, $state, false );
 }
 
 function astra_organic_required_pages() {
@@ -116,22 +136,31 @@ function astra_organic_template_content( $slug ) {
 	return '';
 }
 
-function astra_organic_ensure_page( $slug, $config ) {
-	$page = get_page_by_path( $slug );
+function astra_organic_ensure_page( $slug, $config, $state, $force_reseed = false ) {
+	$page = null;
 
-	if ( $page instanceof WP_Post ) {
-		if ( 'trash' === $page->post_status ) {
+	if ( ! empty( $state['pages'][ $slug ] ) ) {
+		$stored_id = (int) $state['pages'][ $slug ];
+		$page      = get_post( $stored_id );
+
+		if ( $page && 'trash' === $page->post_status ) {
 			wp_untrash_post( $page->ID );
 			$page = get_post( $page->ID );
 		}
+	}
 
-		if ( 'publish' !== $page->post_status ) {
-			wp_update_post(
-				array(
-					'ID'          => $page->ID,
-					'post_status' => 'publish',
-				)
-			);
+	if ( ! $page || ! $page instanceof WP_Post || $force_reseed ) {
+		$by_slug = get_page_by_path( $slug );
+		if ( $by_slug instanceof WP_Post ) {
+			$page = $by_slug;
+		}
+	}
+
+	if ( $page instanceof WP_Post ) {
+		astra_organic_normalize_page_status( $page->ID );
+
+		if ( $force_reseed || astra_organic_should_sync_page_content() ) {
+			astra_organic_maybe_refresh_page_content( $page->ID, $config );
 		}
 
 		return $page->ID;
@@ -157,6 +186,54 @@ function astra_organic_ensure_page( $slug, $config ) {
 	}
 
 	return (int) $page_id;
+}
+
+function astra_organic_normalize_page_status( $page_id ) {
+	$page = get_post( $page_id );
+
+	if ( ! $page instanceof WP_Post ) {
+		return;
+	}
+
+	if ( 'trash' === $page->post_status ) {
+		wp_untrash_post( $page->ID );
+		$page = get_post( $page->ID );
+	}
+
+	if ( $page && 'publish' !== $page->post_status ) {
+		wp_update_post(
+			array(
+				'ID'          => $page->ID,
+				'post_status' => 'publish',
+			)
+		);
+	}
+}
+
+function astra_organic_should_sync_page_content() {
+	return apply_filters( 'astra_organic_seed_sync_content', false );
+}
+
+function astra_organic_maybe_refresh_page_content( $page_id, $config ) {
+	$desired_content = isset( $config['content'] ) ? (string) $config['content'] : '';
+	$desired_title   = isset( $config['title'] ) ? (string) $config['title'] : '';
+
+	$update = array( 'ID' => $page_id );
+	$dirty  = false;
+
+	if ( $desired_title && get_the_title( $page_id ) !== $desired_title ) {
+		$update['post_title'] = $desired_title;
+		$dirty               = true;
+	}
+
+	if ( $desired_content && get_post_field( 'post_content', $page_id ) !== $desired_content ) {
+		$update['post_content'] = $desired_content;
+		$dirty                 = true;
+	}
+
+	if ( $dirty ) {
+		wp_update_post( $update );
+	}
 }
 
 function astra_organic_sync_primary_menu( $pages, $created_map ) {
