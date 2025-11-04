@@ -125,13 +125,13 @@ if ( ! function_exists( 'wp_env_int' ) ) {
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', wp_env_or_default( array( 'WORDPRESS_DB_NAME', 'DB_NAME' ), 'wordpress' ) );
+define( 'DB_NAME', wp_env_or_default( array( 'WORDPRESS_DB_NAME', 'DB_NAME' ), 'u722617394_pethoven' ) );
 
 /** Database username */
-define( 'DB_USER', wp_env_or_default( array( 'WORDPRESS_DB_USER', 'DB_USER' ), 'wordpress' ) );
+define( 'DB_USER', wp_env_or_default( array( 'WORDPRESS_DB_USER', 'DB_USER' ), 'u722617394_pethoven' ) );
 
 /** Database password */
-define( 'DB_PASSWORD', wp_env_or_default( array( 'WORDPRESS_DB_PASSWORD', 'DB_PASSWORD' ), 'wordpress' ) );
+define( 'DB_PASSWORD', wp_env_or_default( array( 'WORDPRESS_DB_PASSWORD', 'DB_PASSWORD' ), 'Nsusife123@' ) );
 
 /** Database hostname */
 define( 'DB_HOST', wp_env_or_default( array( 'WORDPRESS_DB_HOST', 'DB_HOST' ), 'localhost' ) );
@@ -212,15 +212,13 @@ define( 'WP_MEMORY_LIMIT', wp_env_or_default( array( 'WP_MEMORY_LIMIT', 'WORDPRE
 define( 'WP_MAX_MEMORY_LIMIT', wp_env_or_default( array( 'WP_MAX_MEMORY_LIMIT', 'WORDPRESS_MAX_MEMORY' ), '256M' ) );
 define( 'EMPTY_TRASH_DAYS', max( 1, wp_env_int( array( 'EMPTY_TRASH_DAYS', 'WORDPRESS_EMPTY_TRASH_DAYS' ), $is_local ? 7 : 30 ) ) );
 
-$wp_home = wp_env_or_default( array( 'WP_HOME', 'WORDPRESS_HOME_URL' ), '' );
-if ( $wp_home ) {
-	define( 'WP_HOME', rtrim( $wp_home, '/' ) );
-}
+$wp_home_default   = 'https://seashell-opossum-486356.hostingersite.com';
+$wp_home           = wp_env_or_default( array( 'WP_HOME', 'WORDPRESS_HOME_URL' ), $wp_home_default );
+define( 'WP_HOME', rtrim( $wp_home, '/' ) );
 
-$wp_siteurl = wp_env_or_default( array( 'WP_SITEURL', 'WORDPRESS_SITE_URL' ), '' );
-if ( $wp_siteurl ) {
-	define( 'WP_SITEURL', rtrim( $wp_siteurl, '/' ) );
-}
+$wp_siteurl_default = 'https://seashell-opossum-486356.hostingersite.com';
+$wp_siteurl         = wp_env_or_default( array( 'WP_SITEURL', 'WORDPRESS_SITE_URL' ), $wp_siteurl_default );
+define( 'WP_SITEURL', rtrim( $wp_siteurl, '/' ) );
 
 if ( wp_env_bool( array( 'FORCE_SSL_ADMIN', 'WORDPRESS_FORCE_SSL_ADMIN' ), ! $is_local ) ) {
 	define( 'FORCE_SSL_ADMIN', true );
