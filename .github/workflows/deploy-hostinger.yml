@@ -21,7 +21,8 @@ jobs:
           server: ${{ secrets.HOSTINGER_HOST }}
           username: ${{ secrets.HOSTINGER_USERNAME }}
           password: ${{ secrets.HOSTINGER_PASSWORD }}
-          protocol: ftps
+          protocol: sftp
+          port: 22
           server-dir: ${{ secrets.HOSTINGER_REMOTE_DIR }}
           local-dir: ./
           exclude: |
