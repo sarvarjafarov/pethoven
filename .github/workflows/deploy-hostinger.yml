@@ -15,25 +15,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Sync files via SFTP
-        uses: HorusGoul/rsync-deploy@v3.0.0
+      - name: Sync files via rsync over SSH
+        uses: easingthemes/ssh-deploy@v4
         with:
-          switches: -az --delete --delete-excluded
-          path: ./
-          remote_path: ${{ secrets.HOSTINGER_REMOTE_DIR }}
-          remote_host: ${{ secrets.HOSTINGER_HOST }}
-          remote_user: ${{ secrets.HOSTINGER_USERNAME }}
-          remote_port: 22
-          remote_key: ${{ secrets.HOSTINGER_SSH_KEY }}
-          exclude: |
-            wp-content/uploads/**
-            wp-content/cache/**
-            wp-content/upgrade/**
-            wp-content/debug.log
-            .git/**
-            .github/**
-            scripts/**
-            docker-compose.yml
-            README.md
-            CNAME
-            .env*
+          SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
+          REMOTE_USER: ${{ secrets.HOSTINGER_USERNAME }}
+          REMOTE_PORT: 22
+          SOURCE: ./
+          TARGET: ${{ secrets.HOSTINGER_REMOTE_DIR }}
+          ARGS: >-
+            -az --delete --delete-excluded
+            --exclude='wp-content/uploads/**'
+            --exclude='wp-content/cache/**'
+            --exclude='wp-content/upgrade/**'
+            --exclude='wp-content/debug.log'
+            --exclude='.git/**'
+            --exclude='.github/**'
+            --exclude='scripts/**'
+            --exclude='docker-compose.yml'
+            --exclude='README.md'
+            --exclude='CNAME'
+            --exclude='.env*'
