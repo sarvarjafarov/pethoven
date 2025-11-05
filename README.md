@@ -38,6 +38,11 @@ The WordPress core files now live at the project root and `wp-config.php` has be
 
 With these steps complete, visiting the site URL in a browser will finalize the WordPress installation.
 
+## Bundled themes & plugins
+
+- Only the default WordPress themes (`twentytwentyfive`, `twentytwentyfour`, `twentytwentythree`) remain in `wp-content/themes/`.
+- The `wp-content/plugins/` directory is empty (aside from the standard `index.php`), so you can start from a zero-plugin baseline and install only what you need.
+
 ## Performance
 
 - `./scripts/serve-local.sh` bootstraps the PHP server with OPCache enabled; override flags via `PHP_FLAGS` if you need different settings.
