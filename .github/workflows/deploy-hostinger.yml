@@ -21,7 +21,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
           REMOTE_USER: ${{ secrets.HOSTINGER_USERNAME }}
-          REMOTE_PORT: 22
+          REMOTE_PORT: 65002
           SOURCE: ./
           TARGET: ${{ secrets.HOSTINGER_REMOTE_DIR }}
           ARGS: >-
