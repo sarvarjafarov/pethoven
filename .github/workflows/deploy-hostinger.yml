@@ -15,17 +15,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Sync files via rsync over SSH
-        uses: easingthemes/ssh-deploy@v4
-        with:
-          sshPrivateKey: ${{ secrets.HOSTINGER_SSH_KEY }}
-          remoteHost: ${{ secrets.HOSTINGER_HOST }}
-          remoteUser: ${{ secrets.HOSTINGER_USERNAME }}
-          remotePort: 22
-          source: ./
-          target: ${{ secrets.HOSTINGER_REMOTE_DIR }}
-          args: >-
-            -az --delete --delete-excluded
+# If you prefer rsync over SFTP, un-comment the block below and add HOSTINGER_SSH_KEY to repo secrets.
+      # - name: Sync files via rsync over SSH
+      #   uses: easingthemes/ssh-deploy@v4
+      #   with:
+      #     SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+      #     REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
+      #     REMOTE_USER: ${{ secrets.HOSTINGER_USERNAME }}
+      #     REMOTE_PORT: 22
+      #     SOURCE: ./
+      #     TARGET: ${{ secrets.HOSTINGER_REMOTE_DIR }}
+      #     ARGS: >-
+      #       -az --delete --delete-excluded
             --exclude='wp-content/uploads/**'
             --exclude='wp-content/cache/**'
             --exclude='wp-content/upgrade/**'

@@ -104,7 +104,7 @@ With these steps complete, visiting the site URL in a browser will finalize the 
    - `HOSTINGER_USERNAME` = `u722617394.seashell-opossum-486356.hostingersite.com`.
    - `HOSTINGER_PASSWORD` = *(the FTP/SFTP password you set in hPanel)*.
    - `HOSTINGER_REMOTE_DIR` = `public_html/` (include the trailing slash).
-2. The workflow at `.github/workflows/deploy-hostinger.yml` syncs the project root (excluding uploads, scripts, etc.) to the remote `public_html/` folder on every push to `main`. Trigger it manually from the Actions tab via “Run workflow” when needed.
+2. The workflow at `.github/workflows/deploy-hostinger.yml` syncs the project root (excluding uploads, scripts, etc.) to the remote `public_html/` folder on every push to `main`. Trigger it manually from the Actions tab via “Run workflow” when needed. By default it uses FTPS; if you need SFTP/rsync, uncomment the alternate step in the workflow and add the `HOSTINGER_SSH_KEY` secret containing your private key.
 3. For a secure connection the workflow defaults to FTPS (`protocol: ftps`). If Hostinger requires SFTP, change the `protocol` value to `sftp` and optionally set the `port` input (e.g. `22`) in the workflow file.
 4. Dynamic media uploads are excluded (`wp-content/uploads/**`). Keep managing media within WordPress so that user uploads on production are not overwritten. Remove the exclude pattern if you prefer to version-control uploads.
 5. Remember that `.env` files are ignored by Git; create your `.env.production` (with DB credentials, domain, and SSL preference) directly on Hostinger after the first deployment.
