@@ -38,30 +38,10 @@ The WordPress core files now live at the project root and `wp-config.php` has be
 
 With these steps complete, visiting the site URL in a browser will finalize the WordPress installation.
 
-## Themes
-
-- The Astra parent theme is located in `wp-content/themes/astra`.
-- A custom organic-focused child theme lives at `wp-content/themes/astra-organic`. Activate it in the WordPress admin (`Appearance → Themes`) after finishing the installer.
-- The child theme depends on the Astra parent theme and applies earthy colors, button styles, and WooCommerce-friendly accents tailored to organic brands.
-
-## Organic Store Template
-
-1. Visit `Plugins → Installed Plugins` and activate the bundled free plugins:
-   - Starter Templates (Astra)
-   - Spectra (Ultimate Addons for Gutenberg)
-   - WooCommerce
-   - WPForms Lite
-2. Go to `Appearance → Starter Templates`, pick the Gutenberg builder, and search for “Organic Store”.
-3. Click “Import Template” → choose either full site or specific pages. Keep the WooCommerce sample products checked for a complete demo.
-4. After the import finishes, set the imported “Shop” page as the shop archive via `WooCommerce → Settings → Products`.
-5. Review the menus/widgets/pages and tweak colors via the WordPress Customizer as needed—the Astra Organic child theme styles will carry over the earthy palette.
-6. The must-use helper at `wp-content/mu-plugins/organic-store-pages.php` ensures essential pages (Home, Shop, Cart, Checkout, My Account, Journal, Contact, About) exist and publishes them if missing. Edit these pages freely; the helper will not overwrite your content once created.
-
 ## Performance
 
 - `./scripts/serve-local.sh` bootstraps the PHP server with OPCache enabled; override flags via `PHP_FLAGS` if you need different settings.
 - `wp-config.php` derives runtime toggles (cache, cron, script concatenation, memory limits) from environment variables and automatically relaxes settings when `WP_ENVIRONMENT_TYPE=local`.
-- A must-use plugin at `wp-content/mu-plugins/performance-tweaks.php` trims emoji scripts, Google Fonts, query-string assets, and the comment reply script for leaner pages.
 - Because cron is disabled in local mode, run scheduled tasks manually when needed: `wp cron event run --due-now` (via WP-CLI) or set `DISABLE_WP_CRON=false`.
 
 ## Prepare for production
@@ -69,7 +49,7 @@ With these steps complete, visiting the site URL in a browser will finalize the 
 1. Update `wp-config.php` (or `.env.production`) with your production database credentials and set `WP_ENVIRONMENT_TYPE=production`. With this value `DISABLE_WP_CRON` automatically becomes `false` and script concatenation/compression are enabled.
 2. Replace the salts/keys in `wp-config.php` using https://api.wordpress.org/secret-key/1.1/salt/ for the live site.
 3. Remove demo content you do not plan to publish (sample posts, products, imported imagery) and upload your branding assets.
-4. Disable any local-only mu-plugins or helpers you don’t want in production (e.g. delete `performance-tweaks.php` if you prefer to keep Google Fonts).
+4. Remove any development-only plugins or helpers prior to going live so the production environment stays lean.
 5. Regenerate thumbnails after swapping media (`wp media regenerate` via WP-CLI or a plugin) so migrated assets display crisply.
 6. Create a `.env.production` file alongside `wp-config.php` on the server (do not commit it) using `.env.production.example` as a guide; populate your Hostinger database credentials, domain (`WP_HOME`, `WP_SITEURL`), and any other overrides. The config loader will read `.env`, `.env.local`, and `.env.production` automatically if present.
 
