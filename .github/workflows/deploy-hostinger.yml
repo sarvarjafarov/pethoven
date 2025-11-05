@@ -15,16 +15,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Sync files via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: Sync files via SFTP
+        uses: HorusGoul/rsync-deploy@v3.0.0
         with:
-          server: ${{ secrets.HOSTINGER_HOST }}
-          username: ${{ secrets.HOSTINGER_USERNAME }}
-          password: ${{ secrets.HOSTINGER_PASSWORD }}
-          protocol: sftp
-          port: 22
-          server-dir: ${{ secrets.HOSTINGER_REMOTE_DIR }}
-          local-dir: ./
+          switches: -az --delete --delete-excluded
+          path: ./
+          remote_path: ${{ secrets.HOSTINGER_REMOTE_DIR }}
+          remote_host: ${{ secrets.HOSTINGER_HOST }}
+          remote_user: ${{ secrets.HOSTINGER_USERNAME }}
+          remote_port: 22
+          remote_key: ${{ secrets.HOSTINGER_SSH_KEY }}
           exclude: |
             wp-content/uploads/**
             wp-content/cache/**
