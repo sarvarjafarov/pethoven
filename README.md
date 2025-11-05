@@ -42,6 +42,7 @@ With these steps complete, visiting the site URL in a browser will finalize the 
 
 - Only the default WordPress themes (`twentytwentyfive`, `twentytwentyfour`, `twentytwentythree`) remain in `wp-content/themes/`.
 - The `wp-content/plugins/` directory is empty (aside from the standard `index.php`), so you can start from a zero-plugin baseline and install only what you need.
+- A must-use plugin at `wp-content/mu-plugins/performance-tweaks.php` removes emojis, embeds, and other front-end extras to keep the site lean. Remove or adjust it if you need those features back.
 
 ## Performance
 
