@@ -24,16 +24,16 @@ jobs:
           REMOTE_PORT: 22
           SOURCE: ./
           TARGET: ${{ secrets.HOSTINGER_REMOTE_DIR }}
-          ARGS: >-
-            -az --delete --delete-excluded \
-            --exclude='wp-content/uploads/**' \
-            --exclude='wp-content/cache/**' \
-            --exclude='wp-content/upgrade/**' \
-            --exclude='wp-content/debug.log' \
-            --exclude='.git/**' \
-            --exclude='.github/**' \
-            --exclude='scripts/**' \
-            --exclude='docker-compose.yml' \
-            --exclude='README.md' \
-            --exclude='CNAME' \
-            --exclude='.env*'
+          ARGS: -az --delete --delete-excluded
+          EXCLUDE: >-
+            wp-content/uploads/**
+            wp-content/cache/**
+            wp-content/upgrade/**
+            wp-content/debug.log
+            .git/**
+            .github/**
+            scripts/**
+            docker-compose.yml
+            README.md
+            CNAME
+            .env*
