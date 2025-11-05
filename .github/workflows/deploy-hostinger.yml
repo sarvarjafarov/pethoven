@@ -15,7 +15,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-# If you prefer rsync over SFTP, un-comment the block below and add HOSTINGER_SSH_KEY to repo secrets.
+      - name: Sync files via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USERNAME }}
+          password: ${{ secrets.HOSTINGER_PASSWORD }}
+          protocol: ftps
+          server-dir: ${{ secrets.HOSTINGER_REMOTE_DIR }}
+          local-dir: ./
+          exclude: |
+            wp-content/uploads/**
+            wp-content/cache/**
+            wp-content/upgrade/**
+            wp-content/debug.log
+            .git/**
+            .github/**
+            scripts/**
+            docker-compose.yml
+            README.md
+            CNAME
+            .env*
+
+      # SFTP alternative (requires HOSTINGER_SSH_KEY secret). Uncomment this block and comment the FTPS step above if Hostinger requires SSH:
       # - name: Sync files via rsync over SSH
       #   uses: easingthemes/ssh-deploy@v4
       #   with:
@@ -26,15 +48,15 @@ jobs:
       #     SOURCE: ./
       #     TARGET: ${{ secrets.HOSTINGER_REMOTE_DIR }}
       #     ARGS: >-
-      #       -az --delete --delete-excluded
-            --exclude='wp-content/uploads/**'
-            --exclude='wp-content/cache/**'
-            --exclude='wp-content/upgrade/**'
-            --exclude='wp-content/debug.log'
-            --exclude='.git/**'
-            --exclude='.github/**'
-            --exclude='scripts/**'
-            --exclude='docker-compose.yml'
-            --exclude='README.md'
-            --exclude='CNAME'
-            --exclude='.env*'
+      #       -az --delete --delete-excluded \
+      #       --exclude='wp-content/uploads/**' \
+      #       --exclude='wp-content/cache/**' \
+      #       --exclude='wp-content/upgrade/**' \
+      #       --exclude='wp-content/debug.log' \
+      #       --exclude='.git/**' \
+      #       --exclude='.github/**' \
+      #       --exclude='scripts/**' \
+      #       --exclude='docker-compose.yml' \
+      #       --exclude='README.md' \
+      #       --exclude='CNAME' \
+      #       --exclude='.env*'
