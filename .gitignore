@@ -4,6 +4,9 @@
 !.env.local.example
 !.env.production.example
 
+# Server-managed (Hostinger/LiteSpeed may modify these)
+.htaccess
+
 # OS junk
 .DS_Store
 Thumbs.db
