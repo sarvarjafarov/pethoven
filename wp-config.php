@@ -125,13 +125,13 @@ if ( ! function_exists( 'wp_env_int' ) ) {
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', wp_env_or_default( array( 'WORDPRESS_DB_NAME', 'DB_NAME' ), 'u722617394_pethoven' ) );
+define( 'DB_NAME', wp_env_or_default( array( 'WORDPRESS_DB_NAME', 'DB_NAME' ), 'wordpress' ) );
 
 /** Database username */
-define( 'DB_USER', wp_env_or_default( array( 'WORDPRESS_DB_USER', 'DB_USER' ), 'u722617394_pethoven' ) );
+define( 'DB_USER', wp_env_or_default( array( 'WORDPRESS_DB_USER', 'DB_USER' ), 'wordpress' ) );
 
 /** Database password */
-define( 'DB_PASSWORD', wp_env_or_default( array( 'WORDPRESS_DB_PASSWORD', 'DB_PASSWORD' ), 'Nsusife123@' ) );
+define( 'DB_PASSWORD', wp_env_or_default( array( 'WORDPRESS_DB_PASSWORD', 'DB_PASSWORD' ), '' ) );
 
 /** Database hostname */
 define( 'DB_HOST', wp_env_or_default( array( 'WORDPRESS_DB_HOST', 'DB_HOST' ), 'localhost' ) );
@@ -223,6 +223,16 @@ define( 'WP_SITEURL', rtrim( $wp_siteurl, '/' ) );
 if ( wp_env_bool( array( 'FORCE_SSL_ADMIN', 'WORDPRESS_FORCE_SSL_ADMIN' ), ! $is_local ) ) {
 	define( 'FORCE_SSL_ADMIN', true );
 }
+
+/* ---------- Production hardening ---------- */
+
+/** Prevent file edits from the admin (theme/plugin editor). */
+if ( ! $is_local ) {
+	define( 'DISALLOW_FILE_EDIT', true );
+}
+
+/** Limit auto-updates to minor/security releases only. */
+define( 'WP_AUTO_UPDATE_CORE', 'minor' );
 
 /* Add any custom values between this line and the "stop editing" line. */
 
