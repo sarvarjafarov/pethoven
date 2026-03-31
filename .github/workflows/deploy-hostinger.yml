@@ -33,6 +33,7 @@ jobs:
             --exclude='wp-content/debug.log'
             --exclude='.git/**'
             --exclude='.github/**'
+            --exclude='.htaccess'
             --exclude='scripts/**'
             --exclude='docker-compose.yml'
             --exclude='README.md'
