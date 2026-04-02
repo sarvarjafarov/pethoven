@@ -219,25 +219,144 @@ function pethoven_ui_css() {
     }
 
     /* ==========================================================
-     * 6. FEATURE ICON BOXES (Shipping, Organic, etc.)
+     * 6. FEATURES BAR — full section redesign
      * ========================================================== */
 
-    .elementor-widget-icon-box .elementor-icon-box-wrapper {
+    /* The features bar is the 2nd e-parent section */
+    .pt-features-bar {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .pt-features-bar > .e-con-inner {
+        padding: 0 !important;
+    }
+
+    /* Each feature column */
+    .pt-features-bar .e-con.e-child {
+        position: relative;
+        padding: 36px 24px !important;
+        transition: background 0.4s ease;
+    }
+
+    .pt-features-bar .e-con.e-child::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 20%;
+        height: 60%;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .pt-features-bar .e-con.e-child:last-child::after {
+        display: none;
+    }
+
+    .pt-features-bar .e-con.e-child:hover {
+        background: rgba(139, 195, 74, 0.08);
+    }
+
+    /* Icon — circular green glow background */
+    .pt-features-bar .elementor-icon-box-icon {
+        margin-bottom: 0 !important;
+    }
+
+    .pt-features-bar .elementor-icon {
+        position: relative;
+        width: 56px !important;
+        height: 56px !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        background: rgba(139, 195, 74, 0.12);
+        border-radius: 16px;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                    background 0.4s ease,
+                    box-shadow 0.4s ease;
+    }
+
+    .pt-features-bar .elementor-icon i {
+        font-size: 22px !important;
+        color: #8bc34a !important;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .pt-features-bar .e-con.e-child:hover .elementor-icon {
+        transform: scale(1.1);
+        background: rgba(139, 195, 74, 0.2);
+        box-shadow: 0 0 24px rgba(139, 195, 74, 0.2);
+    }
+
+    .pt-features-bar .e-con.e-child:hover .elementor-icon i {
+        color: #a4d65e !important;
+        transform: scale(1.1);
+    }
+
+    /* Text content */
+    .pt-features-bar .elementor-icon-box-title {
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.3px;
+        color: #ffffff !important;
+        margin-bottom: 4px !important;
+    }
+
+    .pt-features-bar .elementor-icon-box-description {
+        font-size: 13px !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+        font-weight: 400 !important;
+    }
+
+    /* Wrapper layout */
+    .pt-features-bar .elementor-icon-box-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 16px;
         transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .elementor-widget-icon-box:hover .elementor-icon-box-wrapper {
+    .pt-features-bar .elementor-icon-box-content {
+        text-align: left !important;
+    }
+
+    .pt-features-bar .e-con.e-child:hover .elementor-icon-box-wrapper {
+        transform: translateY(-3px);
+    }
+
+    /* Responsive: stack on mobile */
+    @media (max-width: 767px) {
+        .pt-features-bar .e-con.e-child {
+            padding: 24px 20px !important;
+        }
+
+        .pt-features-bar .e-con.e-child::after {
+            right: 10%;
+            top: auto;
+            bottom: 0;
+            height: 1px;
+            width: 80%;
+        }
+
+        .pt-features-bar .elementor-icon {
+            width: 48px !important;
+            height: 48px !important;
+            border-radius: 12px;
+        }
+
+        .pt-features-bar .elementor-icon i {
+            font-size: 20px !important;
+        }
+    }
+
+    /* Generic icon-box hover (for other sections) */
+    .elementor-widget-icon-box:not(.pt-features-bar .elementor-widget-icon-box) .elementor-icon-box-wrapper {
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .elementor-widget-icon-box:not(.pt-features-bar .elementor-widget-icon-box):hover .elementor-icon-box-wrapper {
         transform: translateY(-6px);
-    }
-
-    .elementor-widget-icon-box .elementor-icon {
-        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                    color 0.3s ease;
-    }
-
-    .elementor-widget-icon-box:hover .elementor-icon {
-        transform: scale(1.15);
-        color: var(--ast-global-color-0, #8bc34a);
     }
 
     /* ==========================================================
@@ -428,8 +547,9 @@ function pethoven_ui_js() {
                     children[1].classList.add('pt-hero-image');
                 }
             }
-            /* Features bar (second): stagger children */
+            /* Features bar (second): tag + stagger children */
             else if (index === 1) {
+                section.classList.add('pt-features-bar');
                 section.classList.add('pt-stagger');
             }
             /* Products section: stagger */
