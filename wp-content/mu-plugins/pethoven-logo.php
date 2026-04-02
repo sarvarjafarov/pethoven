@@ -51,15 +51,44 @@ function pethoven_force_custom_logo_truthy( $value ) {
 }
 
 /**
- * Logo sizing: keep the logo crisp and properly spaced in the header.
- * Works with Astra's default header and the Header Builder.
+ * Inject white logo into the footer.
+ *
+ * Hooks into Astra's footer to place the white logo at the top of the
+ * footer area, before any widgets or copyright text.
+ */
+add_action( 'astra_footer', 'pethoven_footer_logo', 5 );
+
+function pethoven_footer_logo() {
+    $base_url = content_url( 'mu-plugins/assets' );
+    $logo_1x  = $base_url . '/pethoven-logo-white-1x.png';
+    $logo_2x  = $base_url . '/pethoven-logo-white-2x.png';
+    $home     = esc_url( home_url( '/' ) );
+    $name     = esc_attr( get_bloginfo( 'name' ) );
+
+    printf(
+        '<div class="pethoven-footer-logo">'
+        . '<a href="%s" rel="home">'
+        . '<img src="%s" srcset="%s 1x, %s 2x" alt="%s" '
+        . 'width="275" height="60" loading="lazy" decoding="async">'
+        . '</a>'
+        . '</div>',
+        $home,
+        esc_url( $logo_1x ),
+        esc_url( $logo_1x ),
+        esc_url( $logo_2x ),
+        $name
+    );
+}
+
+/**
+ * Logo sizing and footer logo styles.
  */
 add_action( 'wp_head', 'pethoven_logo_styles', 20 );
 
 function pethoven_logo_styles() {
     ?>
     <style id="pethoven-logo-css">
-        /* Desktop: generous logo size for brand presence */
+        /* ---- Header logo ---- */
         .site-logo-img .custom-logo-link .custom-logo,
         .ast-site-identity .custom-logo-link .custom-logo,
         img.custom-logo {
@@ -75,7 +104,6 @@ function pethoven_logo_styles() {
             align-items: center;
         }
 
-        /* Tablet */
         @media (max-width: 921px) {
             .site-logo-img .custom-logo-link .custom-logo,
             .ast-site-identity .custom-logo-link .custom-logo,
@@ -84,12 +112,38 @@ function pethoven_logo_styles() {
             }
         }
 
-        /* Mobile */
         @media (max-width: 544px) {
             .site-logo-img .custom-logo-link .custom-logo,
             .ast-site-identity .custom-logo-link .custom-logo,
             img.custom-logo {
                 max-height: 40px;
+            }
+        }
+
+        /* ---- Footer logo ---- */
+        .pethoven-footer-logo {
+            text-align: center;
+            padding: 40px 0 24px;
+        }
+
+        .pethoven-footer-logo a {
+            display: inline-block;
+        }
+
+        .pethoven-footer-logo img {
+            max-height: 50px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        @media (max-width: 544px) {
+            .pethoven-footer-logo img {
+                max-height: 38px;
+            }
+
+            .pethoven-footer-logo {
+                padding: 32px 0 16px;
             }
         }
     </style>
