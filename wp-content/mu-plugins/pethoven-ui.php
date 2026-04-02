@@ -249,15 +249,12 @@ function pethoven_ui_css() {
         overflow: hidden;
     }
 
-    /* Each feature card — nuclear override on exact Elementor IDs */
+    /* Each feature card — kill element AND ::before overlay backgrounds */
     .elementor-element-ab3b0ab,
     .elementor-element-d6c3c68,
     .elementor-element-4236095,
     .elementor-element-c3254ca,
-    .pt-features-bar .e-con.e-child,
-    .pt-features-bar .e-con.e-child.e-con-full,
-    .pt-features-bar > .e-con-inner > .e-con,
-    .pt-features-bar > .e-con-inner > .elementor-element {
+    .pt-features-bar .e-con.e-child {
         flex: 1 1 0 !important;
         min-width: 0 !important;
         position: relative;
@@ -268,6 +265,25 @@ function pethoven_ui_css() {
         border: none !important;
         border-radius: 0 !important;
         transition: background-color 0.3s ease;
+    }
+
+    /* Kill the ::before overlay — this is where Elementor puts #333 */
+    .elementor-element-ab3b0ab::before,
+    .elementor-element-d6c3c68::before,
+    .elementor-element-4236095::before,
+    .elementor-element-c3254ca::before,
+    .elementor-element-966d6bb::before,
+    .pt-features-bar .e-con.e-child::before {
+        background: transparent !important;
+        background-color: transparent !important;
+        opacity: 0 !important;
+    }
+
+    /* Kill parent background too */
+    .elementor-element-966d6bb,
+    .elementor-element-966d6bb:not(.elementor-motion-effects-element-type-background) {
+        background-color: transparent !important;
+        background: transparent !important;
     }
 
     /* Vertical divider between cards */
