@@ -222,10 +222,14 @@ function pethoven_ui_css() {
      * 6. FEATURES BAR — clean white card design
      * ========================================================== */
 
-    /* Section: soft off-white background, negative margin to overlap hero */
-    .pt-features-bar {
+    /* Section: floating white card overlapping hero */
+    .pt-features-bar,
+    .pt-features-bar.e-con,
+    .elementor-element.pt-features-bar {
         background: transparent !important;
-        padding: 0 !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        padding: 0 20px !important;
         margin-top: -40px !important;
         position: relative;
         z-index: 10;
@@ -234,24 +238,31 @@ function pethoven_ui_css() {
     .pt-features-bar > .e-con-inner {
         max-width: 1200px;
         margin: 0 auto;
-        background: #ffffff;
+        background: #ffffff !important;
         border-radius: 20px;
         box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06),
                     0 1px 3px rgba(0, 0, 0, 0.04);
         padding: 0 !important;
         display: flex !important;
         flex-wrap: wrap;
+        overflow: hidden;
     }
 
-    /* Each feature card */
-    .pt-features-bar .e-con.e-child {
+    /* Each feature card — kill Elementor dark backgrounds */
+    .pt-features-bar .e-con.e-child,
+    .pt-features-bar .e-con.e-child.e-con-full,
+    .pt-features-bar > .e-con-inner > .e-con,
+    .pt-features-bar > .e-con-inner > .elementor-element {
         flex: 1 1 0 !important;
         min-width: 0 !important;
         position: relative;
         padding: 32px 28px !important;
         background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
         border: none !important;
-        transition: background 0.3s ease;
+        border-radius: 0 !important;
+        transition: background-color 0.3s ease;
     }
 
     /* Vertical divider between cards */
@@ -272,15 +283,15 @@ function pethoven_ui_css() {
 
     /* Hover: subtle green tint */
     .pt-features-bar .e-con.e-child:hover {
-        background: rgba(139, 195, 74, 0.04) !important;
+        background-color: rgba(139, 195, 74, 0.04) !important;
     }
 
     .pt-features-bar .e-con.e-child:first-child:hover {
-        border-radius: 20px 0 0 20px;
+        border-radius: 20px 0 0 20px !important;
     }
 
     .pt-features-bar .e-con.e-child:last-child:hover {
-        border-radius: 0 20px 20px 0;
+        border-radius: 0 20px 20px 0 !important;
     }
 
     /* Icon: circle with light green background */
@@ -342,7 +353,9 @@ function pethoven_ui_css() {
     }
 
     .pt-features-bar .elementor-icon-box-title,
-    .pt-features-bar .elementor-icon-box-title a {
+    .pt-features-bar .elementor-icon-box-title a,
+    .pt-features-bar h4.elementor-icon-box-title,
+    .pt-features-bar h4.elementor-icon-box-title a {
         font-size: 15px !important;
         font-weight: 700 !important;
         color: #1a1a1a !important;
@@ -351,9 +364,10 @@ function pethoven_ui_css() {
         font-family: inherit !important;
     }
 
-    .pt-features-bar .elementor-icon-box-description {
+    .pt-features-bar .elementor-icon-box-description,
+    .pt-features-bar p.elementor-icon-box-description {
         font-size: 13px !important;
-        color: #888 !important;
+        color: #999 !important;
         font-weight: 400 !important;
         line-height: 1.4 !important;
         margin: 0 !important;
