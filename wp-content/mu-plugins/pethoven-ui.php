@@ -223,6 +223,7 @@ function pethoven_ui_css() {
      * ========================================================== */
 
     /* Section: floating white card overlapping hero */
+    .elementor-element-966d6bb,
     .pt-features-bar,
     .pt-features-bar.e-con,
     .elementor-element.pt-features-bar {
@@ -248,7 +249,11 @@ function pethoven_ui_css() {
         overflow: hidden;
     }
 
-    /* Each feature card — kill Elementor dark backgrounds */
+    /* Each feature card — nuclear override on exact Elementor IDs */
+    .elementor-element-ab3b0ab,
+    .elementor-element-d6c3c68,
+    .elementor-element-4236095,
+    .elementor-element-c3254ca,
     .pt-features-bar .e-con.e-child,
     .pt-features-bar .e-con.e-child.e-con-full,
     .pt-features-bar > .e-con-inner > .e-con,
@@ -282,6 +287,10 @@ function pethoven_ui_css() {
     }
 
     /* Hover: subtle green tint */
+    .elementor-element-ab3b0ab:hover,
+    .elementor-element-d6c3c68:hover,
+    .elementor-element-4236095:hover,
+    .elementor-element-c3254ca:hover,
     .pt-features-bar .e-con.e-child:hover {
         background-color: rgba(139, 195, 74, 0.04) !important;
     }
