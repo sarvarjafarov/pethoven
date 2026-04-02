@@ -25,10 +25,11 @@ add_action( 'login_head', 'pethoven_favicon', 1 );
 function pethoven_favicon() {
     $base = content_url( 'mu-plugins/assets' );
     ?>
-    <link rel="icon" type="image/x-icon" href="<?php echo esc_url( $base . '/favicon.ico' ); ?>">
-    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo esc_url( $base . '/favicon-32x32.png' ); ?>">
-    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo esc_url( $base . '/favicon-16x16.png' ); ?>">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo esc_url( $base . '/apple-touch-icon.png' ); ?>">
+    <link rel="icon" href="<?php echo esc_url( $base . '/favicon.ico' ); ?>" sizes="48x48">
+    <link rel="icon" href="<?php echo esc_url( $base . '/favicon-32x32.png' ); ?>" sizes="32x32" type="image/png">
+    <link rel="icon" href="<?php echo esc_url( $base . '/favicon-16x16.png' ); ?>" sizes="16x16" type="image/png">
+    <link rel="icon" href="<?php echo esc_url( $base . '/favicon.png' ); ?>" sizes="270x270" type="image/png">
+    <link rel="apple-touch-icon" href="<?php echo esc_url( $base . '/apple-touch-icon.png' ); ?>" sizes="180x180">
     <link rel="manifest" href="<?php echo esc_url( $base . '/site.webmanifest' ); ?>">
     <meta name="theme-color" content="#0e9a4e">
     <?php
@@ -38,6 +39,22 @@ function pethoven_favicon() {
 add_action( 'init', function () {
     remove_action( 'wp_head', 'wp_site_icon', 99 );
 } );
+
+/** Strip any other favicon/site-icon links injected by plugins or themes. */
+add_action( 'wp_head', 'pethoven_remove_extra_favicons', 999 );
+
+function pethoven_remove_extra_favicons() {
+    // Remove via output buffering any stale site-icon references.
+    ob_start( function ( $html ) {
+        // Remove <link> tags with "site-icon" or "shortcut icon" that aren't ours.
+        $html = preg_replace(
+            '/<link[^>]*(rel=["\'](?:shortcut icon|icon)["\'])[^>]*wp-content\/uploads[^>]*>/i',
+            '',
+            $html
+        );
+        return $html;
+    } );
+}
 
 /* ========================================================================
  * HEADER LOGO
