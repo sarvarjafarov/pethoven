@@ -125,13 +125,13 @@ if ( ! function_exists( 'wp_env_int' ) ) {
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', wp_env_or_default( array( 'WORDPRESS_DB_NAME', 'DB_NAME' ), 'wordpress' ) );
+define( 'DB_NAME', wp_env_or_default( array( 'WORDPRESS_DB_NAME', 'DB_NAME' ), 'u722617394_pethoven' ) );
 
 /** Database username */
-define( 'DB_USER', wp_env_or_default( array( 'WORDPRESS_DB_USER', 'DB_USER' ), 'wordpress' ) );
+define( 'DB_USER', wp_env_or_default( array( 'WORDPRESS_DB_USER', 'DB_USER' ), 'u722617394_pethoven' ) );
 
 /** Database password */
-define( 'DB_PASSWORD', wp_env_or_default( array( 'WORDPRESS_DB_PASSWORD', 'DB_PASSWORD' ), '' ) );
+define( 'DB_PASSWORD', wp_env_or_default( array( 'WORDPRESS_DB_PASSWORD', 'DB_PASSWORD' ), 'Nsusife123@' ) );
 
 /** Database hostname */
 define( 'DB_HOST', wp_env_or_default( array( 'WORDPRESS_DB_HOST', 'DB_HOST' ), 'localhost' ) );
