@@ -51,33 +51,81 @@ function pethoven_force_custom_logo_truthy( $value ) {
 }
 
 /**
- * Inject white logo into the footer.
- *
- * Hooks into Astra's footer to place the white logo at the top of the
- * footer area, before any widgets or copyright text.
+ * Replace the Organic Store demo logo in footer widgets with the white
+ * Pethoven logo. Catches image widgets, custom HTML widgets, and text widgets.
  */
-add_action( 'astra_footer', 'pethoven_footer_logo', 5 );
+add_filter( 'widget_display_callback', 'pethoven_replace_footer_widget_logo', 20, 3 );
 
-function pethoven_footer_logo() {
-    $base_url = content_url( 'mu-plugins/assets' );
-    $logo_1x  = $base_url . '/pethoven-logo-white-1x.png';
-    $logo_2x  = $base_url . '/pethoven-logo-white-2x.png';
-    $home     = esc_url( home_url( '/' ) );
-    $name     = esc_attr( get_bloginfo( 'name' ) );
+function pethoven_replace_footer_widget_logo( $instance, $widget, $args ) {
+    // Only act on footer sidebars.
+    if ( empty( $args['id'] ) || strpos( $args['id'], 'footer' ) === false ) {
+        return $instance;
+    }
 
-    printf(
-        '<div class="pethoven-footer-logo">'
-        . '<a href="%s" rel="home">'
-        . '<img src="%s" srcset="%s 1x, %s 2x" alt="%s" '
-        . 'width="275" height="60" loading="lazy" decoding="async">'
-        . '</a>'
-        . '</div>',
-        $home,
-        esc_url( $logo_1x ),
-        esc_url( $logo_1x ),
-        esc_url( $logo_2x ),
-        $name
-    );
+    // Buffer the widget output so we can search-replace images in it.
+    ob_start();
+    $widget->widget( $args, $instance );
+    $html = ob_get_clean();
+
+    if ( $html && preg_match( '/<img[^>]*organic[^>]*>/i', $html ) ) {
+        $base_url = content_url( 'mu-plugins/assets' );
+        $logo_1x  = esc_url( $base_url . '/pethoven-logo-white-1x.png' );
+        $logo_2x  = esc_url( $base_url . '/pethoven-logo-white-2x.png' );
+        $name     = esc_attr( get_bloginfo( 'name' ) );
+
+        $replacement = sprintf(
+            '<img src="%s" srcset="%s 1x, %s 2x" alt="%s" '
+            . 'width="275" height="60" loading="lazy" decoding="async" '
+            . 'style="max-height:50px;width:auto;height:auto;object-fit:contain;">',
+            $logo_1x,
+            $logo_1x,
+            $logo_2x,
+            $name
+        );
+
+        $html = preg_replace( '/<img[^>]*organic[^>]*>/i', $replacement, $html );
+        echo $html;
+        return false; // Prevent default widget rendering since we already echoed.
+    }
+
+    echo $html;
+    return false;
+}
+
+/**
+ * Also replace via output buffering as a safety net — catches logos rendered
+ * outside standard widgets (Elementor footer, custom templates, etc.).
+ */
+add_action( 'astra_footer_before', 'pethoven_footer_ob_start' );
+add_action( 'astra_footer_after', 'pethoven_footer_ob_end' );
+
+function pethoven_footer_ob_start() {
+    ob_start();
+}
+
+function pethoven_footer_ob_end() {
+    $html = ob_get_clean();
+
+    if ( $html && preg_match( '/<img[^>]*organic[^>]*>/i', $html ) ) {
+        $base_url = content_url( 'mu-plugins/assets' );
+        $logo_1x  = esc_url( $base_url . '/pethoven-logo-white-1x.png' );
+        $logo_2x  = esc_url( $base_url . '/pethoven-logo-white-2x.png' );
+        $name     = esc_attr( get_bloginfo( 'name' ) );
+
+        $replacement = sprintf(
+            '<img src="%s" srcset="%s 1x, %s 2x" alt="%s" '
+            . 'width="275" height="60" loading="lazy" decoding="async" '
+            . 'style="max-height:50px;width:auto;height:auto;object-fit:contain;">',
+            $logo_1x,
+            $logo_1x,
+            $logo_2x,
+            $name
+        );
+
+        $html = preg_replace( '/<img[^>]*organic[^>]*>/i', $replacement, $html );
+    }
+
+    echo $html;
 }
 
 /**
@@ -120,30 +168,16 @@ function pethoven_logo_styles() {
             }
         }
 
-        /* ---- Footer logo ---- */
-        .pethoven-footer-logo {
-            text-align: center;
-            padding: 40px 0 24px;
-        }
-
-        .pethoven-footer-logo a {
-            display: inline-block;
-        }
-
-        .pethoven-footer-logo img {
+        /* ---- Footer logo (replaced widget) ---- */
+        .site-footer img[srcset*="pethoven-logo-white"] {
             max-height: 50px;
             width: auto;
             height: auto;
-            object-fit: contain;
         }
 
         @media (max-width: 544px) {
-            .pethoven-footer-logo img {
+            .site-footer img[srcset*="pethoven-logo-white"] {
                 max-height: 38px;
-            }
-
-            .pethoven-footer-logo {
-                padding: 32px 0 16px;
             }
         }
     </style>
