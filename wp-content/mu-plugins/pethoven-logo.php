@@ -3,12 +3,45 @@
  * Pethoven custom logo override.
  *
  * Plugin Name: Pethoven Logo
- * Description: Serves the branded Pethoven logo without requiring a media-library upload.
+ * Description: Serves the branded Pethoven logo, favicon, and web manifest.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+/* ========================================================================
+ * FAVICON & WEB MANIFEST
+ * ===================================================================== */
+
+/**
+ * Override WordPress site icon with the Pethoven paw favicon.
+ * Removes default wp_head site icon output and injects our own tags.
+ */
+add_action( 'wp_head', 'pethoven_favicon', 1 );
+add_action( 'admin_head', 'pethoven_favicon', 1 );
+add_action( 'login_head', 'pethoven_favicon', 1 );
+
+function pethoven_favicon() {
+    $base = content_url( 'mu-plugins/assets' );
+    ?>
+    <link rel="icon" type="image/x-icon" href="<?php echo esc_url( $base . '/favicon.ico' ); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo esc_url( $base . '/favicon-32x32.png' ); ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo esc_url( $base . '/favicon-16x16.png' ); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo esc_url( $base . '/apple-touch-icon.png' ); ?>">
+    <link rel="manifest" href="<?php echo esc_url( $base . '/site.webmanifest' ); ?>">
+    <meta name="theme-color" content="#0e9a4e">
+    <?php
+}
+
+/** Remove WordPress default site icon output to avoid duplicates. */
+add_action( 'init', function () {
+    remove_action( 'wp_head', 'wp_site_icon', 99 );
+} );
+
+/* ========================================================================
+ * HEADER LOGO
+ * ===================================================================== */
 
 /**
  * Override get_custom_logo() output with the Pethoven branded logo.
