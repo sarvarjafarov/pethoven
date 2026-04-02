@@ -178,6 +178,56 @@ function pethoven_footer_ob_end() {
     echo $html;
 }
 
+/* ========================================================================
+ * HERO IMAGE REPLACEMENT
+ * ===================================================================== */
+
+/**
+ * Replace the Organic Store hero image with the Pethoven product shot.
+ * Uses output buffering on the full page to swap the image src/srcset.
+ */
+add_action( 'template_redirect', 'pethoven_hero_image_buffer' );
+
+function pethoven_hero_image_buffer() {
+    if ( is_admin() ) {
+        return;
+    }
+
+    ob_start( 'pethoven_replace_hero_image' );
+}
+
+function pethoven_replace_hero_image( $html ) {
+    if ( ! $html ) {
+        return $html;
+    }
+
+    $base_url = content_url( 'mu-plugins/assets' );
+    $webp     = esc_url( $base_url . '/hero-product.webp' );
+    $webp_2x  = esc_url( $base_url . '/hero-product-2x.webp' );
+    $png      = esc_url( $base_url . '/hero-product.png' );
+
+    // Replace the organic hero product image
+    $html = preg_replace_callback(
+        '/<img([^>]*(?:organic-products-hero|organic-products)[^>]*)>/i',
+        function ( $matches ) use ( $webp, $webp_2x, $png ) {
+            return sprintf(
+                '<picture>'
+                . '<source srcset="%s 1x, %s 2x" type="image/webp">'
+                . '<img src="%s" alt="Pethoven Dog Shampoo" '
+                . 'width="800" height="644" loading="eager" fetchpriority="high" '
+                . 'decoding="async" class="attachment-full size-full">'
+                . '</picture>',
+                $webp,
+                $webp_2x,
+                $png
+            );
+        },
+        $html
+    );
+
+    return $html;
+}
+
 /**
  * Logo sizing and footer logo styles.
  */
