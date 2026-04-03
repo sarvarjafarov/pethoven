@@ -127,50 +127,206 @@ function pethoven_ui_css() {
     }
 
     /* ==========================================================
-     * 4. PRODUCT CARD EFFECTS
+     * 4. PRODUCT CARDS — full redesign
      * ========================================================== */
 
-    .astra-shop-thumbnail-wrap {
-        overflow: hidden;
-        border-radius: 12px;
+    /* Product grid spacing */
+    .woocommerce ul.products {
+        gap: 28px !important;
     }
 
+    /* Card container */
     .ast-article-single.product {
-        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-                    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-        border-radius: 12px;
+        background: #ffffff !important;
+        border-radius: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                    border-color 0.4s ease;
+        position: relative;
     }
 
     .ast-article-single.product:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
+                    0 4px 12px rgba(0, 0, 0, 0.04);
+        border-color: rgba(139, 195, 74, 0.2);
+    }
+
+    /* Image area */
+    .astra-shop-thumbnail-wrap {
+        overflow: hidden;
+        border-radius: 0;
+        background: linear-gradient(180deg, #f8f8f8 0%, #f0f0f0 100%) !important;
+        position: relative;
     }
 
     .ast-article-single.product .astra-shop-thumbnail-wrap img {
-        transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        mix-blend-mode: multiply;
     }
 
     .ast-article-single.product:hover .astra-shop-thumbnail-wrap img {
-        transform: scale(1.08);
+        transform: scale(1.06);
     }
 
-    /* Sale badge pulse */
+    /* Quick action overlay on hover */
+    .astra-shop-thumbnail-wrap::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.03) 100%);
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        opacity: 0;
+    }
+
+    .ast-article-single.product:hover .astra-shop-thumbnail-wrap::after {
+        opacity: 1;
+    }
+
+    /* Sale badge — modern pill style */
     .ast-article-single.product .onsale {
-        animation: pt-pulse-badge 2s ease-in-out infinite;
+        background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+        color: #fff !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        padding: 5px 14px !important;
+        border-radius: 20px !important;
+        line-height: 1.3 !important;
+        min-height: auto !important;
+        min-width: auto !important;
+        top: 12px !important;
+        right: 12px !important;
+        left: auto !important;
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        animation: pt-pulse-badge 2.5s ease-in-out infinite;
     }
 
     @keyframes pt-pulse-badge {
         0%, 100% { transform: scale(1); }
-        50%      { transform: scale(1.08); }
+        50%      { transform: scale(1.06); }
     }
 
-    /* Product title hover */
+    /* Content area */
+    .astra-shop-summary-wrap {
+        padding: 20px 18px 24px !important;
+        text-align: center;
+    }
+
+    /* Category label */
+    .ast-woo-product-category {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.2px !important;
+        color: var(--ast-global-color-0, #8bc34a) !important;
+        margin-bottom: 6px !important;
+        display: block;
+    }
+
+    /* Product title */
     .woocommerce-loop-product__title {
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        color: #1a1a1a !important;
+        margin-bottom: 8px !important;
+        line-height: 1.3 !important;
         transition: color 0.25s ease;
     }
 
     .ast-article-single.product:hover .woocommerce-loop-product__title {
-        color: var(--ast-global-color-0, #8bc34a);
+        color: var(--ast-global-color-1, #6a9739) !important;
+    }
+
+    /* Star ratings */
+    .ast-article-single.product .star-rating {
+        margin: 0 auto 10px !important;
+        font-size: 13px !important;
+    }
+
+    /* Price */
+    .ast-article-single.product .price {
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        color: #1a1a1a !important;
+    }
+
+    .ast-article-single.product .price del {
+        font-size: 14px !important;
+        color: #bbb !important;
+        font-weight: 400 !important;
+    }
+
+    .ast-article-single.product .price ins {
+        color: var(--ast-global-color-1, #6a9739) !important;
+        text-decoration: none !important;
+        font-weight: 700 !important;
+    }
+
+    /* Add to Cart button inside cards */
+    .ast-article-single.product .button.add_to_cart_button {
+        display: inline-block !important;
+        margin-top: 14px !important;
+        padding: 10px 28px !important;
+        background: var(--ast-global-color-1, #6a9739) !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 25px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+        text-transform: uppercase !important;
+        transition: transform 0.3s ease,
+                    box-shadow 0.3s ease,
+                    background-color 0.3s ease !important;
+    }
+
+    .ast-article-single.product .button.add_to_cart_button:hover {
+        background: var(--ast-global-color-0, #8bc34a) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(106, 151, 57, 0.3) !important;
+    }
+
+    /* Products section heading */
+    .elementor-element-f980f52 .elementor-heading-title {
+        font-size: 36px !important;
+        letter-spacing: -0.5px;
+    }
+
+    /* Responsive product cards */
+    @media (max-width: 921px) {
+        .woocommerce ul.products {
+            gap: 20px !important;
+        }
+
+        .astra-shop-summary-wrap {
+            padding: 16px 14px 20px !important;
+        }
+
+        .woocommerce-loop-product__title {
+            font-size: 15px !important;
+        }
+
+        .ast-article-single.product .price {
+            font-size: 16px !important;
+        }
+    }
+
+    @media (max-width: 544px) {
+        .ast-article-single.product:hover {
+            transform: translateY(-6px);
+        }
+
+        .ast-article-single.product .onsale {
+            font-size: 10px !important;
+            padding: 4px 10px !important;
+            top: 8px !important;
+            right: 8px !important;
+        }
     }
 
     /* ==========================================================
