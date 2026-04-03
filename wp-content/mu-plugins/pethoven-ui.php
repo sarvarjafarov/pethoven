@@ -388,6 +388,125 @@ function pethoven_ui_css() {
     }
 
     /* ==========================================================
+     * 4b. PRODUCTS SECTION WRAPPER
+     * ========================================================== */
+
+    /* Section background — subtle organic pattern feel */
+    .pt-products-section,
+    .elementor-element-f980f52 {
+        background: linear-gradient(175deg, #f9faf6 0%, #f1f4ec 40%, #f7f5f0 100%) !important;
+        padding: 80px 0 90px !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Decorative blurred blobs behind the grid */
+    .pt-products-section::before,
+    .pt-products-section::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .pt-products-section::before {
+        width: 350px;
+        height: 350px;
+        background: rgba(139, 195, 74, 0.15);
+        top: -80px;
+        right: -60px;
+    }
+
+    .pt-products-section::after {
+        width: 280px;
+        height: 280px;
+        background: rgba(139, 195, 74, 0.1);
+        bottom: -60px;
+        left: -40px;
+    }
+
+    .pt-products-section > .e-con-inner {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ---- Section heading ---- */
+    .pt-products-section .elementor-widget-heading {
+        margin-bottom: 8px !important;
+    }
+
+    .pt-products-section .elementor-heading-title {
+        font-size: 40px !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.5px;
+        color: #1a1a1a !important;
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Replace the leaf image with a styled subtitle */
+    .pt-products-section .elementor-widget-image {
+        margin-bottom: 36px !important;
+    }
+
+    /* Hide the default leaf image */
+    .pt-products-section .elementor-widget-image img[src*="leaf"] {
+        display: none !important;
+    }
+
+    /* Custom green divider bar under heading */
+    .pt-products-section .elementor-widget-image .elementor-widget-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .pt-products-section .elementor-widget-image .elementor-widget-container::before {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--ast-global-color-0, #8bc34a), var(--ast-global-color-1, #6a9739));
+        border-radius: 4px;
+    }
+
+    /* Product grid needs to be above blobs */
+    .pt-products-section .woocommerce {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ---- Mobile ---- */
+    @media (max-width: 921px) {
+        .pt-products-section,
+        .elementor-element-f980f52 {
+            padding: 60px 0 70px !important;
+        }
+
+        .pt-products-section .elementor-heading-title {
+            font-size: 32px !important;
+        }
+    }
+
+    @media (max-width: 544px) {
+        .pt-products-section,
+        .elementor-element-f980f52 {
+            padding: 48px 0 56px !important;
+        }
+
+        .pt-products-section .elementor-heading-title {
+            font-size: 26px !important;
+        }
+
+        .pt-products-section::before,
+        .pt-products-section::after {
+            display: none;
+        }
+    }
+
+    /* ==========================================================
      * 5. BUTTON MICRO-INTERACTIONS
      * ========================================================== */
 
@@ -899,8 +1018,9 @@ function pethoven_ui_js() {
                 section.classList.add('pt-features-bar');
                 section.classList.add('pt-stagger');
             }
-            /* Products section: stagger */
+            /* Products section */
             else if (index === 2) {
+                section.classList.add('pt-products-section');
                 section.classList.add('pt-reveal');
             }
             /* Category cards: stagger */
