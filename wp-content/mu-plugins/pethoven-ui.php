@@ -32,9 +32,9 @@ function pethoven_ui_css() {
 
     .pt-reveal {
         opacity: 0;
-        transform: translateY(40px);
-        transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateY(20px);
+        transition: opacity 0.8s ease-out,
+                    transform 0.8s ease-out;
     }
 
     .pt-reveal.pt-visible {
@@ -42,39 +42,39 @@ function pethoven_ui_css() {
         transform: translateY(0);
     }
 
-    /* Staggered children — each child delays slightly */
+    /* Staggered children */
     .pt-stagger > .e-con,
     .pt-stagger > .elementor-widget {
         opacity: 0;
-        transform: translateY(30px);
-        transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-                    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateY(16px);
+        transition: opacity 0.7s ease-out,
+                    transform 0.7s ease-out;
     }
 
     .pt-stagger.pt-visible > .e-con:nth-child(1),
     .pt-stagger.pt-visible > .elementor-widget:nth-child(1) { transition-delay: 0s; opacity: 1; transform: translateY(0); }
     .pt-stagger.pt-visible > .e-con:nth-child(2),
-    .pt-stagger.pt-visible > .elementor-widget:nth-child(2) { transition-delay: 0.12s; opacity: 1; transform: translateY(0); }
+    .pt-stagger.pt-visible > .elementor-widget:nth-child(2) { transition-delay: 0.08s; opacity: 1; transform: translateY(0); }
     .pt-stagger.pt-visible > .e-con:nth-child(3),
-    .pt-stagger.pt-visible > .elementor-widget:nth-child(3) { transition-delay: 0.24s; opacity: 1; transform: translateY(0); }
+    .pt-stagger.pt-visible > .elementor-widget:nth-child(3) { transition-delay: 0.16s; opacity: 1; transform: translateY(0); }
     .pt-stagger.pt-visible > .e-con:nth-child(4),
-    .pt-stagger.pt-visible > .elementor-widget:nth-child(4) { transition-delay: 0.36s; opacity: 1; transform: translateY(0); }
+    .pt-stagger.pt-visible > .elementor-widget:nth-child(4) { transition-delay: 0.24s; opacity: 1; transform: translateY(0); }
     .pt-stagger.pt-visible > .e-con:nth-child(5),
-    .pt-stagger.pt-visible > .elementor-widget:nth-child(5) { transition-delay: 0.48s; opacity: 1; transform: translateY(0); }
+    .pt-stagger.pt-visible > .elementor-widget:nth-child(5) { transition-delay: 0.32s; opacity: 1; transform: translateY(0); }
 
     /* Fade-in-left / right for two-column hero */
     .pt-fade-left {
         opacity: 0;
-        transform: translateX(-50px);
-        transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-                    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateX(-24px);
+        transition: opacity 0.9s ease-out,
+                    transform 0.9s ease-out;
     }
 
     .pt-fade-right {
         opacity: 0;
-        transform: translateX(50px);
-        transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-                    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateX(24px);
+        transition: opacity 0.9s ease-out,
+                    transform 0.9s ease-out;
     }
 
     .pt-fade-left.pt-visible,
@@ -86,9 +86,9 @@ function pethoven_ui_css() {
     /* Scale-in for images */
     .pt-scale-in {
         opacity: 0;
-        transform: scale(0.9);
-        transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        transform: scale(0.96);
+        transition: opacity 0.8s ease-out,
+                    transform 0.8s ease-out;
     }
 
     .pt-scale-in.pt-visible {
@@ -102,12 +102,12 @@ function pethoven_ui_css() {
 
     @keyframes pt-hero-float {
         0%, 100% { transform: translateY(0); }
-        50%      { transform: translateY(-12px); }
+        50%      { transform: translateY(-6px); }
     }
 
     .pt-hero-image img {
-        animation: pt-hero-float 4s ease-in-out infinite;
-        animation-delay: 1s;
+        animation: pt-hero-float 5s ease-in-out infinite;
+        animation-delay: 1.5s;
     }
 
     /* ==========================================================
@@ -944,13 +944,12 @@ function pethoven_ui_css() {
 
     @keyframes pt-leaf-sway {
         0%, 100% { transform: rotate(0deg); }
-        25%      { transform: rotate(3deg); }
-        75%      { transform: rotate(-3deg); }
+        50%      { transform: rotate(2deg); }
     }
 
     .elementor-widget-image img[src*="leaf"],
     .elementor-widget-image img[src*="basil"] {
-        animation: pt-leaf-sway 5s ease-in-out infinite;
+        animation: pt-leaf-sway 6s ease-in-out infinite;
     }
 
     /* ==========================================================
@@ -1037,7 +1036,7 @@ function pethoven_ui_js() {
         var products = document.querySelectorAll('.ast-article-single.product');
         products.forEach(function (card, i) {
             card.classList.add('pt-reveal');
-            card.style.transitionDelay = (i * 0.1) + 's';
+            card.style.transitionDelay = (i * 0.06) + 's';
         });
 
         /* Create observer */
@@ -1049,8 +1048,8 @@ function pethoven_ui_js() {
                 }
             });
         }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -60px 0px'
+            threshold: 0.05,
+            rootMargin: '0px 0px -30px 0px'
         });
 
         document.querySelectorAll('.pt-reveal, .pt-stagger, .pt-fade-left, .pt-fade-right, .pt-scale-in').forEach(function (el) {
