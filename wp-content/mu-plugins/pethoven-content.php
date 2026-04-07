@@ -15,6 +15,173 @@ if ( is_admin() ) {
 }
 
 /**
+ * Inject announcement bar before the header.
+ */
+add_action( 'astra_header_before', 'pethoven_announcement_bar' );
+
+function pethoven_announcement_bar() {
+    ?>
+    <div id="pt-announcement" class="pt-announcement-bar">
+        <div class="pt-announcement-inner">
+            <button class="pt-ann-prev" aria-label="Previous">&lsaquo;</button>
+            <div class="pt-ann-slides">
+                <div class="pt-ann-slide pt-ann-active">FREE shipping on orders over $25</div>
+                <div class="pt-ann-slide">NEW: Avocado-Lavender formula for sensitive skin</div>
+                <div class="pt-ann-slide">Bundle any 2 bottles, get 1 FREE</div>
+            </div>
+            <button class="pt-ann-next" aria-label="Next">&rsaquo;</button>
+        </div>
+    </div>
+    <?php
+}
+
+/**
+ * Announcement bar + section reorder styles.
+ */
+add_action( 'wp_head', 'pethoven_structure_css', 15 );
+
+function pethoven_structure_css() {
+    ?>
+    <style id="pethoven-structure-css">
+        /* ---- Announcement bar ---- */
+        .pt-announcement-bar {
+            background: #1a3a2a;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-align: center;
+            position: relative;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .pt-announcement-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 40px;
+            position: relative;
+        }
+
+        .pt-ann-slides {
+            position: relative;
+            width: 100%;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .pt-ann-slide {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            line-height: 20px;
+        }
+
+        .pt-ann-slide.pt-ann-active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pt-ann-prev,
+        .pt-ann-next {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0 8px;
+            line-height: 1;
+            transition: color 0.2s ease;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+
+        .pt-ann-prev { left: 8px; }
+        .pt-ann-next { right: 8px; }
+
+        .pt-ann-prev:hover,
+        .pt-ann-next:hover {
+            color: #ffffff;
+        }
+
+        @media (max-width: 544px) {
+            .pt-announcement-bar { font-size: 11px; }
+            .pt-ann-prev, .pt-ann-next { display: none; }
+        }
+
+        /* ---- Section reorder using CSS order ---- */
+        /* Make the Elementor content area a flex column */
+        .entry-content > .elementor,
+        .entry-content > .elementor > .elementor-inner,
+        .entry-content > .elementor > .elementor-inner > .elementor-section-wrap,
+        .elementor-95 {
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* Hero: 3849851 */
+        .elementor-element-3849851 { order: 1 !important; }
+        /* Features bar: 966d6bb */
+        .elementor-element-966d6bb { order: 2 !important; }
+        /* Products: f980f52 */
+        .elementor-element-f980f52 { order: 3 !important; }
+        /* Basil leaf divider: c6c5202 -- HIDE */
+        .elementor-element-c6c5202 { display: none !important; }
+        /* Category cards: d349891 */
+        .elementor-element-d349891 { order: 4 !important; }
+        /* Testimonials + deal: ea9e0d9 -- MOVE UP */
+        .elementor-element-ea9e0d9 { order: 5 !important; }
+        /* CTA 20% off: 28fc7dc */
+        .elementor-element-28fc7dc { order: 6 !important; }
+        /* Quiz CTA: 778c9e4 */
+        .elementor-element-778c9e4 { order: 7 !important; }
+        /* Brand logos: 357f4cd */
+        .elementor-element-357f4cd { order: 8 !important; }
+    </style>
+    <?php
+}
+
+/**
+ * Announcement bar auto-rotate script.
+ */
+add_action( 'wp_footer', 'pethoven_announcement_js', 30 );
+
+function pethoven_announcement_js() {
+    ?>
+    <script id="pethoven-announcement-js">
+    (function() {
+        var slides = document.querySelectorAll('.pt-ann-slide');
+        if (!slides.length) return;
+
+        var current = 0;
+        var total = slides.length;
+
+        function show(index) {
+            slides[current].classList.remove('pt-ann-active');
+            current = (index + total) % total;
+            slides[current].classList.add('pt-ann-active');
+        }
+
+        var prev = document.querySelector('.pt-ann-prev');
+        var next = document.querySelector('.pt-ann-next');
+        if (prev) prev.addEventListener('click', function() { show(current - 1); });
+        if (next) next.addEventListener('click', function() { show(current + 1); });
+
+        setInterval(function() { show(current + 1); }, 4000);
+    })();
+    </script>
+    <?php
+}
+
+/**
  * Buffer the full front-end output and run all text replacements in one pass.
  */
 add_action( 'template_redirect', 'pethoven_content_buffer', 1 );
@@ -35,14 +202,14 @@ function pethoven_rewrite_content( $html ) {
          * ============================================ */
 
         'Best Quality Products'
-            => 'Premium Dog Care',
+            => 'Vet-Approved. Organic. Effective.',
 
         'Join The Organic Movement!'
-            => 'Clean Coat. Happy Dog.',
+            => 'Bath Time They Actually Enjoy.',
 
         // Hero description (lorem ipsum)
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.'
-            => 'Organic, vet-approved dog shampoos made with real ingredients. Gentle on skin. Tough on dirt. No sulfates, no parabens, no compromise.',
+            => 'Dog shampoos made with real ingredients your dog\'s skin needs. No sulfates. No parabens. No tears. Just a clean, soft coat that smells incredible for days.',
 
         /* ============================================
          * FEATURES BAR
@@ -81,29 +248,29 @@ function pethoven_rewrite_content( $html ) {
             => 'Sensitive Skin',
 
         'Ut sollicitudin quam vel purus tempus, vel eleifend felis varius.'
-            => 'Gentle formulas for dogs with allergies or dry, itchy skin. Oatmeal and aloe based.',
+            => 'Oatmeal and aloe formula. Stops itching. Repairs dry skin. Safe for dogs with allergies.',
 
         'Fresh Vegetables'
             => 'Deep Clean',
 
         'Aliquam porta justo nibh, id laoreet sapien sodales vitae justo.'
-            => 'Built for active dogs. Cuts through mud, odor, and buildup without stripping natural oils.',
+            => 'Mud, odor, buildup. Gone. Built for active dogs that get into everything.',
 
         'Organic Legume'
             => 'Puppy Collection',
 
         'Phasellus sed urna mattis, viverra libero sed, aliquam est.'
-            => 'Tear-free, pH-balanced formulas safe for puppies 8 weeks and older.',
+            => 'Tear-free. pH-balanced. Formulated for puppies 8 weeks and older.',
 
         /* ============================================
          * CTA BANNERS
          * ============================================ */
 
         'Get 25% Off On Your First Purchase!'
-            => 'Get 20% Off Your First Order',
+            => 'First Order? Save 20%. Code: CLEANCOAT',
 
         'Try It For Free. No Registration Needed.'
-            => 'Not Sure Which Formula? Take Our Quick Quiz.',
+            => 'Not Sure Which Shampoo? Take the 30-Second Quiz.',
 
         /* ============================================
          * TESTIMONIALS
@@ -127,10 +294,10 @@ function pethoven_rewrite_content( $html ) {
          * ============================================ */
 
         'Deal Of The Day 15% Off On All Vegetables!'
-            => 'Bundle Deal: Buy 2, Get 1 Free',
+            => 'Buy 2, Get 1 Free. Any Formula.',
 
         'I am text block. Click edit button to change this tex em ips.'
-            => 'Mix and match any formula. Limited time offer.',
+            => 'Pick any three bottles. Mix Sensitive Skin, Deep Clean, Puppy. Your call.',
 
         /* ============================================
          * BRAND LOGOS
@@ -144,7 +311,7 @@ function pethoven_rewrite_content( $html ) {
          * ============================================ */
 
         'Maecenas mi justo, interdum at consectetur vel, tristique et arcu.'
-            => 'Organic dog shampoos made in the USA. Because your dog deserves better.',
+            => 'Organic dog shampoos. Made in the USA. Backed by vets. Loved by dogs.',
 
         'Know More About Us'
             => 'About Us',
