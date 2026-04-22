@@ -2233,6 +2233,619 @@ function pethoven_ui_css() {
     }
 
     /* ==========================================================
+     * 22. HOMEPAGE — CATEGORY CARDS (Sensitive / Deep Clean / Puppy)
+     *     Section: .elementor-element-d349891
+     *
+     * Three image-box widgets + three Shop Now buttons inherit
+     * the grocery-template look (basil-leaf icon, plain text, flat
+     * buttons). Transform each column into a proper premium card
+     * with a gradient icon disc, hover lift, and unified CTA.
+     * ========================================================== */
+
+    /* Kill the basil leaf icon inside every image-box on this section */
+    .elementor-element-d349891 .elementor-image-box-img,
+    .elementor-element-d349891 .elementor-image-box-img img {
+        display: none !important;
+    }
+
+    /* Section spacing */
+    .elementor-element-d349891 {
+        padding: 80px 0 !important;
+    }
+
+    /* Section eyebrow + heading injected via JS (pt-cats-heading) */
+    .pt-cats-eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--ast-global-color-1, #6a9739);
+        text-align: center;
+        margin: 0 auto 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .pt-cats-eyebrow::before,
+    .pt-cats-eyebrow::after {
+        content: '';
+        width: 28px;
+        height: 1.5px;
+        background: var(--ast-global-color-1, #6a9739);
+        opacity: 0.5;
+        border-radius: 2px;
+    }
+
+    .pt-cats-heading {
+        font-family: inherit !important;
+        font-size: 40px;
+        font-weight: 800;
+        color: #1a1a1a;
+        text-align: center;
+        margin: 0 auto 14px;
+        letter-spacing: -0.5px;
+        line-height: 1.1;
+    }
+
+    .pt-cats-subtitle {
+        font-size: 16px;
+        color: #666;
+        text-align: center;
+        margin: 0 auto 48px;
+        max-width: 540px;
+        line-height: 1.55;
+        padding: 0 20px;
+    }
+
+    /* Turn each Elementor column / flex child into a card */
+    .elementor-element-d349891 > .elementor-container > .elementor-column,
+    .elementor-element-d349891 > .e-con-inner > .e-con.e-child,
+    .elementor-element-d349891 > .elementor-container .elementor-widget-wrap,
+    .elementor-element-d349891 .e-con > .e-con-inner > .e-con.e-child {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        border: 1px solid #f0f0ec !important;
+        border-radius: 24px !important;
+        padding: 48px 32px 40px !important;
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                    border-color 0.35s ease,
+                    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        position: relative;
+        overflow: hidden;
+        align-items: center !important;
+    }
+
+    /* Green accent on hover */
+    .elementor-element-d349891 > .elementor-container > .elementor-column::before,
+    .elementor-element-d349891 > .e-con-inner > .e-con.e-child::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--ast-global-color-0, #8bc34a), var(--ast-global-color-1, #6a9739));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        z-index: 2;
+    }
+
+    .elementor-element-d349891 > .elementor-container > .elementor-column:hover::before,
+    .elementor-element-d349891 > .e-con-inner > .e-con.e-child:hover::before {
+        transform: scaleX(1);
+    }
+
+    .elementor-element-d349891 > .elementor-container > .elementor-column:hover,
+    .elementor-element-d349891 > .e-con-inner > .e-con.e-child:hover {
+        transform: translateY(-8px);
+        border-color: rgba(139, 195, 74, 0.32) !important;
+        box-shadow: 0 24px 48px rgba(106, 151, 57, 0.12),
+                    0 8px 20px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    /* Inject a gradient icon disc above each image-box where the
+     * basil leaf used to sit */
+    .elementor-element-d349891 .elementor-widget-image-box {
+        text-align: center;
+        margin-bottom: 0 !important;
+    }
+
+    .elementor-element-d349891 .elementor-widget-image-box .elementor-image-box-wrapper {
+        position: relative;
+        padding-top: 96px;
+    }
+
+    .elementor-element-d349891 .elementor-widget-image-box .elementor-image-box-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%) scale(1);
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(139,195,74,0.24) 0%, rgba(106,151,57,0.06) 100%);
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .elementor-element-d349891 > .elementor-container > .elementor-column:hover .elementor-widget-image-box .elementor-image-box-wrapper::before,
+    .elementor-element-d349891 > .e-con-inner > .e-con.e-child:hover .elementor-widget-image-box .elementor-image-box-wrapper::before {
+        transform: translateX(-50%) scale(1.08);
+    }
+
+    /* Per-card color variation: 1 bright green, 2 deep green, 3 warm peach */
+    .elementor-element-d349891 > .elementor-container > .elementor-column:nth-child(2) .elementor-widget-image-box .elementor-image-box-wrapper::before,
+    .elementor-element-d349891 > .e-con-inner > .e-con.e-child:nth-child(2) .elementor-widget-image-box .elementor-image-box-wrapper::before {
+        background: linear-gradient(135deg, rgba(38, 84, 61, 0.22) 0%, rgba(26, 58, 42, 0.08) 100%);
+    }
+
+    .elementor-element-d349891 > .elementor-container > .elementor-column:nth-child(3) .elementor-widget-image-box .elementor-image-box-wrapper::before,
+    .elementor-element-d349891 > .e-con-inner > .e-con.e-child:nth-child(3) .elementor-widget-image-box .elementor-image-box-wrapper::before {
+        background: linear-gradient(135deg, rgba(245, 183, 120, 0.32) 0%, rgba(255, 216, 168, 0.1) 100%);
+    }
+
+    /* Title + description */
+    .elementor-element-d349891 .elementor-image-box-title {
+        font-family: inherit !important;
+        font-size: 24px !important;
+        font-weight: 800 !important;
+        color: #1a1a1a !important;
+        margin: 0 0 14px !important;
+        letter-spacing: -0.3px !important;
+        line-height: 1.2 !important;
+    }
+
+    .elementor-element-d349891 .elementor-image-box-description {
+        font-size: 15px !important;
+        color: #666 !important;
+        line-height: 1.6 !important;
+        margin: 0 !important;
+        min-height: 96px;
+    }
+
+    /* Shop Now button — match the black-pill CTA language */
+    .elementor-element-d349891 .elementor-widget-button {
+        text-align: center;
+        margin-top: 28px !important;
+    }
+
+    .elementor-element-d349891 .elementor-button {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px !important;
+        background: #1a1a1a !important;
+        background-color: #1a1a1a !important;
+        background-image: none !important;
+        color: #ffffff !important;
+        fill: #ffffff !important;
+        border: none !important;
+        border-radius: 100px !important;
+        font-family: inherit !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1.5px !important;
+        text-transform: uppercase !important;
+        text-decoration: none !important;
+        transition: background-color 0.3s ease, color 0.3s ease,
+                    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                    box-shadow 0.3s ease !important;
+    }
+
+    .elementor-element-d349891 .elementor-button:hover {
+        background: var(--ast-global-color-1, #6a9739) !important;
+        background-color: var(--ast-global-color-1, #6a9739) !important;
+        color: #ffffff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(106, 151, 57, 0.28) !important;
+    }
+
+    /* ==========================================================
+     * 23. HOMEPAGE — 20% OFF PROMO (28fc7dc)
+     *
+     * A single heading + button section. Wrap it in a dark green
+     * branded card with an icon, coupon pill, and white CTA.
+     * ========================================================== */
+
+    .elementor-element-28fc7dc {
+        padding: 36px 20px 60px !important;
+        position: relative;
+    }
+
+    /* Decorative dark card background */
+    .elementor-element-28fc7dc::before {
+        content: '';
+        position: absolute;
+        left: max(20px, 50% - 620px);
+        right: max(20px, 50% - 620px);
+        top: 36px;
+        bottom: 60px;
+        background:
+            radial-gradient(circle at 12% 18%, rgba(139,195,74,0.26) 0%, transparent 55%),
+            radial-gradient(circle at 88% 82%, rgba(139,195,74,0.18) 0%, transparent 50%),
+            linear-gradient(135deg, #1a3a2a 0%, #26543d 100%);
+        border-radius: 28px;
+        z-index: 0;
+        pointer-events: none;
+        box-shadow: 0 20px 50px rgba(26, 58, 42, 0.18);
+    }
+
+    .elementor-element-28fc7dc > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .elementor-element-28fc7dc .elementor-widget-container {
+        padding: 56px 24px !important;
+        text-align: center;
+    }
+
+    /* Heading — white + split into eyebrow + title via CSS */
+    .elementor-element-28fc7dc .elementor-heading-title {
+        font-family: inherit !important;
+        font-size: 36px !important;
+        font-weight: 800 !important;
+        color: #ffffff !important;
+        line-height: 1.15 !important;
+        letter-spacing: -0.5px !important;
+        text-align: center !important;
+        max-width: 640px;
+        margin: 0 auto !important;
+    }
+
+    /* Promo eyebrow injected via JS */
+    .pt-promo-eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #c7e09a;
+        text-align: center;
+        margin: 0 auto 12px;
+    }
+
+    /* Coupon code pill injected via JS */
+    .pt-promo-code {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin: 22px auto 0;
+        padding: 10px 18px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1.5px dashed rgba(255, 255, 255, 0.4);
+        border-radius: 12px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-weight: 700;
+        letter-spacing: 2px;
+        font-size: 14px;
+        color: #ffffff;
+    }
+
+    .pt-promo-code-label {
+        font-family: inherit;
+        font-size: 10px;
+        letter-spacing: 2px;
+        font-weight: 700;
+        color: #c7e09a;
+        text-transform: uppercase;
+    }
+
+    .elementor-element-28fc7dc .elementor-widget-button {
+        margin-top: 28px;
+    }
+
+    .elementor-element-28fc7dc .elementor-button {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 36px !important;
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+        color: #1a3a2a !important;
+        fill: #1a3a2a !important;
+        border: none !important;
+        border-radius: 100px !important;
+        font-family: inherit !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1.8px !important;
+        text-transform: uppercase !important;
+        text-decoration: none !important;
+    }
+
+    .elementor-element-28fc7dc .elementor-button:hover {
+        background: var(--ast-global-color-0, #8bc34a) !important;
+        background-color: var(--ast-global-color-0, #8bc34a) !important;
+        color: #1a3a2a !important;
+        transform: translateY(-3px);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    /* ==========================================================
+     * 24. HOMEPAGE — TESTIMONIALS + BUNDLE (ea9e0d9)
+     *
+     * Improve testimonial cards and the Buy-2-Get-1 image-box
+     * at the bottom of the section.
+     * ========================================================== */
+
+    .elementor-element-ea9e0d9 {
+        padding: 60px 0 !important;
+    }
+
+    /* Testimonial cards */
+    .elementor-element-ea9e0d9 .elementor-testimonial-wrapper {
+        background: #ffffff;
+        border: 1px solid #f0f0ec;
+        border-radius: 24px;
+        padding: 36px 32px;
+        position: relative;
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                    border-color 0.3s ease,
+                    box-shadow 0.35s ease;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-widget-testimonial:hover .elementor-testimonial-wrapper {
+        transform: translateY(-6px);
+        border-color: rgba(139, 195, 74, 0.32);
+        box-shadow: 0 20px 40px rgba(106, 151, 57, 0.08),
+                    0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Decorative opening quote */
+    .elementor-element-ea9e0d9 .elementor-testimonial-wrapper::before {
+        content: '\201C';  /* left double quote */
+        position: absolute;
+        top: 18px;
+        left: 30px;
+        font-family: Georgia, serif;
+        font-size: 60px;
+        line-height: 1;
+        color: var(--ast-global-color-0, #8bc34a);
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-testimonial-content {
+        position: relative;
+        z-index: 1;
+        font-size: 15px !important;
+        line-height: 1.65 !important;
+        color: #2a2a2a !important;
+        margin-bottom: 20px !important;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-testimonial-details {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-testimonial-image img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-testimonial-identity {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-testimonial-name {
+        font-weight: 700 !important;
+        color: #1a1a1a !important;
+        font-size: 14px !important;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-testimonial-job {
+        font-size: 12px !important;
+        color: #888 !important;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-star-rating {
+        color: #f5a623 !important;
+    }
+
+    /* Bundle deal — image-box containing "Buy 2, Get 1 Free" */
+    .elementor-element-ea9e0d9 .elementor-widget-image-box .elementor-image-box-img,
+    .elementor-element-ea9e0d9 .elementor-widget-image-box .elementor-image-box-img img {
+        display: none !important;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-widget-image-box {
+        background: linear-gradient(135deg, #f5f7f0 0%, #eef2e8 100%);
+        border: 1px solid rgba(139, 195, 74, 0.2);
+        border-radius: 24px;
+        padding: 44px 32px;
+        text-align: center;
+        margin-top: 56px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-widget-image-box::before {
+        content: '';
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(circle, rgba(139, 195, 74, 0.2), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-widget-image-box > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-image-box-title {
+        font-family: inherit !important;
+        font-size: 28px !important;
+        font-weight: 800 !important;
+        color: #1a1a1a !important;
+        margin: 0 0 12px !important;
+        letter-spacing: -0.3px !important;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-image-box-description {
+        font-size: 15px !important;
+        color: #555 !important;
+        line-height: 1.6 !important;
+        margin: 0 auto !important;
+        max-width: 520px;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-widget-button {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-button {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 32px !important;
+        background: #1a1a1a !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 100px !important;
+        font-family: inherit !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1.5px !important;
+        text-transform: uppercase !important;
+        text-decoration: none !important;
+        transition: background-color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                    box-shadow 0.3s ease !important;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-button:hover {
+        background: var(--ast-global-color-1, #6a9739) !important;
+        color: #ffffff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(106, 151, 57, 0.28) !important;
+    }
+
+    /* ==========================================================
+     * 25. HOMEPAGE — HERO (3849851)
+     *
+     * Add a trust micro-strip below the main CTA matching the
+     * archive's language.
+     * ========================================================== */
+
+    .pt-hero-trust {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 18px;
+        margin-top: 22px;
+        font-size: 12px;
+        color: #888;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+
+    .pt-hero-trust-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+    .pt-hero-trust-item svg {
+        width: 14px;
+        height: 14px;
+        color: var(--ast-global-color-1, #6a9739);
+        flex-shrink: 0;
+    }
+
+    /* Make the hero "Shop Now" match the new black-pill CTA language */
+    .elementor-element-3849851 .elementor-button {
+        padding: 16px 38px !important;
+        background: #1a1a1a !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 100px !important;
+        font-family: inherit !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1.5px !important;
+        text-transform: uppercase !important;
+        transition: background-color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                    box-shadow 0.3s ease !important;
+    }
+
+    .elementor-element-3849851 .elementor-button:hover {
+        background: var(--ast-global-color-1, #6a9739) !important;
+        color: #ffffff !important;
+        transform: translateY(-3px);
+        box-shadow: 0 14px 32px rgba(106, 151, 57, 0.28) !important;
+    }
+
+    /* ==========================================================
+     * 26. HOMEPAGE — SECTION RHYTHM
+     *
+     * Normalize vertical spacing across hero-adjacent promo
+     * sections so the page has a consistent rhythm.
+     * ========================================================== */
+
+    @media (max-width: 921px) {
+        .elementor-element-d349891 {
+            padding: 60px 0 !important;
+        }
+        .elementor-element-d349891 > .elementor-container > .elementor-column,
+        .elementor-element-d349891 > .e-con-inner > .e-con.e-child {
+            padding: 36px 24px !important;
+        }
+        .elementor-element-d349891 .elementor-image-box-title,
+        .pt-cats-heading {
+            font-size: 28px !important;
+        }
+        .elementor-element-d349891 .elementor-image-box-description {
+            min-height: 0;
+        }
+        .elementor-element-28fc7dc::before {
+            left: 16px;
+            right: 16px;
+            border-radius: 22px;
+        }
+        .elementor-element-28fc7dc .elementor-heading-title {
+            font-size: 28px !important;
+        }
+        .elementor-element-28fc7dc .elementor-widget-container {
+            padding: 44px 20px !important;
+        }
+        .elementor-element-ea9e0d9 .elementor-image-box-title {
+            font-size: 22px !important;
+        }
+    }
+
+    @media (max-width: 544px) {
+        .elementor-element-d349891 {
+            padding: 44px 0 !important;
+        }
+        .pt-cats-heading {
+            font-size: 24px !important;
+        }
+        .pt-cats-subtitle {
+            font-size: 14px !important;
+        }
+        .elementor-element-28fc7dc .elementor-heading-title {
+            font-size: 23px !important;
+        }
+        .elementor-element-ea9e0d9 .elementor-testimonial-wrapper {
+            padding: 28px 24px;
+        }
+    }
+
+    /* ==========================================================
      * 21. REDUCED MOTION — respect user preference
      * ========================================================== */
 
@@ -2558,6 +3171,74 @@ function pethoven_ui_js() {
             var link = prod.querySelector('a, .wc-block-grid__product-link');
             (link || prod).prepend(rank);
         });
+
+        /* ----------------------------------------------------------
+         * J. Homepage — Category cards section heading
+         *    The section has no heading by default. Inject an
+         *    eyebrow + headline + subtitle above the three cards.
+         * ---------------------------------------------------------- */
+        var catsSection = document.querySelector('.elementor-element-d349891');
+        if (catsSection && !catsSection.querySelector('.pt-cats-heading')) {
+            var catsContainer = catsSection.querySelector('.e-con-inner, .elementor-container') || catsSection;
+            var catsHead = document.createElement('div');
+            catsHead.innerHTML =
+                '<div class="pt-cats-eyebrow">Built for the three dogs you know</div>' +
+                '<h2 class="pt-cats-heading">Find your formula</h2>' +
+                '<p class="pt-cats-subtitle">Three targeted shampoos for the three things dogs need: relief, a deep clean, or a gentler start.</p>';
+            catsContainer.insertBefore(catsHead, catsContainer.firstChild);
+        }
+
+        /* ----------------------------------------------------------
+         * K. Homepage — 20% off promo eyebrow + coupon pill
+         *    The heading reads "First Order? Save 20%. Code: CLEANCOAT"
+         *    all in one line. Split it visually: inject a separate
+         *    eyebrow and coupon code pill, rewrite the heading.
+         * ---------------------------------------------------------- */
+        var promoSection = document.querySelector('.elementor-element-28fc7dc');
+        if (promoSection) {
+            var promoHeading = promoSection.querySelector('h1, h2, h3, .elementor-heading-title');
+            if (promoHeading && !promoSection.querySelector('.pt-promo-eyebrow')) {
+                // Rewrite heading to drop the "Code: CLEANCOAT" suffix
+                promoHeading.textContent = 'Your first bottle, 20% off.';
+
+                // Eyebrow goes before the heading's widget wrapper
+                var headingWidget = promoHeading.closest('.elementor-widget, .elementor-element') || promoHeading.parentNode;
+                var eyebrow = document.createElement('div');
+                eyebrow.className = 'pt-promo-eyebrow';
+                eyebrow.textContent = 'Welcome offer';
+                headingWidget.parentNode.insertBefore(eyebrow, headingWidget);
+
+                // Coupon pill goes after the heading widget
+                var coupon = document.createElement('div');
+                coupon.innerHTML = '<div class="pt-promo-code"><span class="pt-promo-code-label">Use code</span><span>CLEANCOAT</span></div>';
+                headingWidget.parentNode.insertBefore(coupon, headingWidget.nextSibling);
+            }
+        }
+
+        /* ----------------------------------------------------------
+         * L. Homepage — Hero trust micro-strip
+         *    Add a short ticked "promises" row under the hero CTA.
+         * ---------------------------------------------------------- */
+        var heroSection = document.querySelector('.elementor-element-3849851');
+        if (heroSection && !heroSection.querySelector('.pt-hero-trust')) {
+            var heroButton = heroSection.querySelector('.elementor-widget-button');
+            if (heroButton) {
+                var trustIcon =
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
+                        '<polyline points="5 12 10 17 19 7"/>' +
+                    '</svg>';
+                var items = ['Free shipping $25+', '30-day guarantee', 'Cruelty-free'];
+                var trust = document.createElement('div');
+                trust.className = 'pt-hero-trust';
+                items.forEach(function (t) {
+                    var span = document.createElement('span');
+                    span.className = 'pt-hero-trust-item';
+                    span.innerHTML = trustIcon + '<span>' + t + '</span>';
+                    trust.appendChild(span);
+                });
+                heroButton.parentNode.insertBefore(trust, heroButton.nextSibling);
+            }
+        }
 
         /* ----------------------------------------------------------
          * H0. Homepage Best Sellers section — eyebrow, subtitle, CTA
