@@ -15,20 +15,28 @@ if ( is_admin() ) {
 }
 
 /**
- * Re-hook the loop Add to Cart button.
+ * Ensure the Add to Cart button renders on shop archive cards.
  *
- * Astra's WooCommerce integration strips
- * woocommerce_template_loop_add_to_cart from the
- * woocommerce_after_shop_loop_item action, leaving the archive
- * cards without a cart CTA. We add it back so we can style it as
- * the card's primary action.
+ * Astra replaces WooCommerce's default
+ * woocommerce_after_shop_loop_item action with its own
+ * astra_woo_woocommerce_shop_product_content(), which renders
+ * pieces based on a configurable "shop-product-structure" array
+ * (set via the Astra Customizer → WooCommerce → Shop).
+ *
+ * The current structure is missing 'add_cart', so no cart button
+ * appears. Force it in via this filter. This is the correct,
+ * Astra-native way to add it — hooking the generic WC action
+ * does nothing because Astra removes that action.
  */
-add_action( 'init', function () {
-    if ( function_exists( 'woocommerce_template_loop_add_to_cart' )
-        && ! has_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart' ) ) {
-        add_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+add_filter( 'astra_woo_shop_product_structure', function ( $structure ) {
+    if ( ! is_array( $structure ) ) {
+        $structure = array();
     }
-} );
+    if ( ! in_array( 'add_cart', $structure, true ) ) {
+        $structure[] = 'add_cart';
+    }
+    return $structure;
+}, 99 );
 
 /**
  * Inject announcement bar before the header.

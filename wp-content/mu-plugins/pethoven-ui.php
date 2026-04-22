@@ -1207,18 +1207,30 @@ function pethoven_ui_css() {
         flex-shrink: 0;
     }
 
+    /* Full-bleed image: fill the thumbnail area edge-to-edge. We use
+     * object-fit: cover so uneven aspect ratios crop cleanly, and
+     * drop mix-blend-mode since the photo now covers the card bg. */
     body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap img {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        min-width: 100% !important;
+        min-height: 100% !important;
+        object-fit: cover !important;
+        object-position: center center;
+        mix-blend-mode: normal !important;
         transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) !important;
-        mix-blend-mode: multiply;
-        object-fit: contain;
-        max-width: 80% !important;
-        max-height: 80% !important;
-        width: auto !important;
-        height: auto !important;
+    }
+
+    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a {
+        width: 100%;
+        height: 100%;
     }
 
     body.woocommerce ul.products li.product:hover .astra-shop-thumbnail-wrap img {
-        transform: scale(1.08);
+        transform: scale(1.05);
     }
 
     /* Sale badge — clean rounded pill, no pulse animation.
@@ -1334,9 +1346,10 @@ function pethoven_ui_css() {
         order: 1;
     }
 
-    /* Add to Cart button — primary action, always visible at bottom
-     * of the card. We re-hook woocommerce_template_loop_add_to_cart
-     * in PHP so this renders; Astra strips it by default. */
+    /* Add to Cart button — primary action, rendered by Astra inside
+     * the summary wrap via the astra_woo_shop_product_structure
+     * filter. margin-top: auto pushes it to the bottom of the
+     * summary regardless of title length. */
     body.woocommerce ul.products li.product a.button.add_to_cart_button,
     body.woocommerce ul.products li.product a.button.product_type_simple,
     body.woocommerce ul.products li.product a.button.product_type_variable,
@@ -1344,8 +1357,9 @@ function pethoven_ui_css() {
     body.woocommerce ul.products li.product a.button.product_type_external {
         position: static !important;
         display: block !important;
-        width: calc(100% - 40px) !important;
-        margin: 0 20px 20px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: auto 0 0 !important;
         padding: 12px 16px !important;
         background: transparent !important;
         color: #1a1a1a !important;
@@ -1398,9 +1412,9 @@ function pethoven_ui_css() {
     /* "View cart" link that appears after adding */
     body.woocommerce ul.products li.product a.added_to_cart {
         display: block !important;
-        width: calc(100% - 40px) !important;
-        margin: -12px 20px 16px !important;
-        padding: 8px !important;
+        width: 100% !important;
+        margin: 6px 0 0 !important;
+        padding: 6px 8px !important;
         text-align: center !important;
         font-size: 11px !important;
         font-weight: 600 !important;
@@ -2558,7 +2572,9 @@ function pethoven_ui_js() {
 
         /* ----------------------------------------------------------
          * D. Hide zero-rating stars that slip past CSS (title varies
-         *    by locale and plugin). Belt-and-suspenders.
+         *    by locale and plugin). Also hide the .review-rating
+         *    wrapper Astra adds in the archive loop — otherwise the
+         *    empty div leaves a vertical gap in the card content.
          * ---------------------------------------------------------- */
         document.querySelectorAll('.star-rating').forEach(function (r) {
             var inner = r.querySelector('span');
@@ -2566,7 +2582,7 @@ function pethoven_ui_js() {
             var width = (inner.style.width || '').trim();
             if (width === '' || width === '0%' || width === '0') {
                 r.style.display = 'none';
-                var linkWrap = r.closest('.woocommerce-product-rating');
+                var linkWrap = r.closest('.woocommerce-product-rating, .review-rating');
                 if (linkWrap) linkWrap.style.display = 'none';
             }
         });
