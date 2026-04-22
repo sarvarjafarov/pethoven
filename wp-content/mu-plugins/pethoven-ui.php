@@ -127,265 +127,17 @@ function pethoven_ui_css() {
     }
 
     /* ==========================================================
-     * 4. PRODUCT CARDS — catchy & attractive
+     * 4. PRODUCT CARDS
+     *
+     * The unified product card styling now lives in sections 17,
+     * 20b, and 20c and targets `.woocommerce ul.products li.product`.
+     * That selector matches both the shop archive AND the homepage
+     * Best Sellers shortcode (which renders its own
+     * `<div class="woocommerce">` wrapper), so one rule set covers
+     * everything. The old `.ast-article-single.product` rules that
+     * lived here have been removed to avoid duplicate / conflicting
+     * declarations.
      * ========================================================== */
-
-    /* Grid */
-    .woocommerce ul.products {
-        gap: 24px !important;
-    }
-
-    /* ---- Card shell ---- */
-    .ast-article-single.product {
-        background: #ffffff !important;
-        border-radius: 20px;
-        border: none;
-        overflow: hidden;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-        transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-                    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-        position: relative;
-    }
-
-    /* Green accent line at top */
-    .ast-article-single.product::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--ast-global-color-0, #8bc34a), var(--ast-global-color-1, #6a9739));
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-        z-index: 3;
-        border-radius: 20px 20px 0 0;
-    }
-
-    .ast-article-single.product:hover::before {
-        transform: scaleX(1);
-    }
-
-    .ast-article-single.product:hover {
-        transform: translateY(-12px);
-        box-shadow: 0 24px 60px rgba(106, 151, 57, 0.12),
-                    0 8px 24px rgba(0, 0, 0, 0.06);
-    }
-
-    /* ---- Image area ---- */
-    .astra-shop-thumbnail-wrap {
-        overflow: hidden;
-        border-radius: 0;
-        background: linear-gradient(145deg, #f5f7f0 0%, #eef2e8 100%) !important;
-        position: relative;
-        aspect-ratio: 1 / 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .ast-article-single.product .astra-shop-thumbnail-wrap img {
-        transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-                    filter 0.4s ease;
-        mix-blend-mode: multiply;
-        object-fit: contain;
-    }
-
-    .ast-article-single.product:hover .astra-shop-thumbnail-wrap img {
-        transform: scale(1.1) rotate(1deg);
-    }
-
-    /* Dark overlay on hover — slides up from bottom */
-    .astra-shop-thumbnail-wrap::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-            0deg,
-            rgba(0, 0, 0, 0.35) 0%,
-            rgba(0, 0, 0, 0.08) 40%,
-            transparent 100%
-        );
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        pointer-events: none;
-        z-index: 1;
-    }
-
-    .ast-article-single.product:hover .astra-shop-thumbnail-wrap::after {
-        opacity: 1;
-    }
-
-    /* ---- Add to Cart — slides up inside image area on hover ---- */
-    .ast-article-single.product .button.add_to_cart_button,
-    .ast-article-single.product .button.product_type_simple {
-        position: absolute !important;
-        bottom: -50px;
-        left: 50% !important;
-        transform: translateX(-50%);
-        z-index: 2;
-        padding: 12px 32px !important;
-        background: #ffffff !important;
-        color: var(--ast-global-color-1, #6a9739) !important;
-        border: none !important;
-        border-radius: 30px !important;
-        font-size: 12px !important;
-        font-weight: 700 !important;
-        letter-spacing: 1px !important;
-        text-transform: uppercase !important;
-        white-space: nowrap !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
-        transition: bottom 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                    background-color 0.25s ease,
-                    color 0.25s ease,
-                    box-shadow 0.25s ease !important;
-        margin: 0 !important;
-    }
-
-    .ast-article-single.product:hover .button.add_to_cart_button,
-    .ast-article-single.product:hover .button.product_type_simple {
-        bottom: 20px;
-    }
-
-    .ast-article-single.product .button.add_to_cart_button:hover,
-    .ast-article-single.product .button.product_type_simple:hover {
-        background: var(--ast-global-color-1, #6a9739) !important;
-        color: #ffffff !important;
-        box-shadow: 0 8px 28px rgba(106, 151, 57, 0.35) !important;
-        transform: translateX(-50%) translateY(-2px) !important;
-    }
-
-    /* ---- Sale badge ---- */
-    .ast-article-single.product .onsale {
-        background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
-        color: #fff !important;
-        font-size: 11px !important;
-        font-weight: 700 !important;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        padding: 6px 16px !important;
-        border-radius: 0 0 12px 12px !important;
-        line-height: 1.3 !important;
-        min-height: auto !important;
-        min-width: auto !important;
-        top: 0 !important;
-        right: 20px !important;
-        left: auto !important;
-        box-shadow: 0 4px 12px rgba(238, 90, 36, 0.3);
-        animation: pt-pulse-badge 2.5s ease-in-out infinite;
-        z-index: 2;
-    }
-
-    @keyframes pt-pulse-badge {
-        0%, 100% { transform: scale(1); }
-        50%      { transform: scale(1.05); }
-    }
-
-    /* ---- Content area ---- */
-    .astra-shop-summary-wrap {
-        padding: 22px 20px 28px !important;
-        text-align: center;
-        position: relative;
-    }
-
-    /* Category pill */
-    .ast-woo-product-category {
-        display: inline-block !important;
-        font-size: 10px !important;
-        font-weight: 700 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 1.5px !important;
-        color: var(--ast-global-color-1, #6a9739) !important;
-        background: rgba(139, 195, 74, 0.1);
-        padding: 4px 12px;
-        border-radius: 20px;
-        margin-bottom: 10px !important;
-    }
-
-    /* Product title */
-    .woocommerce-loop-product__title {
-        font-size: 16px !important;
-        font-weight: 700 !important;
-        color: #1a1a1a !important;
-        margin-bottom: 8px !important;
-        line-height: 1.35 !important;
-        transition: color 0.25s ease;
-    }
-
-    .ast-article-single.product:hover .woocommerce-loop-product__title {
-        color: var(--ast-global-color-1, #6a9739) !important;
-    }
-
-    /* Star ratings */
-    .ast-article-single.product .star-rating {
-        margin: 0 auto 10px !important;
-        font-size: 12px !important;
-        color: #f5a623 !important;
-    }
-
-    /* Price */
-    .ast-article-single.product .price {
-        font-size: 20px !important;
-        font-weight: 800 !important;
-        color: #1a1a1a !important;
-        letter-spacing: -0.3px;
-    }
-
-    .ast-article-single.product .price del {
-        font-size: 14px !important;
-        color: #ccc !important;
-        font-weight: 400 !important;
-    }
-
-    .ast-article-single.product .price ins {
-        color: var(--ast-global-color-1, #6a9739) !important;
-        text-decoration: none !important;
-        font-weight: 800 !important;
-    }
-
-    /* ---- Responsive ---- */
-    @media (max-width: 921px) {
-        .woocommerce ul.products {
-            gap: 16px !important;
-        }
-
-        .astra-shop-summary-wrap {
-            padding: 16px 14px 22px !important;
-        }
-
-        .woocommerce-loop-product__title {
-            font-size: 15px !important;
-        }
-
-        .ast-article-single.product .price {
-            font-size: 17px !important;
-        }
-    }
-
-    @media (max-width: 544px) {
-        .ast-article-single.product:hover {
-            transform: translateY(-6px);
-        }
-
-        .ast-article-single.product .onsale {
-            font-size: 10px !important;
-            padding: 4px 12px !important;
-        }
-
-        /* Show cart button always on mobile (no hover) */
-        .ast-article-single.product .button.add_to_cart_button,
-        .ast-article-single.product .button.product_type_simple {
-            position: relative !important;
-            bottom: auto !important;
-            left: auto !important;
-            transform: none !important;
-            margin-top: 12px !important;
-            width: 100% !important;
-            background: var(--ast-global-color-1, #6a9739) !important;
-            color: #fff !important;
-        }
-    }
 
     /* ==========================================================
      * 4b. PRODUCTS SECTION WRAPPER
@@ -503,6 +255,140 @@ function pethoven_ui_css() {
         .pt-products-section::before,
         .pt-products-section::after {
             display: none;
+        }
+    }
+
+    /* ==========================================================
+     * 4c. BEST SELLERS SECTION — eyebrow, subtitle, "View all" CTA
+     *
+     * All three elements are injected via JS (see pt-homepage-section
+     * block in cleanup-js). This CSS styles them and integrates with
+     * the existing pt-products-section wrapper.
+     * ========================================================== */
+
+    .pt-products-eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--ast-global-color-1, #6a9739);
+        text-align: center;
+        margin: 0 auto 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .pt-products-eyebrow::before,
+    .pt-products-eyebrow::after {
+        content: '';
+        width: 28px;
+        height: 1.5px;
+        background: var(--ast-global-color-1, #6a9739);
+        opacity: 0.5;
+        border-radius: 2px;
+    }
+
+    .pt-products-subtitle {
+        font-size: 16px;
+        color: #666;
+        text-align: center;
+        margin: 10px auto 0;
+        max-width: 560px;
+        line-height: 1.55;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* View all products CTA at the bottom of the section */
+    .pt-products-cta {
+        text-align: center;
+        margin: 48px auto 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .pt-products-cta-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 36px;
+        background: #1a1a1a;
+        color: #ffffff;
+        border-radius: 100px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                    background-color 0.3s ease,
+                    box-shadow 0.3s ease,
+                    color 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pt-products-cta-link::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%);
+        transform: translateX(-120%);
+        transition: transform 0.6s ease;
+    }
+
+    .pt-products-cta-link:hover {
+        background: var(--ast-global-color-1, #6a9739);
+        color: #ffffff;
+        transform: translateY(-3px);
+        box-shadow: 0 14px 32px rgba(106, 151, 57, 0.28);
+    }
+
+    .pt-products-cta-link:hover::before {
+        transform: translateX(120%);
+    }
+
+    .pt-products-cta-link-arrow {
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        display: inline-flex;
+    }
+
+    .pt-products-cta-link:hover .pt-products-cta-link-arrow {
+        transform: translateX(5px);
+    }
+
+    @media (max-width: 921px) {
+        .pt-products-subtitle {
+            font-size: 15px;
+        }
+        .pt-products-cta {
+            margin-top: 36px;
+        }
+        .pt-products-cta-link {
+            padding: 13px 28px;
+            font-size: 11px;
+        }
+    }
+
+    @media (max-width: 544px) {
+        .pt-products-eyebrow {
+            font-size: 10px;
+            letter-spacing: 2.5px;
+        }
+        .pt-products-eyebrow::before,
+        .pt-products-eyebrow::after {
+            width: 20px;
+        }
+        .pt-products-subtitle {
+            font-size: 14px;
         }
     }
 
@@ -1142,14 +1028,14 @@ function pethoven_ui_css() {
      *     selectors (.ast-article-post.product).
      * ========================================================== */
 
-    body.woocommerce ul.products {
+    .woocommerce ul.products {
         gap: 28px !important;
         padding-top: 8px !important;
         margin: 0 !important;
     }
 
-    body.woocommerce ul.products li.product,
-    body.woocommerce ul.products li.ast-article-post.product {
+    .woocommerce ul.products li.product,
+    .woocommerce ul.products li.ast-article-post.product {
         background: #ffffff !important;
         border-radius: 20px !important;
         border: 1px solid #f0f0ec !important;
@@ -1166,7 +1052,7 @@ function pethoven_ui_css() {
     }
 
     /* Green accent bar on hover */
-    body.woocommerce ul.products li.product::before {
+    .woocommerce ul.products li.product::before {
         content: '';
         position: absolute;
         top: 0;
@@ -1181,11 +1067,11 @@ function pethoven_ui_css() {
         border-radius: 20px 20px 0 0;
     }
 
-    body.woocommerce ul.products li.product:hover::before {
+    .woocommerce ul.products li.product:hover::before {
         transform: scaleX(1);
     }
 
-    body.woocommerce ul.products li.product:hover {
+    .woocommerce ul.products li.product:hover {
         transform: translateY(-10px);
         border-color: rgba(139, 195, 74, 0.28) !important;
         box-shadow: 0 24px 60px rgba(106, 151, 57, 0.14),
@@ -1194,7 +1080,7 @@ function pethoven_ui_css() {
 
     /* Image area — vertical gradient that fades into the white content
      * area below, so there's no visible seam between image and summary. */
-    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap {
+    .woocommerce ul.products li.product .astra-shop-thumbnail-wrap {
         background: linear-gradient(180deg, #eef2e8 0%, #f2f5ed 45%, #fafbf7 100%) !important;
         aspect-ratio: 1 / 1;
         display: flex;
@@ -1210,7 +1096,7 @@ function pethoven_ui_css() {
     /* Full-bleed image: fill the thumbnail area edge-to-edge. We use
      * object-fit: cover so uneven aspect ratios crop cleanly, and
      * drop mix-blend-mode since the photo now covers the card bg. */
-    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap img {
+    .woocommerce ul.products li.product .astra-shop-thumbnail-wrap img {
         display: block;
         width: 100% !important;
         height: 100% !important;
@@ -1224,19 +1110,19 @@ function pethoven_ui_css() {
         transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) !important;
     }
 
-    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a {
+    .woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a {
         width: 100%;
         height: 100%;
     }
 
-    body.woocommerce ul.products li.product:hover .astra-shop-thumbnail-wrap img {
+    .woocommerce ul.products li.product:hover .astra-shop-thumbnail-wrap img {
         transform: scale(1.05);
     }
 
     /* Sale badge — clean rounded pill, no pulse animation.
      * Sits in the top-right of the image area without competing
      * with the product photo. */
-    body.woocommerce ul.products li.product .onsale,
+    .woocommerce ul.products li.product .onsale,
     body.woocommerce span.onsale,
     .wc-block-grid__product-onsale {
         background: #1a1a1a !important;
@@ -1263,7 +1149,7 @@ function pethoven_ui_css() {
     }
 
     /* Content area */
-    body.woocommerce ul.products li.product .astra-shop-summary-wrap {
+    .woocommerce ul.products li.product .astra-shop-summary-wrap {
         padding: 20px 20px 16px !important;
         text-align: center;
         background: #ffffff;
@@ -1275,7 +1161,7 @@ function pethoven_ui_css() {
         justify-content: flex-start;
     }
 
-    body.woocommerce ul.products li.product .ast-woo-product-category {
+    .woocommerce ul.products li.product .ast-woo-product-category {
         display: inline-block !important;
         font-size: 10px !important;
         font-weight: 700 !important;
@@ -1290,12 +1176,12 @@ function pethoven_ui_css() {
         line-height: 1.4;
     }
 
-    body.woocommerce ul.products li.product .ast-woo-product-category a {
+    .woocommerce ul.products li.product .ast-woo-product-category a {
         color: inherit !important;
         text-decoration: none !important;
     }
 
-    body.woocommerce ul.products li.product .woocommerce-loop-product__title {
+    .woocommerce ul.products li.product .woocommerce-loop-product__title {
         font-family: inherit !important;
         font-size: 17px !important;
         font-weight: 700 !important;
@@ -1306,20 +1192,20 @@ function pethoven_ui_css() {
         transition: color 0.25s ease;
     }
 
-    body.woocommerce ul.products li.product:hover .woocommerce-loop-product__title {
+    .woocommerce ul.products li.product:hover .woocommerce-loop-product__title {
         color: var(--ast-global-color-1, #6a9739) !important;
     }
 
     /* Kill zero-star review wrappers in archive */
-    body.woocommerce ul.products li.product .review-rating:not(:has(.star-rating[style*="width:"])) {
+    .woocommerce ul.products li.product .review-rating:not(:has(.star-rating[style*="width:"])) {
         display: none;
     }
-    body.woocommerce ul.products li.product .review-rating .star-rating > span[style="width:0%"],
-    body.woocommerce ul.products li.product .review-rating .star-rating > span[style="width: 0%"] {
+    .woocommerce ul.products li.product .review-rating .star-rating > span[style="width:0%"],
+    .woocommerce ul.products li.product .review-rating .star-rating > span[style="width: 0%"] {
         display: none;
     }
 
-    body.woocommerce ul.products li.product .price {
+    .woocommerce ul.products li.product .price {
         font-size: 19px !important;
         font-weight: 800 !important;
         color: #1a1a1a !important;
@@ -1331,7 +1217,7 @@ function pethoven_ui_css() {
         margin: 0 0 16px !important;
     }
 
-    body.woocommerce ul.products li.product .price del {
+    .woocommerce ul.products li.product .price del {
         font-size: 14px !important;
         color: #bbb !important;
         font-weight: 500 !important;
@@ -1339,7 +1225,7 @@ function pethoven_ui_css() {
         order: 2;
     }
 
-    body.woocommerce ul.products li.product .price ins {
+    .woocommerce ul.products li.product .price ins {
         color: var(--ast-global-color-1, #6a9739) !important;
         text-decoration: none !important;
         font-weight: 800 !important;
@@ -1350,11 +1236,11 @@ function pethoven_ui_css() {
      * the summary wrap via the astra_woo_shop_product_structure
      * filter. margin-top: auto pushes it to the bottom of the
      * summary regardless of title length. */
-    body.woocommerce ul.products li.product a.button.add_to_cart_button,
-    body.woocommerce ul.products li.product a.button.product_type_simple,
-    body.woocommerce ul.products li.product a.button.product_type_variable,
-    body.woocommerce ul.products li.product a.button.product_type_grouped,
-    body.woocommerce ul.products li.product a.button.product_type_external {
+    .woocommerce ul.products li.product a.button.add_to_cart_button,
+    .woocommerce ul.products li.product a.button.product_type_simple,
+    .woocommerce ul.products li.product a.button.product_type_variable,
+    .woocommerce ul.products li.product a.button.product_type_grouped,
+    .woocommerce ul.products li.product a.button.product_type_external {
         position: static !important;
         display: block !important;
         width: 100% !important;
@@ -1388,29 +1274,29 @@ function pethoven_ui_css() {
                     box-shadow 0.25s ease !important;
     }
 
-    body.woocommerce ul.products li.product:hover a.button.add_to_cart_button,
-    body.woocommerce ul.products li.product:hover a.button.product_type_simple {
+    .woocommerce ul.products li.product:hover a.button.add_to_cart_button,
+    .woocommerce ul.products li.product:hover a.button.product_type_simple {
         background: var(--ast-global-color-1, #6a9739) !important;
         color: #ffffff !important;
         border-color: var(--ast-global-color-1, #6a9739) !important;
         box-shadow: 0 8px 20px rgba(106, 151, 57, 0.25) !important;
     }
 
-    body.woocommerce ul.products li.product a.button.add_to_cart_button:hover {
+    .woocommerce ul.products li.product a.button.add_to_cart_button:hover {
         background: #5d8b32 !important;
         border-color: #5d8b32 !important;
         color: #ffffff !important;
     }
 
-    body.woocommerce ul.products li.product a.button.add_to_cart_button.added,
-    body.woocommerce ul.products li.product a.button.added {
+    .woocommerce ul.products li.product a.button.add_to_cart_button.added,
+    .woocommerce ul.products li.product a.button.added {
         background: #1a1a1a !important;
         color: #ffffff !important;
         border-color: #1a1a1a !important;
     }
 
     /* "View cart" link that appears after adding */
-    body.woocommerce ul.products li.product a.added_to_cart {
+    .woocommerce ul.products li.product a.added_to_cart {
         display: block !important;
         width: 100% !important;
         margin: 6px 0 0 !important;
@@ -1424,12 +1310,12 @@ function pethoven_ui_css() {
         text-decoration: none !important;
     }
 
-    body.woocommerce ul.products li.product a.added_to_cart:hover {
+    .woocommerce ul.products li.product a.added_to_cart:hover {
         color: #1a1a1a !important;
     }
 
     /* Loading state when adding */
-    body.woocommerce ul.products li.product a.button.loading {
+    .woocommerce ul.products li.product a.button.loading {
         opacity: 0.7 !important;
         pointer-events: none;
     }
@@ -2001,19 +1887,19 @@ function pethoven_ui_css() {
             font-size: 36px !important;
         }
 
-        body.woocommerce ul.products {
+        .woocommerce ul.products {
             gap: 18px !important;
         }
 
-        body.woocommerce ul.products li.product .astra-shop-summary-wrap {
+        .woocommerce ul.products li.product .astra-shop-summary-wrap {
             padding: 16px 14px 20px !important;
         }
 
-        body.woocommerce ul.products li.product .woocommerce-loop-product__title {
+        .woocommerce ul.products li.product .woocommerce-loop-product__title {
             font-size: 15px !important;
         }
 
-        body.woocommerce ul.products li.product .price {
+        .woocommerce ul.products li.product .price {
             font-size: 17px !important;
         }
     }
@@ -2034,11 +1920,11 @@ function pethoven_ui_css() {
             margin-top: 10px;
         }
 
-        body.woocommerce ul.products li.product:hover {
+        .woocommerce ul.products li.product:hover {
             transform: translateY(-4px);
         }
 
-        body.woocommerce ul.products li.product .onsale {
+        .woocommerce ul.products li.product .onsale {
             font-size: 10px !important;
             padding: 4px 12px !important;
             right: 12px !important;
@@ -2235,13 +2121,13 @@ function pethoven_ui_css() {
      * functions purely as an affordance.
      * ========================================================== */
 
-    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap {
+    .woocommerce ul.products li.product .astra-shop-thumbnail-wrap {
         position: relative;
         isolation: isolate;
     }
 
     /* Dark scrim */
-    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap::after {
+    .woocommerce ul.products li.product .astra-shop-thumbnail-wrap::after {
         content: '';
         position: absolute;
         inset: 0;
@@ -2252,12 +2138,12 @@ function pethoven_ui_css() {
         z-index: 2;
     }
 
-    body.woocommerce ul.products li.product:hover .astra-shop-thumbnail-wrap::after {
+    .woocommerce ul.products li.product:hover .astra-shop-thumbnail-wrap::after {
         opacity: 1;
     }
 
     /* Make the anchor a positioning context for the arrow button */
-    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a {
+    .woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a {
         display: block;
         position: relative;
         width: 100%;
@@ -2266,7 +2152,7 @@ function pethoven_ui_css() {
     }
 
     /* Arrow pill — centered and revealed on hover */
-    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a::after {
+    .woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a::after {
         content: 'VIEW →';
         position: absolute;
         top: 50%;
@@ -2289,25 +2175,25 @@ function pethoven_ui_css() {
         white-space: nowrap;
     }
 
-    body.woocommerce ul.products li.product:hover .astra-shop-thumbnail-wrap > a::after {
+    .woocommerce ul.products li.product:hover .astra-shop-thumbnail-wrap > a::after {
         opacity: 1;
         transform: translate(-50%, -50%) translateY(0);
     }
 
     /* Kill the hover reveal on mobile — hover states don't make sense */
     @media (hover: none) {
-        body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap::after,
-        body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a::after {
+        .woocommerce ul.products li.product .astra-shop-thumbnail-wrap::after,
+        .woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a::after {
             display: none !important;
         }
     }
 
     /* Zero-star ratings in archive — hide the visible bar */
-    body.woocommerce ul.products li.product .review-rating .star-rating > span[style*="width:0%"],
-    body.woocommerce ul.products li.product .review-rating .star-rating > span[style*="width: 0%"] {
+    .woocommerce ul.products li.product .review-rating .star-rating > span[style*="width:0%"],
+    .woocommerce ul.products li.product .review-rating .star-rating > span[style*="width: 0%"] {
         display: none;
     }
-    body.woocommerce ul.products li.product .review-rating:has(.star-rating > span[style*="width:0"]) {
+    .woocommerce ul.products li.product .review-rating:has(.star-rating > span[style*="width:0"]) {
         display: none;
     }
 
@@ -2672,6 +2558,58 @@ function pethoven_ui_js() {
             var link = prod.querySelector('a, .wc-block-grid__product-link');
             (link || prod).prepend(rank);
         });
+
+        /* ----------------------------------------------------------
+         * H0. Homepage Best Sellers section — eyebrow, subtitle, CTA
+         *     The "Best Sellers" heading is a bare h2 from Elementor.
+         *     Wrap it with an eyebrow above and subtitle below, and
+         *     inject a "View all products" CTA after the grid.
+         * ---------------------------------------------------------- */
+        var bestSellersHeading = Array.from(document.querySelectorAll('h2, h3')).find(function (h) {
+            return (h.textContent || '').trim() === 'Best Sellers';
+        });
+
+        if (bestSellersHeading) {
+            // Eyebrow above
+            var headingWidget = bestSellersHeading.closest('.elementor-widget, .elementor-element') || bestSellersHeading.parentNode;
+            if (headingWidget && !headingWidget.querySelector('.pt-products-eyebrow')) {
+                var eyebrow = document.createElement('div');
+                eyebrow.className = 'pt-products-eyebrow';
+                eyebrow.textContent = 'Shop Our Bestsellers';
+                headingWidget.insertBefore(eyebrow, headingWidget.firstChild);
+            }
+
+            // Subtitle directly after the heading
+            var headingContainer = bestSellersHeading.parentNode;
+            if (headingContainer && !headingContainer.querySelector('.pt-products-subtitle')) {
+                var subtitle = document.createElement('div');
+                subtitle.className = 'pt-products-subtitle';
+                subtitle.textContent = 'The formulas dog owners keep coming back for. Sulfate-free, vet-approved, loved by thousands.';
+                if (bestSellersHeading.nextSibling) {
+                    headingContainer.insertBefore(subtitle, bestSellersHeading.nextSibling);
+                } else {
+                    headingContainer.appendChild(subtitle);
+                }
+            }
+        }
+
+        // "View all products" CTA injected at the bottom of the products section
+        var homeProductsSection = document.querySelector('.pt-products-section');
+        if (homeProductsSection && !homeProductsSection.querySelector('.pt-products-cta')) {
+            var grid = homeProductsSection.querySelector('ul.products');
+            if (grid) {
+                var ctaWrap = document.createElement('div');
+                ctaWrap.className = 'pt-products-cta';
+                var ctaLink = document.createElement('a');
+                ctaLink.className = 'pt-products-cta-link';
+                ctaLink.href = '/shop/';
+                ctaLink.innerHTML = 'View all products <span class="pt-products-cta-link-arrow" aria-hidden="true">→</span>';
+                ctaWrap.appendChild(ctaLink);
+                // Append after the closest shortcode/widget wrapper so it sits below the grid
+                var gridWrapper = grid.closest('.elementor-shortcode, .elementor-widget-shortcode, .woocommerce') || grid.parentNode;
+                gridWrapper.parentNode.insertBefore(ctaWrap, gridWrapper.nextSibling);
+            }
+        }
 
         /* ----------------------------------------------------------
          * H. Shop archive header — decorative brand mark + trust pills
