@@ -1095,16 +1095,10 @@ function pethoven_ui_css() {
         position: relative;
     }
 
-    /* Subtle green underline accent on title */
-    body.woocommerce .woocommerce-products-header__title.page-title::after {
-        content: '';
-        display: block;
-        width: 48px;
-        height: 4px;
-        background: linear-gradient(90deg, var(--ast-global-color-0, #8bc34a), var(--ast-global-color-1, #6a9739));
-        border-radius: 4px;
-        margin: 16px auto 0;
-    }
+    /* (Removed the 48px h1 underline — it conflicted with the
+     * description layout. The decorative brand mark above the title
+     * now serves as the visual anchor, and the trust strip gives
+     * the header a crisp bottom edge.) */
 
     /* Toolbar row: result count + ordering */
     body.woocommerce .woocommerce-result-count {
@@ -2001,26 +1995,90 @@ function pethoven_ui_css() {
         z-index: 1;
     }
 
-    /* Trust microcopy under the title — thin, spaced, uppercase */
-    body.woocommerce .woocommerce-products-header::after {
-        content: 'Ships in 2 days  ·  Cruelty-free  ·  30-day guarantee';
-        display: block;
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: #a0a0a0;
-        margin-top: 24px;
-        padding-bottom: 8px;
+    /* Brand mark — decorative paw crown above the title */
+    .pt-archive-crown {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(139,195,74,0.18), rgba(106,151,57,0.08));
+        color: var(--ast-global-color-1, #6a9739);
         position: relative;
         z-index: 1;
+        box-shadow: 0 4px 14px rgba(106, 151, 57, 0.1);
+    }
+
+    .pt-archive-crown svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* Trust strip — flex row of check-icon pills */
+    .pt-trust-strip {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 28px auto 0;
+        position: relative;
+        z-index: 1;
+        max-width: 720px;
+        padding: 0 16px;
+    }
+
+    .pt-trust-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: #ffffff;
+        border: 1px solid #eaeaea;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1a1a1a;
+        letter-spacing: 0.2px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        transition: border-color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .pt-trust-item:hover {
+        border-color: var(--ast-global-color-1, #6a9739);
+        transform: translateY(-2px);
+    }
+
+    .pt-trust-item svg {
+        width: 14px;
+        height: 14px;
+        color: var(--ast-global-color-1, #6a9739);
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 544px) {
+        .pt-archive-crown {
+            width: 44px;
+            height: 44px;
+            margin-bottom: 12px;
+        }
+        .pt-archive-crown svg {
+            width: 22px;
+            height: 22px;
+        }
+        .pt-trust-item {
+            font-size: 11px;
+            padding: 6px 12px;
+        }
     }
 
     /* Category description — hide if empty, style if real */
     body.woocommerce .term-description,
     body.woocommerce .archive-description {
         max-width: 640px;
-        margin: -32px auto 40px;
+        margin: 8px auto 32px;
         padding: 0 20px;
         text-align: center;
         font-size: 15px;
@@ -2028,6 +2086,11 @@ function pethoven_ui_css() {
         color: #555;
         position: relative;
         z-index: 1;
+    }
+
+    body.woocommerce .term-description p,
+    body.woocommerce .archive-description p {
+        margin: 0;
     }
 
     body.woocommerce .term-description:empty,
@@ -2485,6 +2548,55 @@ function pethoven_ui_js() {
             var link = prod.querySelector('a, .wc-block-grid__product-link');
             (link || prod).prepend(rank);
         });
+
+        /* ----------------------------------------------------------
+         * H. Shop archive header — decorative brand mark + trust pills
+         *    Injects a centered paw crown above the title and a row
+         *    of check-icon pills below the description. Replaces the
+         *    old text-only trust strip.
+         * ---------------------------------------------------------- */
+        var archiveHeader = document.querySelector('.woocommerce-products-header');
+        if (archiveHeader && !archiveHeader.querySelector('.pt-archive-crown')) {
+            var crown = document.createElement('div');
+            crown.className = 'pt-archive-crown';
+            crown.setAttribute('aria-hidden', 'true');
+            crown.innerHTML =
+                '<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">' +
+                    '<circle cx="5.5" cy="9" r="2"/>' +
+                    '<circle cx="18.5" cy="9" r="2"/>' +
+                    '<circle cx="8.5" cy="4.5" r="1.8"/>' +
+                    '<circle cx="15.5" cy="4.5" r="1.8"/>' +
+                    '<path d="M12 11c-3.5 0-6 3-6 6 0 1.66 1.34 3 3 3 1 0 1.5-.5 3-.5s2 .5 3 .5c1.66 0 3-1.34 3-3 0-3-2.5-6-6-6z"/>' +
+                '</svg>';
+            archiveHeader.insertBefore(crown, archiveHeader.firstChild);
+        }
+
+        // Trust pills — insert after the description (or at end of header if no description)
+        var trustHost = archiveHeader;
+        if (trustHost && !trustHost.querySelector('.pt-trust-strip')) {
+            var checkIcon =
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
+                    '<polyline points="5 12 10 17 19 7"/>' +
+                '</svg>';
+            var items = [
+                'Ships in 2 days',
+                'Cruelty-free',
+                '30-day guarantee',
+                'Free shipping over $25'
+            ];
+            var strip = document.createElement('div');
+            strip.className = 'pt-trust-strip';
+            strip.setAttribute('role', 'list');
+            strip.setAttribute('aria-label', 'Store promises');
+            items.forEach(function (label) {
+                var pill = document.createElement('span');
+                pill.className = 'pt-trust-item';
+                pill.setAttribute('role', 'listitem');
+                pill.innerHTML = checkIcon + '<span>' + label + '</span>';
+                strip.appendChild(pill);
+            });
+            trustHost.appendChild(strip);
+        }
 
         // Promo card at the bottom of the sidebar (only on shop/archive
         // pages where the sidebar exists)
