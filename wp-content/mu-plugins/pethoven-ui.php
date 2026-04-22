@@ -140,13 +140,41 @@ function pethoven_ui_css() {
      * ========================================================== */
 
     /* ==========================================================
+     * 4a. HOMEPAGE BODY WASH
+     *
+     * Give the homepage a very subtle warm-white base color so
+     * every section sits on the same underlying tone. Sections
+     * that need emphasis (Best Sellers tint, 20% off dark card)
+     * render over this base rather than against pure white,
+     * which removes the hard edges we had between sections.
+     * ========================================================== */
+
+    body.home,
+    body.page.home {
+        background-color: #fbfbf7 !important;
+    }
+
+    /* Make sure the site-content container inherits this so the
+     * sections don't paint white over it. */
+    body.home .site-content,
+    body.page.home .site-content {
+        background-color: transparent !important;
+    }
+
+    /* ==========================================================
      * 4b. PRODUCTS SECTION WRAPPER
      * ========================================================== */
 
-    /* Section background — subtle organic pattern feel */
+    /* Section background — fades in from the body base, tints
+     * subtly in the middle, then fades back to the base. No hard
+     * edges with the sections above and below. */
     .pt-products-section,
     .elementor-element-f980f52 {
-        background: linear-gradient(175deg, #f9faf6 0%, #f1f4ec 40%, #f7f5f0 100%) !important;
+        background: linear-gradient(180deg,
+            rgba(241, 244, 236, 0) 0%,
+            rgba(241, 244, 236, 0.75) 18%,
+            rgba(241, 244, 236, 0.75) 82%,
+            rgba(241, 244, 236, 0) 100%) !important;
         padding: 80px 0 90px !important;
         position: relative;
         overflow: hidden;
