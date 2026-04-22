@@ -1532,6 +1532,286 @@ function pethoven_ui_css() {
     }
 
     /* ==========================================================
+     * 18b. SIDEBAR — injected section headings
+     * ========================================================== */
+
+    .pt-sidebar-heading {
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 2px !important;
+        color: var(--ast-global-color-1, #6a9739) !important;
+        margin: 8px 0 14px !important;
+        padding: 0 0 10px !important;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pt-sidebar-heading::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(139,195,74,0.3), rgba(139,195,74,0));
+    }
+
+    /* Override the auto-generated widget titles we insert headings for */
+    .ast-woo-sidebar-widget .widget-title:empty,
+    .ast-woo-sidebar-widget h2:empty {
+        display: none !important;
+    }
+
+    /* ==========================================================
+     * 18c. CATEGORY LIST — pill tiles
+     * ========================================================== */
+
+    .ast-woo-sidebar-widget .wc-block-product-categories-list {
+        display: grid !important;
+        gap: 8px !important;
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 0 8px !important;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-product-categories-list-item {
+        padding: 14px 44px 14px 18px !important;
+        border: 1px solid #e8e8e8 !important;
+        border-radius: 14px !important;
+        background: #fff;
+        transition: border-color 0.25s ease,
+                    background 0.3s ease,
+                    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                    box-shadow 0.25s ease !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-product-categories-list-item:last-child {
+        border-bottom: 1px solid #e8e8e8 !important;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-product-categories-list-item:hover {
+        border-color: var(--ast-global-color-1, #6a9739) !important;
+        background: linear-gradient(135deg, rgba(139,195,74,0.06), rgba(139,195,74,0.02));
+        transform: translateX(4px);
+        box-shadow: 0 4px 14px rgba(106, 151, 57, 0.08);
+        padding-left: 18px !important;
+    }
+
+    /* Arrow indicator on hover */
+    .ast-woo-sidebar-widget .wc-block-product-categories-list-item::after {
+        content: '→';
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%) translateX(-6px);
+        color: var(--ast-global-color-1, #6a9739);
+        font-size: 16px;
+        font-weight: 700;
+        opacity: 0;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-product-categories-list-item:hover::after {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+    }
+
+    /* Count badge styling */
+    .ast-woo-sidebar-widget .wc-block-product-categories-list-item-count {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 7px;
+        margin-left: 10px !important;
+        background: #f5f7f0;
+        color: var(--ast-global-color-1, #6a9739) !important;
+        font-size: 11px !important;
+        font-weight: 700;
+        border-radius: 20px;
+        font-feature-settings: "tnum";
+        transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-product-categories-list-item:hover .wc-block-product-categories-list-item-count {
+        background: var(--ast-global-color-1, #6a9739);
+        color: #fff !important;
+    }
+
+    /* ==========================================================
+     * 18d. FEATURED PRODUCTS — rank badges + polish
+     * ========================================================== */
+
+    .pt-rank-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 4;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #1a1a1a;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        border-radius: 6px;
+        font-feature-settings: "tnum";
+        pointer-events: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Accent the top-ranked one */
+    .ast-woo-sidebar-widget .wc-block-grid__product:first-child .pt-rank-badge {
+        background: linear-gradient(135deg, var(--ast-global-color-0, #8bc34a), var(--ast-global-color-1, #6a9739));
+    }
+
+    /* Tighten featured product layout now that rank sits at top-right */
+    .ast-woo-sidebar-widget .wc-block-grid__product {
+        position: relative;
+    }
+
+    /* ==========================================================
+     * 18e. SIDEBAR PROMO CARD
+     * ========================================================== */
+
+    .pt-sidebar-promo {
+        margin-top: 32px;
+        padding: 24px 22px 22px;
+        border-radius: 18px;
+        background:
+            radial-gradient(circle at 0% 0%, rgba(139,195,74,0.22) 0%, transparent 55%),
+            radial-gradient(circle at 100% 100%, rgba(139,195,74,0.12) 0%, transparent 50%),
+            linear-gradient(135deg, #1a3a2a 0%, #26543d 100%);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(26, 58, 42, 0.18);
+    }
+
+    .pt-sidebar-promo-leaf {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.12);
+        color: #c7e09a;
+        margin-bottom: 12px;
+    }
+
+    .pt-sidebar-promo-eyebrow {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #c7e09a;
+        margin-bottom: 6px;
+    }
+
+    .pt-sidebar-promo-title {
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1.3;
+        color: #ffffff;
+        margin-bottom: 14px;
+        letter-spacing: -0.2px;
+    }
+
+    .pt-sidebar-promo-code {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px dashed rgba(255, 255, 255, 0.35);
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin-bottom: 16px;
+    }
+
+    .pt-sidebar-promo-code::before {
+        content: '🎟';
+        display: none; /* hidden; we'll rely on the leaf icon above */
+    }
+
+    .pt-sidebar-promo-code span {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #ffffff;
+        font-size: 13px;
+    }
+
+    .pt-sidebar-promo-btn {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 6px;
+        padding: 11px 18px !important;
+        background: #ffffff !important;
+        color: #1a3a2a !important;
+        border-radius: 30px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px !important;
+        text-transform: uppercase !important;
+        text-decoration: none !important;
+        transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                    box-shadow 0.25s ease,
+                    background 0.25s ease !important;
+    }
+
+    .pt-sidebar-promo-btn:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2) !important;
+        background: var(--ast-global-color-0, #8bc34a) !important;
+        color: #1a3a2a !important;
+    }
+
+    .pt-sidebar-promo-btn span {
+        transition: transform 0.25s ease;
+    }
+
+    .pt-sidebar-promo-btn:hover span {
+        transform: translateX(3px);
+    }
+
+    /* Soft decorative pattern in background */
+    .pt-sidebar-promo::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 140px;
+        height: 140px;
+        background: radial-gradient(circle, rgba(199, 224, 154, 0.18), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .pt-sidebar-promo > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Mobile: tighten the promo card */
+    @media (max-width: 544px) {
+        .pt-sidebar-promo {
+            padding: 20px 18px;
+        }
+
+        .pt-sidebar-promo-title {
+            font-size: 16px;
+        }
+    }
+
+    /* ==========================================================
      * 19. PAGINATION
      * ========================================================== */
 
@@ -2156,6 +2436,76 @@ function pethoven_ui_js() {
                 w.style.display = 'none';
             }
         });
+
+        /* ----------------------------------------------------------
+         * G. Sidebar content injection — section headings + promo card
+         *    The sidebar widgets come out of WordPress title-less, so
+         *    we add proper <h3> labels (accessible) above each, plus
+         *    a promotional card at the bottom.
+         * ---------------------------------------------------------- */
+
+        function makeHeading(text) {
+            var h = document.createElement('h3');
+            h.className = 'pt-sidebar-heading';
+            h.textContent = text;
+            return h;
+        }
+
+        // "SHOP BY CATEGORY" before the categories widget
+        var categoriesWidget = document.querySelector(
+            '.ast-woo-sidebar-widget:has(.wp-block-woocommerce-product-categories), ' +
+            '.ast-woo-sidebar-widget .wc-block-product-categories-list'
+        );
+        var catContainer = categoriesWidget
+            ? (categoriesWidget.closest('.ast-woo-sidebar-widget') || categoriesWidget)
+            : null;
+        if (catContainer && !catContainer.previousElementSibling?.classList.contains('pt-sidebar-heading')) {
+            catContainer.parentNode.insertBefore(makeHeading('Shop by category'), catContainer);
+        }
+
+        // "TRENDING PICKS" before the best-sellers widget
+        var bestSellersWidget = document.querySelector(
+            '.ast-woo-sidebar-widget:has(.wp-block-woocommerce-product-best-sellers), ' +
+            '.ast-woo-sidebar-widget .wc-block-product-best-sellers, ' +
+            '.ast-woo-sidebar-widget .wp-block-product-best-sellers'
+        );
+        var bestContainer = bestSellersWidget
+            ? (bestSellersWidget.closest('.ast-woo-sidebar-widget') || bestSellersWidget)
+            : null;
+        if (bestContainer && !bestContainer.previousElementSibling?.classList.contains('pt-sidebar-heading')) {
+            bestContainer.parentNode.insertBefore(makeHeading('Trending picks'), bestContainer);
+        }
+
+        // Add rank numbers (01, 02, 03...) to featured products
+        document.querySelectorAll('.ast-woo-sidebar-widget .wc-block-grid__product').forEach(function (prod, i) {
+            if (prod.querySelector('.pt-rank-badge')) return;
+            var rank = document.createElement('span');
+            rank.className = 'pt-rank-badge';
+            rank.textContent = String(i + 1).padStart(2, '0');
+            var link = prod.querySelector('a, .wc-block-grid__product-link');
+            (link || prod).prepend(rank);
+        });
+
+        // Promo card at the bottom of the sidebar (only on shop/archive
+        // pages where the sidebar exists)
+        var sidebar = document.querySelector('.widget-area.secondary .sidebar-main, .widget-area.secondary');
+        if (sidebar && !sidebar.querySelector('.pt-sidebar-promo')) {
+            var promo = document.createElement('aside');
+            promo.className = 'pt-sidebar-promo';
+            promo.setAttribute('aria-label', 'First-order discount');
+            promo.innerHTML =
+                '<span class="pt-sidebar-promo-leaf" aria-hidden="true">' +
+                    '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+                        '<path d="M7 20C4.5 20 3 18 3 15.5 3 10 10 4 20 4c0 10-6 17-12 17-2.5 0-4-1.5-4-4"/>' +
+                        '<path d="M3 20c4-4 8-6 14-7"/>' +
+                    '</svg>' +
+                '</span>' +
+                '<div class="pt-sidebar-promo-eyebrow">New here?</div>' +
+                '<div class="pt-sidebar-promo-title">Save 20% on your first order</div>' +
+                '<div class="pt-sidebar-promo-code" aria-label="Coupon code"><span>CLEANCOAT</span></div>' +
+                '<a href="/shop/" class="pt-sidebar-promo-btn">Shop now <span aria-hidden="true">→</span></a>';
+            sidebar.appendChild(promo);
+        }
 
     })();
     </script>
