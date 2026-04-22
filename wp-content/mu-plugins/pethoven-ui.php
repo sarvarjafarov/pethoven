@@ -1152,14 +1152,17 @@ function pethoven_ui_css() {
     body.woocommerce ul.products li.ast-article-post.product {
         background: #ffffff !important;
         border-radius: 20px !important;
-        border: none !important;
+        border: 1px solid #f0f0ec !important;
         overflow: hidden !important;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+        box-shadow: 0 4px 16px rgba(16, 24, 40, 0.04) !important;
         transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-                    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1) !important;
+                    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                    border-color 0.35s ease !important;
         position: relative !important;
         padding: 0 !important;
         margin-bottom: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
     }
 
     /* Green accent bar on hover */
@@ -1184,13 +1187,15 @@ function pethoven_ui_css() {
 
     body.woocommerce ul.products li.product:hover {
         transform: translateY(-10px);
-        box-shadow: 0 24px 60px rgba(106, 151, 57, 0.12),
-                    0 8px 24px rgba(0, 0, 0, 0.06) !important;
+        border-color: rgba(139, 195, 74, 0.28) !important;
+        box-shadow: 0 24px 60px rgba(106, 151, 57, 0.14),
+                    0 8px 24px rgba(16, 24, 40, 0.06) !important;
     }
 
-    /* Image area — consistent soft-green background, mix-blend clean */
+    /* Image area — vertical gradient that fades into the white content
+     * area below, so there's no visible seam between image and summary. */
     body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap {
-        background: linear-gradient(145deg, #f5f7f0 0%, #eef2e8 100%) !important;
+        background: linear-gradient(180deg, #eef2e8 0%, #f2f5ed 45%, #fafbf7 100%) !important;
         aspect-ratio: 1 / 1;
         display: flex;
         align-items: center;
@@ -1199,6 +1204,7 @@ function pethoven_ui_css() {
         position: relative;
         border-radius: 0 !important;
         margin: 0 !important;
+        flex-shrink: 0;
     }
 
     body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap img {
@@ -1215,28 +1221,30 @@ function pethoven_ui_css() {
         transform: scale(1.08);
     }
 
-    /* Sale badge — force the red/orange pulse over Astra green */
+    /* Sale badge — clean rounded pill, no pulse animation.
+     * Sits in the top-right of the image area without competing
+     * with the product photo. */
     body.woocommerce ul.products li.product .onsale,
     body.woocommerce span.onsale,
     .wc-block-grid__product-onsale {
-        background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
+        background: #1a1a1a !important;
         color: #ffffff !important;
-        font-size: 11px !important;
-        font-weight: 700 !important;
-        letter-spacing: 0.5px !important;
+        font-size: 10px !important;
+        font-weight: 800 !important;
+        letter-spacing: 1.2px !important;
         text-transform: uppercase !important;
-        padding: 6px 16px !important;
-        border-radius: 0 0 12px 12px !important;
+        padding: 5px 12px !important;
+        border-radius: 100px !important;
         line-height: 1.3 !important;
         min-height: auto !important;
         min-width: auto !important;
         position: absolute !important;
-        top: 0 !important;
-        right: 20px !important;
+        top: 14px !important;
+        right: 14px !important;
         left: auto !important;
         bottom: auto !important;
-        box-shadow: 0 4px 12px rgba(238, 90, 36, 0.3) !important;
-        animation: pt-pulse-badge 2.5s ease-in-out infinite;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
+        animation: none !important;
         z-index: 3 !important;
         margin: 0 !important;
         border: none !important;
@@ -1244,10 +1252,15 @@ function pethoven_ui_css() {
 
     /* Content area */
     body.woocommerce ul.products li.product .astra-shop-summary-wrap {
-        padding: 22px 20px 26px !important;
+        padding: 20px 20px 16px !important;
         text-align: center;
         background: #ffffff;
         margin: 0 !important;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
     }
 
     body.woocommerce ul.products li.product .ast-woo-product-category {
@@ -1255,13 +1268,14 @@ function pethoven_ui_css() {
         font-size: 10px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 1.5px !important;
+        letter-spacing: 1.6px !important;
         color: var(--ast-global-color-1, #6a9739) !important;
-        background: rgba(139, 195, 74, 0.1);
+        background: rgba(139, 195, 74, 0.12);
         padding: 4px 12px;
-        border-radius: 20px;
-        margin-bottom: 12px !important;
+        border-radius: 100px;
+        margin-bottom: 10px !important;
         text-decoration: none;
+        line-height: 1.4;
     }
 
     body.woocommerce ul.products li.product .ast-woo-product-category a {
@@ -1270,11 +1284,13 @@ function pethoven_ui_css() {
     }
 
     body.woocommerce ul.products li.product .woocommerce-loop-product__title {
-        font-size: 16px !important;
+        font-family: inherit !important;
+        font-size: 17px !important;
         font-weight: 700 !important;
         color: #1a1a1a !important;
-        margin: 0 0 12px !important;
-        line-height: 1.35 !important;
+        margin: 0 0 10px !important;
+        line-height: 1.3 !important;
+        letter-spacing: -0.2px;
         transition: color 0.25s ease;
     }
 
@@ -1292,24 +1308,116 @@ function pethoven_ui_css() {
     }
 
     body.woocommerce ul.products li.product .price {
-        font-size: 20px !important;
+        font-size: 19px !important;
         font-weight: 800 !important;
         color: #1a1a1a !important;
         letter-spacing: -0.3px !important;
-        display: block;
+        font-variant-numeric: tabular-nums;
+        display: inline-flex;
+        align-items: baseline;
+        gap: 8px;
+        margin: 0 0 16px !important;
     }
 
     body.woocommerce ul.products li.product .price del {
         font-size: 14px !important;
-        color: #ccc !important;
-        font-weight: 400 !important;
-        margin-right: 6px;
+        color: #bbb !important;
+        font-weight: 500 !important;
+        margin: 0 !important;
+        order: 2;
     }
 
     body.woocommerce ul.products li.product .price ins {
         color: var(--ast-global-color-1, #6a9739) !important;
         text-decoration: none !important;
         font-weight: 800 !important;
+        order: 1;
+    }
+
+    /* Add to Cart button — primary action, always visible at bottom
+     * of the card. We re-hook woocommerce_template_loop_add_to_cart
+     * in PHP so this renders; Astra strips it by default. */
+    body.woocommerce ul.products li.product a.button.add_to_cart_button,
+    body.woocommerce ul.products li.product a.button.product_type_simple,
+    body.woocommerce ul.products li.product a.button.product_type_variable,
+    body.woocommerce ul.products li.product a.button.product_type_grouped,
+    body.woocommerce ul.products li.product a.button.product_type_external {
+        position: static !important;
+        display: block !important;
+        width: calc(100% - 40px) !important;
+        margin: 0 20px 20px !important;
+        padding: 12px 16px !important;
+        background: transparent !important;
+        color: #1a1a1a !important;
+        border: 1.5px solid #e5e5e5 !important;
+        border-radius: 12px !important;
+        font-family: inherit !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px !important;
+        text-transform: uppercase !important;
+        text-align: center !important;
+        text-decoration: none !important;
+        line-height: 1.3 !important;
+        transform: none !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        z-index: auto !important;
+        box-shadow: none !important;
+        white-space: nowrap !important;
+        overflow: hidden;
+        transition: background-color 0.25s ease,
+                    color 0.25s ease,
+                    border-color 0.25s ease,
+                    transform 0.25s ease,
+                    box-shadow 0.25s ease !important;
+    }
+
+    body.woocommerce ul.products li.product:hover a.button.add_to_cart_button,
+    body.woocommerce ul.products li.product:hover a.button.product_type_simple {
+        background: var(--ast-global-color-1, #6a9739) !important;
+        color: #ffffff !important;
+        border-color: var(--ast-global-color-1, #6a9739) !important;
+        box-shadow: 0 8px 20px rgba(106, 151, 57, 0.25) !important;
+    }
+
+    body.woocommerce ul.products li.product a.button.add_to_cart_button:hover {
+        background: #5d8b32 !important;
+        border-color: #5d8b32 !important;
+        color: #ffffff !important;
+    }
+
+    body.woocommerce ul.products li.product a.button.add_to_cart_button.added,
+    body.woocommerce ul.products li.product a.button.added {
+        background: #1a1a1a !important;
+        color: #ffffff !important;
+        border-color: #1a1a1a !important;
+    }
+
+    /* "View cart" link that appears after adding */
+    body.woocommerce ul.products li.product a.added_to_cart {
+        display: block !important;
+        width: calc(100% - 40px) !important;
+        margin: -12px 20px 16px !important;
+        padding: 8px !important;
+        text-align: center !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        color: var(--ast-global-color-1, #6a9739) !important;
+        text-decoration: none !important;
+    }
+
+    body.woocommerce ul.products li.product a.added_to_cart:hover {
+        color: #1a1a1a !important;
+    }
+
+    /* Loading state when adding */
+    body.woocommerce ul.products li.product a.button.loading {
+        opacity: 0.7 !important;
+        pointer-events: none;
     }
 
     /* ==========================================================

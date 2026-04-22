@@ -15,6 +15,22 @@ if ( is_admin() ) {
 }
 
 /**
+ * Re-hook the loop Add to Cart button.
+ *
+ * Astra's WooCommerce integration strips
+ * woocommerce_template_loop_add_to_cart from the
+ * woocommerce_after_shop_loop_item action, leaving the archive
+ * cards without a cart CTA. We add it back so we can style it as
+ * the card's primary action.
+ */
+add_action( 'init', function () {
+    if ( function_exists( 'woocommerce_template_loop_add_to_cart' )
+        && ! has_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart' ) ) {
+        add_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+    }
+} );
+
+/**
  * Inject announcement bar before the header.
  */
 add_action( 'astra_header_before', 'pethoven_announcement_bar' );
