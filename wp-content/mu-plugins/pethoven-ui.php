@@ -1657,6 +1657,231 @@ function pethoven_ui_css() {
     }
 
     /* ==========================================================
+     * 20b. SHOP ARCHIVE — catchy upgrades
+     *
+     * Fixes observed issues on /shop/ and category archives:
+     *  - page title rendering as serif italic on category pages
+     *  - Lorem ipsum in .term-description
+     *  - sidebar featured products getting the full-size pulse
+     *    sale badge on 64px thumbnails
+     *  - archive feeling flat / static without hover CTA
+     * ========================================================== */
+
+    /* Subtle page-wide background wash for depth */
+    body.archive.woocommerce,
+    body.post-type-archive-product,
+    body.tax-product_cat {
+        background: linear-gradient(180deg, #ffffff 0%, #f9faf6 240px, #fbfbf8 100%);
+    }
+
+    /* Force the page title font to match the rest of the brand.
+     * Astra's category archive template inherits a different font-
+     * family than the shop page, producing the serif italic look.
+     * This locks it to the theme's global sans-serif. */
+    body.woocommerce h1.page-title,
+    body.woocommerce h1.woocommerce-products-header__title,
+    body.archive h1.page-title,
+    body.archive .woocommerce-products-header__title,
+    body.tax-product_cat h1.page-title {
+        font-family: inherit !important;
+        font-style: normal !important;
+        font-weight: 800 !important;
+        font-size: 52px !important;
+        letter-spacing: -0.8px !important;
+        color: #1a1a1a !important;
+        line-height: 1.1 !important;
+        margin: 0 auto 8px !important;
+        display: inline-block;
+    }
+
+    /* Decorative green pill behind the title — gives the header visual anchor */
+    body.woocommerce .woocommerce-products-header {
+        position: relative;
+        padding: 24px 0 56px !important;
+        background: transparent;
+    }
+
+    body.woocommerce .woocommerce-products-header::before {
+        content: '';
+        position: absolute;
+        top: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 240px;
+        height: 240px;
+        background: radial-gradient(circle, rgba(139, 195, 74, 0.16) 0%, rgba(139, 195, 74, 0) 70%);
+        border-radius: 50%;
+        filter: blur(30px);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    body.woocommerce .woocommerce-products-header > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Trust microcopy under the title — thin, spaced, uppercase */
+    body.woocommerce .woocommerce-products-header::after {
+        content: 'Ships in 2 days  ·  Cruelty-free  ·  30-day guarantee';
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #a0a0a0;
+        margin-top: 24px;
+        padding-bottom: 8px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Category description — hide if empty, style if real */
+    body.woocommerce .term-description,
+    body.woocommerce .archive-description {
+        max-width: 640px;
+        margin: -32px auto 40px;
+        padding: 0 20px;
+        text-align: center;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #555;
+        position: relative;
+        z-index: 1;
+    }
+
+    body.woocommerce .term-description:empty,
+    body.woocommerce .term-description p:empty,
+    body.woocommerce .archive-description:empty {
+        display: none !important;
+    }
+
+    /* Hide .term-description whose children are all empty paragraphs */
+    body.woocommerce .term-description:has(> p:only-child:empty),
+    body.woocommerce .archive-description:has(> p:only-child:empty) {
+        display: none !important;
+    }
+
+    /* ==========================================================
+     * 20c. PRODUCT CARD — hover overlay CTA
+     *
+     * On hover: subtle dark scrim + centered white arrow pill.
+     * The whole thumbnail is already an <a> so the visual
+     * functions purely as an affordance.
+     * ========================================================== */
+
+    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap {
+        position: relative;
+        isolation: isolate;
+    }
+
+    /* Dark scrim */
+    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(0deg, rgba(26,26,26,0.45) 0%, rgba(26,26,26,0.15) 45%, transparent 85%);
+        opacity: 0;
+        transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    body.woocommerce ul.products li.product:hover .astra-shop-thumbnail-wrap::after {
+        opacity: 1;
+    }
+
+    /* Make the anchor a positioning context for the arrow button */
+    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    /* Arrow pill — centered and revealed on hover */
+    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a::after {
+        content: 'VIEW →';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) translateY(12px);
+        padding: 11px 22px;
+        background: #ffffff;
+        color: #1a1a1a;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0,0,0,0.08);
+        opacity: 0;
+        transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        z-index: 4;
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    body.woocommerce ul.products li.product:hover .astra-shop-thumbnail-wrap > a::after {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(0);
+    }
+
+    /* Kill the hover reveal on mobile — hover states don't make sense */
+    @media (hover: none) {
+        body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap::after,
+        body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap > a::after {
+            display: none !important;
+        }
+    }
+
+    /* Zero-star ratings in archive — hide the visible bar */
+    body.woocommerce ul.products li.product .review-rating .star-rating > span[style*="width:0%"],
+    body.woocommerce ul.products li.product .review-rating .star-rating > span[style*="width: 0%"] {
+        display: none;
+    }
+    body.woocommerce ul.products li.product .review-rating:has(.star-rating > span[style*="width:0"]) {
+        display: none;
+    }
+
+    /* ==========================================================
+     * 20d. SIDEBAR FEATURED PRODUCTS — kill the oversized badge
+     *
+     * The sale badge CSS was designed for full-size cards. On the
+     * tiny 64px sidebar thumbs it dominated the image. Override
+     * with a compact, static badge.
+     * ========================================================== */
+
+    .ast-woo-sidebar-widget .wc-block-grid__product-onsale,
+    .ast-woo-sidebar-widget .wc-block-grid__product .onsale {
+        font-size: 9px !important;
+        font-weight: 700 !important;
+        padding: 2px 8px !important;
+        border-radius: 4px !important;
+        top: 4px !important;
+        right: auto !important;
+        left: 4px !important;
+        line-height: 1.3 !important;
+        box-shadow: 0 1px 4px rgba(238, 90, 36, 0.3) !important;
+        animation: none !important;
+        letter-spacing: 0.3px !important;
+        position: absolute !important;
+        z-index: 3 !important;
+    }
+
+    /* Ensure the sidebar product thumbnail is the positioning parent
+     * for the mini sale badge */
+    .ast-woo-sidebar-widget .wc-block-grid__product-link {
+        position: relative;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-grid__product-image {
+        position: relative;
+    }
+
+    /* ==========================================================
      * 21. REDUCED MOTION — respect user preference
      * ========================================================== */
 

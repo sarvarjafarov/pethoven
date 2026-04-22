@@ -413,12 +413,30 @@ function pethoven_rewrite_content( $html ) {
         'alt="banner 02"'  => 'alt="Pethoven lifestyle"',
         'alt="banner 03"'  => 'alt="Pethoven lifestyle"',
 
+        /* ============================================
+         * SHOP CATEGORY DESCRIPTIONS
+         *
+         * The "Groceries" category description is live
+         * Lorem ipsum. Replace with real category copy.
+         * ============================================ */
+
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim, velit et luctus interdum, est quam scelerisque tellus, eget luctus mi diam vitae erat. Praesent porttitor lacus vitae dictum posuere. Suspendisse elementum metus ac dolor tincidunt, eu imperdiet nisi dictum.'
+            => 'Sulfate-free. Paraben-free. Cruelty-free. Every formula is built on plant-based actives that clean deep without stripping your dog\'s natural oils. Free shipping on orders over $25.',
+
     );
 
     // Run all replacements
     $html = str_replace(
         array_keys( $replacements ),
         array_values( $replacements ),
+        $html
+    );
+
+    // Safety net: nuke any stray Lorem ipsum paragraph that snuck past
+    // the explicit replacements above. Matches <p>Lorem ipsum ...</p>.
+    $html = preg_replace(
+        '#<p[^>]*>\s*Lorem ipsum[^<]*</p>#i',
+        '',
         $html
     );
 
