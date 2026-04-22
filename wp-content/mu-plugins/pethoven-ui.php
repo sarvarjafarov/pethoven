@@ -953,7 +953,99 @@ function pethoven_ui_css() {
     }
 
     /* ==========================================================
-     * 14. REDUCED MOTION — respect user preference
+     * 14. CLEANUP — hide placeholder/broken sections until real
+     *     content exists. Targets elementor IDs from the theme.
+     * ========================================================== */
+
+    /* Quiz CTA ("Take the 30-Second Quiz") — no quiz built yet */
+    .elementor-element-778c9e4 {
+        display: none !important;
+    }
+
+    /* "Trusted By" brand logos — placeholder images */
+    .elementor-element-357f4cd {
+        display: none !important;
+    }
+
+    /* Zero-star ratings are worse than no rating. Hide them in the
+     * product loop and on the single product page until reviews exist. */
+    .woocommerce ul.products li.product .star-rating[title*="Rated 0"],
+    .woocommerce ul.products li.product .star-rating[aria-label*="Rated 0"],
+    .woocommerce-product-rating .star-rating[title*="Rated 0"],
+    .ast-woocommerce-container .star-rating[title*="Rated 0"] {
+        display: none !important;
+    }
+    /* Fallback: hide empty star widgets where span[style] width is 0% */
+    .star-rating > span[style="width:0%"],
+    .star-rating > span[style="width: 0%"] {
+        display: none !important;
+    }
+    .star-rating:has(> span[style="width:0%"]),
+    .star-rating:has(> span[style="width: 0%"]) {
+        display: none !important;
+    }
+
+    /* Hide the "(0 customer reviews)" count too */
+    .woocommerce-review-link .count:empty,
+    .woocommerce-review-link:has(.count:empty) {
+        display: none !important;
+    }
+
+    /* ==========================================================
+     * 15. CONTACT PAGE POLISH
+     * ========================================================== */
+
+    /* Style the injected mailto block (see pethoven_contact_card) */
+    .pt-contact-card {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        max-width: 820px;
+        margin: 32px auto 48px;
+        padding: 0 20px;
+    }
+
+    .pt-contact-tile {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 16px;
+        padding: 24px 22px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .pt-contact-tile:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 28px rgba(106, 151, 57, 0.10);
+    }
+
+    .pt-contact-tile-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--ast-global-color-1, #6a9739);
+        margin-bottom: 8px;
+    }
+
+    .pt-contact-tile a,
+    .pt-contact-tile-value {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a1a1a;
+        text-decoration: none;
+        line-height: 1.4;
+        word-break: break-word;
+    }
+
+    .pt-contact-tile a:hover {
+        color: var(--ast-global-color-1, #6a9739);
+    }
+
+    /* ==========================================================
+     * 16. REDUCED MOTION — respect user preference
      * ========================================================== */
 
     @media (prefers-reduced-motion: reduce) {
@@ -1107,6 +1199,98 @@ function pethoven_ui_js() {
             price.style.transform = 'translateY(10px)';
             price.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
             priceObserver.observe(price);
+        });
+
+    })();
+    </script>
+
+    <script id="pethoven-cleanup-js">
+    (function () {
+        'use strict';
+
+        /* ----------------------------------------------------------
+         * A. Hide nav items that aren't real destinations.
+         *    We match anchor text rather than IDs so this survives
+         *    menu reordering in WordPress admin.
+         * ---------------------------------------------------------- */
+        var killMenuLabels = ['KOON', 'Store Locator', 'Locate Stores'];
+
+        document.querySelectorAll(
+            '.ast-builder-menu-1 a, ' +
+            '#ast-mobile-header a, ' +
+            '.ast-mobile-header-content a, ' +
+            '.site-footer a, ' +
+            '.ast-footer-widget-1-area a, ' +
+            '.ast-footer-widget-2-area a, ' +
+            '.ast-footer-widget-3-area a, ' +
+            '.ast-footer-widget-4-area a'
+        ).forEach(function (a) {
+            var text = (a.textContent || '').trim();
+            if (killMenuLabels.indexOf(text) !== -1) {
+                var li = a.closest('li');
+                (li || a).style.display = 'none';
+            }
+        });
+
+        /* ----------------------------------------------------------
+         * B. Dedupe footer columns.
+         *    The footer currently has three columns with heavy
+         *    overlap (Website / Quick Links / Site Links). We hide
+         *    the "Quick Links" column since its contents are a
+         *    subset of the others.
+         * ---------------------------------------------------------- */
+        document.querySelectorAll('.site-footer .widget-title, .site-footer h2, .site-footer h3, .site-footer h4').forEach(function (h) {
+            var t = (h.textContent || '').trim().toLowerCase();
+            if (t === 'quick links') {
+                var col = h.closest('.widget, .elementor-widget, .wp-block-group, .ast-footer-widget-1-area, .ast-footer-widget-2-area, .ast-footer-widget-3-area, .ast-footer-widget-4-area');
+                (col || h.parentElement || h).style.display = 'none';
+            }
+        });
+
+        /* ----------------------------------------------------------
+         * C. Route dead "#" links to the shop.
+         *    We leave real anchor links alone (any href="#something")
+         *    and only rewrite href="#" or empty hrefs on buttons/CTAs
+         *    that were templated but never pointed anywhere.
+         * ---------------------------------------------------------- */
+        var shopUrl = '/shop/';
+
+        document.querySelectorAll('a').forEach(function (a) {
+            var href = a.getAttribute('href');
+            if (href === '#' || href === '' || href === null) {
+                // Skip controls that are supposed to be buttons
+                if (a.closest('.pt-announcement-bar')) return;
+                if (a.getAttribute('role') === 'button' && a.dataset.action) return;
+                // Skip menu toggles
+                if (a.classList.contains('menu-toggle') || a.classList.contains('mobile-menu-toggle')) return;
+
+                a.setAttribute('href', shopUrl);
+            }
+        });
+
+        /* ----------------------------------------------------------
+         * D. Hide zero-rating stars that slip past CSS (title varies
+         *    by locale and plugin). Belt-and-suspenders.
+         * ---------------------------------------------------------- */
+        document.querySelectorAll('.star-rating').forEach(function (r) {
+            var inner = r.querySelector('span');
+            if (!inner) return;
+            var width = (inner.style.width || '').trim();
+            if (width === '' || width === '0%' || width === '0') {
+                r.style.display = 'none';
+                var linkWrap = r.closest('.woocommerce-product-rating');
+                if (linkWrap) linkWrap.style.display = 'none';
+            }
+        });
+
+        /* ----------------------------------------------------------
+         * E. Add missing aria-labels on icon-only header buttons
+         * ---------------------------------------------------------- */
+        document.querySelectorAll('.ast-header-woo-cart a, .ast-cart-menu-wrap').forEach(function (el) {
+            if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', 'View cart');
+        });
+        document.querySelectorAll('.ast-header-account a').forEach(function (el) {
+            if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', 'Account');
         });
 
     })();
