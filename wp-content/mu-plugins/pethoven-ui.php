@@ -2281,6 +2281,18 @@ function pethoven_ui_css() {
         padding: 80px 0 !important;
     }
 
+    /* Injected heading wrapper — sits above the 3-card row and
+     * takes a full-width slot even when the parent is a flex row. */
+    .pt-cats-header {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        text-align: center;
+        padding: 0 20px;
+        margin: 0 auto 48px;
+        box-sizing: border-box;
+    }
+
     /* Section eyebrow + heading injected via JS (pt-cats-heading) */
     .pt-cats-eyebrow {
         font-size: 11px;
@@ -2481,6 +2493,28 @@ function pethoven_ui_css() {
     .elementor-element-28fc7dc {
         padding: 36px 20px 60px !important;
         position: relative;
+        /* The section has a dark background set in the Elementor
+         * customizer, which shows as a black band around our
+         * injected green card. Force the outer section to
+         * transparent so only our ::before card renders. */
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+    }
+
+    /* Kill any Elementor background overlay layered on top */
+    .elementor-element-28fc7dc > .elementor-background-overlay,
+    .elementor-element-28fc7dc > .elementor-background-video-container {
+        display: none !important;
+    }
+
+    /* Elementor section nested wrappers sometimes also paint a bg
+     * (inner container, shape divider). Clear those too. */
+    .elementor-element-28fc7dc > .elementor-container,
+    .elementor-element-28fc7dc > .e-con-inner,
+    .elementor-element-28fc7dc .elementor-shape {
+        background: transparent !important;
+        background-color: transparent !important;
     }
 
     /* Decorative dark card background */
@@ -3203,17 +3237,33 @@ function pethoven_ui_js() {
         /* ----------------------------------------------------------
          * J. Homepage — Category cards section heading
          *    The section has no heading by default. Inject an
-         *    eyebrow + headline + subtitle above the three cards.
+         *    eyebrow + headline + subtitle ABOVE the 3-card flex
+         *    row (not inside it — otherwise it becomes a 4th column
+         *    and squeezes into ~25% width).
          * ---------------------------------------------------------- */
         var catsSection = document.querySelector('.elementor-element-d349891');
         if (catsSection && !catsSection.querySelector('.pt-cats-heading')) {
-            var catsContainer = catsSection.querySelector('.e-con-inner, .elementor-container') || catsSection;
+            // Find the flex row that holds the 3 cards (columns or flex-children)
+            var columnsRow = catsSection.querySelector(':scope > .elementor-container, :scope > .e-con-inner');
+            // Fallback: any container that holds the columns
+            if (!columnsRow) {
+                columnsRow = catsSection.querySelector('.elementor-container, .e-con-inner');
+            }
+
             var catsHead = document.createElement('div');
+            catsHead.className = 'pt-cats-header';
             catsHead.innerHTML =
                 '<div class="pt-cats-eyebrow">Built for the three dogs you know</div>' +
                 '<h2 class="pt-cats-heading">Find your formula</h2>' +
                 '<p class="pt-cats-subtitle">Three targeted shampoos for the three things dogs need: relief, a deep clean, or a gentler start.</p>';
-            catsContainer.insertBefore(catsHead, catsContainer.firstChild);
+
+            if (columnsRow && columnsRow.parentNode) {
+                // Insert BEFORE the flex row, as a sibling above it
+                columnsRow.parentNode.insertBefore(catsHead, columnsRow);
+            } else {
+                // Last-resort fallback
+                catsSection.insertBefore(catsHead, catsSection.firstChild);
+            }
         }
 
         /* ----------------------------------------------------------
