@@ -1045,7 +1045,619 @@ function pethoven_ui_css() {
     }
 
     /* ==========================================================
-     * 16. REDUCED MOTION — respect user preference
+     * 16. SHOP ARCHIVE — page header + toolbar
+     * ========================================================== */
+
+    body.woocommerce .ast-woocommerce-container {
+        padding-top: 8px;
+    }
+
+    /* Breadcrumb centered, subtle */
+    body.woocommerce nav.woocommerce-breadcrumb {
+        text-align: center;
+        font-size: 12px;
+        letter-spacing: 0.8px;
+        color: #a0a0a0;
+        padding: 24px 0 4px;
+        border: none;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    body.woocommerce nav.woocommerce-breadcrumb a {
+        color: var(--ast-global-color-1, #6a9739);
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    body.woocommerce nav.woocommerce-breadcrumb a:hover {
+        color: #1a1a1a;
+    }
+
+    /* Page title: modern sans-serif, dark, no italic */
+    body.woocommerce .woocommerce-products-header {
+        text-align: center;
+        padding: 8px 0 16px;
+        margin-bottom: 0;
+        border: none;
+    }
+
+    body.woocommerce .woocommerce-products-header__title.page-title,
+    body.woocommerce h1.woocommerce-products-header__title {
+        font-size: 48px !important;
+        font-weight: 800 !important;
+        color: #1a1a1a !important;
+        font-style: normal !important;
+        letter-spacing: -0.8px !important;
+        margin: 0 auto 8px !important;
+        line-height: 1.1 !important;
+        display: inline-block;
+        position: relative;
+    }
+
+    /* Subtle green underline accent on title */
+    body.woocommerce .woocommerce-products-header__title.page-title::after {
+        content: '';
+        display: block;
+        width: 48px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--ast-global-color-0, #8bc34a), var(--ast-global-color-1, #6a9739));
+        border-radius: 4px;
+        margin: 16px auto 0;
+    }
+
+    /* Toolbar row: result count + ordering */
+    body.woocommerce .woocommerce-result-count {
+        font-size: 13px;
+        color: #888;
+        margin: 0 0 24px;
+        font-weight: 500;
+    }
+
+    body.woocommerce .woocommerce-ordering {
+        margin: 0 0 24px;
+    }
+
+    body.woocommerce .woocommerce-ordering select {
+        border: 1px solid #e5e5e5;
+        border-radius: 30px;
+        padding: 10px 40px 10px 18px;
+        font-size: 13px;
+        font-weight: 500;
+        background: #fff;
+        color: #1a1a1a;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='none' stroke='%236a9739' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    body.woocommerce .woocommerce-ordering select:hover,
+    body.woocommerce .woocommerce-ordering select:focus {
+        border-color: var(--ast-global-color-1, #6a9739);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(106, 151, 57, 0.1);
+    }
+
+    /* ==========================================================
+     * 17. SHOP ARCHIVE — product cards (ul.products variant)
+     *     Mirrors the homepage card treatment but uses archive
+     *     selectors (.ast-article-post.product).
+     * ========================================================== */
+
+    body.woocommerce ul.products {
+        gap: 28px !important;
+        padding-top: 8px !important;
+        margin: 0 !important;
+    }
+
+    body.woocommerce ul.products li.product,
+    body.woocommerce ul.products li.ast-article-post.product {
+        background: #ffffff !important;
+        border-radius: 20px !important;
+        border: none !important;
+        overflow: hidden !important;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+        transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        position: relative !important;
+        padding: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Green accent bar on hover */
+    body.woocommerce ul.products li.product::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--ast-global-color-0, #8bc34a), var(--ast-global-color-1, #6a9739));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        z-index: 3;
+        border-radius: 20px 20px 0 0;
+    }
+
+    body.woocommerce ul.products li.product:hover::before {
+        transform: scaleX(1);
+    }
+
+    body.woocommerce ul.products li.product:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 24px 60px rgba(106, 151, 57, 0.12),
+                    0 8px 24px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    /* Image area — consistent soft-green background, mix-blend clean */
+    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap {
+        background: linear-gradient(145deg, #f5f7f0 0%, #eef2e8 100%) !important;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+        border-radius: 0 !important;
+        margin: 0 !important;
+    }
+
+    body.woocommerce ul.products li.product .astra-shop-thumbnail-wrap img {
+        transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        mix-blend-mode: multiply;
+        object-fit: contain;
+        max-width: 80% !important;
+        max-height: 80% !important;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    body.woocommerce ul.products li.product:hover .astra-shop-thumbnail-wrap img {
+        transform: scale(1.08);
+    }
+
+    /* Sale badge — force the red/orange pulse over Astra green */
+    body.woocommerce ul.products li.product .onsale,
+    body.woocommerce span.onsale,
+    .wc-block-grid__product-onsale {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
+        color: #ffffff !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
+        text-transform: uppercase !important;
+        padding: 6px 16px !important;
+        border-radius: 0 0 12px 12px !important;
+        line-height: 1.3 !important;
+        min-height: auto !important;
+        min-width: auto !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 20px !important;
+        left: auto !important;
+        bottom: auto !important;
+        box-shadow: 0 4px 12px rgba(238, 90, 36, 0.3) !important;
+        animation: pt-pulse-badge 2.5s ease-in-out infinite;
+        z-index: 3 !important;
+        margin: 0 !important;
+        border: none !important;
+    }
+
+    /* Content area */
+    body.woocommerce ul.products li.product .astra-shop-summary-wrap {
+        padding: 22px 20px 26px !important;
+        text-align: center;
+        background: #ffffff;
+        margin: 0 !important;
+    }
+
+    body.woocommerce ul.products li.product .ast-woo-product-category {
+        display: inline-block !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        color: var(--ast-global-color-1, #6a9739) !important;
+        background: rgba(139, 195, 74, 0.1);
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 12px !important;
+        text-decoration: none;
+    }
+
+    body.woocommerce ul.products li.product .ast-woo-product-category a {
+        color: inherit !important;
+        text-decoration: none !important;
+    }
+
+    body.woocommerce ul.products li.product .woocommerce-loop-product__title {
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        color: #1a1a1a !important;
+        margin: 0 0 12px !important;
+        line-height: 1.35 !important;
+        transition: color 0.25s ease;
+    }
+
+    body.woocommerce ul.products li.product:hover .woocommerce-loop-product__title {
+        color: var(--ast-global-color-1, #6a9739) !important;
+    }
+
+    /* Kill zero-star review wrappers in archive */
+    body.woocommerce ul.products li.product .review-rating:not(:has(.star-rating[style*="width:"])) {
+        display: none;
+    }
+    body.woocommerce ul.products li.product .review-rating .star-rating > span[style="width:0%"],
+    body.woocommerce ul.products li.product .review-rating .star-rating > span[style="width: 0%"] {
+        display: none;
+    }
+
+    body.woocommerce ul.products li.product .price {
+        font-size: 20px !important;
+        font-weight: 800 !important;
+        color: #1a1a1a !important;
+        letter-spacing: -0.3px !important;
+        display: block;
+    }
+
+    body.woocommerce ul.products li.product .price del {
+        font-size: 14px !important;
+        color: #ccc !important;
+        font-weight: 400 !important;
+        margin-right: 6px;
+    }
+
+    body.woocommerce ul.products li.product .price ins {
+        color: var(--ast-global-color-1, #6a9739) !important;
+        text-decoration: none !important;
+        font-weight: 800 !important;
+    }
+
+    /* ==========================================================
+     * 18. SIDEBAR CLEANUP + STYLING
+     * ========================================================== */
+
+    /* Kill the stuck-loading widgets (those grey skeleton pills).
+     * These never hydrate because the WooCommerce Store API hasn't
+     * initialized on this page, so they'd sit as placeholders forever.
+     * We target both the inner block and the whole widget wrapper so
+     * we don't leave an empty bordered container behind. */
+    .ast-woo-sidebar-widget .wp-block-woocommerce-active-filters.is-loading,
+    .ast-woo-sidebar-widget .wp-block-woocommerce-price-filter.is-loading,
+    .ast-woo-sidebar-widget:has(.wp-block-woocommerce-active-filters.is-loading),
+    .ast-woo-sidebar-widget:has(.wp-block-woocommerce-price-filter.is-loading),
+    .ast-woo-sidebar-widget:has(> .wp-block-woocommerce-active-filters),
+    .ast-woo-sidebar-widget:has(> .wp-block-woocommerce-price-filter) {
+        display: none !important;
+    }
+
+    /* Also hide any raw placeholder skeletons */
+    .wc-block-active-product-filters__placeholder,
+    .wc-block-product-categories__placeholder,
+    .wc-block-product-search__placeholder {
+        display: none !important;
+    }
+
+    /* Widget spacing */
+    .ast-woo-sidebar-widget.widget {
+        margin-bottom: 32px !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    /* Widget titles: uppercase micro-label */
+    .ast-woo-sidebar-widget .widget-title,
+    .ast-woo-sidebar-widget h2,
+    .ast-woo-sidebar-widget h3 {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        color: #999 !important;
+        margin: 0 0 14px !important;
+        padding-bottom: 10px !important;
+        border-bottom: 1px solid #eee !important;
+    }
+
+    /* Product search */
+    .wc-block-product-search__fields {
+        display: flex;
+        gap: 0;
+    }
+
+    .wc-block-product-search__field {
+        flex: 1;
+        border: 1px solid #e5e5e5 !important;
+        border-right: none !important;
+        border-radius: 30px 0 0 30px !important;
+        padding: 10px 18px !important;
+        font-size: 13px !important;
+        background: #fff !important;
+        color: #1a1a1a !important;
+        transition: border-color 0.2s ease !important;
+    }
+
+    .wc-block-product-search__field:focus {
+        border-color: var(--ast-global-color-1, #6a9739) !important;
+        outline: none !important;
+    }
+
+    .wc-block-product-search__button {
+        border-radius: 0 30px 30px 0 !important;
+        background: var(--ast-global-color-1, #6a9739) !important;
+        border: none !important;
+        padding: 0 18px !important;
+        transition: background-color 0.2s ease !important;
+    }
+
+    .wc-block-product-search__button:hover {
+        background: var(--ast-global-color-0, #8bc34a) !important;
+    }
+
+    .wc-block-product-search__button svg {
+        fill: #fff !important;
+    }
+
+    /* Category list */
+    .wc-block-product-categories-list {
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .wc-block-product-categories-list-item {
+        padding: 10px 0 !important;
+        border-bottom: 1px solid #f2f2f2;
+        transition: padding-left 0.2s ease, color 0.2s ease;
+    }
+
+    .wc-block-product-categories-list-item:last-child {
+        border-bottom: none;
+    }
+
+    .wc-block-product-categories-list-item:hover {
+        padding-left: 6px !important;
+    }
+
+    .wc-block-product-categories-list-item a {
+        color: #1a1a1a !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        transition: color 0.2s ease;
+    }
+
+    .wc-block-product-categories-list-item:hover a,
+    .wc-block-product-categories-list-item:hover .wc-block-product-categories-list-item__name {
+        color: var(--ast-global-color-1, #6a9739) !important;
+    }
+
+    .wc-block-product-categories-list-item-count {
+        color: #aaa !important;
+        font-size: 12px !important;
+        margin-left: 6px;
+    }
+
+    /* Featured products list — compact row layout */
+    .ast-woo-sidebar-widget .wc-block-grid__products {
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-grid__product {
+        margin: 0 0 14px !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-grid__product-link {
+        display: grid !important;
+        grid-template-columns: 64px 1fr !important;
+        gap: 12px !important;
+        align-items: center !important;
+        text-decoration: none !important;
+        padding: 8px;
+        border-radius: 10px;
+        transition: background 0.2s ease;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-grid__product-link:hover {
+        background: rgba(139, 195, 74, 0.05);
+    }
+
+    .ast-woo-sidebar-widget .wc-block-grid__product-image {
+        margin: 0 !important;
+        aspect-ratio: 1 / 1;
+        background: linear-gradient(145deg, #f5f7f0 0%, #eef2e8 100%);
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-grid__product-image img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto !important;
+        height: auto !important;
+        object-fit: contain;
+        mix-blend-mode: multiply;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-grid__product-title {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #1a1a1a !important;
+        line-height: 1.3 !important;
+        margin: 0 !important;
+        text-align: left !important;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-grid__product-price {
+        font-size: 13px !important;
+        color: #666 !important;
+        margin-top: 4px !important;
+        display: block;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-grid__product-price del {
+        color: #bbb !important;
+        font-size: 12px;
+        margin-right: 4px;
+    }
+
+    .ast-woo-sidebar-widget .wc-block-grid__product-price ins {
+        color: var(--ast-global-color-1, #6a9739) !important;
+        text-decoration: none !important;
+        font-weight: 700;
+    }
+
+    /* Sticky sidebar on desktop */
+    @media (min-width: 922px) {
+        body.woocommerce .widget-area.secondary {
+            position: sticky;
+            top: 100px;
+            align-self: flex-start;
+        }
+    }
+
+    /* ==========================================================
+     * 19. PAGINATION
+     * ========================================================== */
+
+    .woocommerce-pagination {
+        margin: 48px 0 24px !important;
+        text-align: center;
+        border: none !important;
+    }
+
+    .woocommerce-pagination ul.page-numbers {
+        display: inline-flex !important;
+        gap: 6px !important;
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+    }
+
+    .woocommerce-pagination .page-numbers li {
+        display: inline-block !important;
+        border: none !important;
+        background: transparent !important;
+        margin: 0 !important;
+    }
+
+    .woocommerce-pagination .page-numbers li a.page-numbers,
+    .woocommerce-pagination .page-numbers li span.page-numbers,
+    .woocommerce-pagination a.page-numbers,
+    .woocommerce-pagination span.page-numbers {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px !important;
+        height: 40px !important;
+        padding: 0 14px !important;
+        border-radius: 10px !important;
+        background: #fff !important;
+        border: 1px solid #e5e5e5 !important;
+        color: #1a1a1a !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        line-height: 1 !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .woocommerce-pagination .page-numbers li a.page-numbers:hover {
+        border-color: var(--ast-global-color-1, #6a9739) !important;
+        color: var(--ast-global-color-1, #6a9739) !important;
+        transform: translateY(-1px);
+    }
+
+    .woocommerce-pagination .page-numbers .current {
+        background: var(--ast-global-color-1, #6a9739) !important;
+        border-color: var(--ast-global-color-1, #6a9739) !important;
+        color: #fff !important;
+        box-shadow: 0 4px 14px rgba(106, 151, 57, 0.3);
+    }
+
+    .woocommerce-pagination .next.page-numbers,
+    .woocommerce-pagination .prev.page-numbers {
+        font-weight: 700 !important;
+    }
+
+    /* ==========================================================
+     * 20. SHOP ARCHIVE — responsive
+     * ========================================================== */
+
+    @media (max-width: 921px) {
+        body.woocommerce .woocommerce-products-header__title.page-title {
+            font-size: 36px !important;
+        }
+
+        body.woocommerce ul.products {
+            gap: 18px !important;
+        }
+
+        body.woocommerce ul.products li.product .astra-shop-summary-wrap {
+            padding: 16px 14px 20px !important;
+        }
+
+        body.woocommerce ul.products li.product .woocommerce-loop-product__title {
+            font-size: 15px !important;
+        }
+
+        body.woocommerce ul.products li.product .price {
+            font-size: 17px !important;
+        }
+    }
+
+    @media (max-width: 544px) {
+        body.woocommerce nav.woocommerce-breadcrumb {
+            padding: 16px 0 0;
+            font-size: 11px;
+        }
+
+        body.woocommerce .woocommerce-products-header__title.page-title {
+            font-size: 28px !important;
+        }
+
+        body.woocommerce .woocommerce-products-header__title.page-title::after {
+            width: 36px;
+            height: 3px;
+            margin-top: 10px;
+        }
+
+        body.woocommerce ul.products li.product:hover {
+            transform: translateY(-4px);
+        }
+
+        body.woocommerce ul.products li.product .onsale {
+            font-size: 10px !important;
+            padding: 4px 12px !important;
+            right: 12px !important;
+        }
+
+        .woocommerce-pagination .page-numbers li a.page-numbers,
+        .woocommerce-pagination .page-numbers li span.page-numbers {
+            min-width: 36px !important;
+            height: 36px !important;
+            font-size: 13px !important;
+        }
+    }
+
+    /* ==========================================================
+     * 21. REDUCED MOTION — respect user preference
      * ========================================================== */
 
     @media (prefers-reduced-motion: reduce) {
@@ -1291,6 +1903,33 @@ function pethoven_ui_js() {
         });
         document.querySelectorAll('.ast-header-account a').forEach(function (el) {
             if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', 'Account');
+        });
+
+        /* ----------------------------------------------------------
+         * F. Hide stuck-loading sidebar widgets (shop archive).
+         *    Belt-and-suspenders for browsers without :has() support.
+         *    Also hide any widget whose only content is a loading
+         *    placeholder — those never hydrate without Store API JS.
+         * ---------------------------------------------------------- */
+        var deadBlockSelectors = [
+            '.wp-block-woocommerce-active-filters.is-loading',
+            '.wp-block-woocommerce-price-filter.is-loading'
+        ];
+
+        deadBlockSelectors.forEach(function (sel) {
+            document.querySelectorAll(sel).forEach(function (block) {
+                var widget = block.closest('.ast-woo-sidebar-widget, .widget');
+                (widget || block).style.display = 'none';
+            });
+        });
+
+        /* Remove sidebar widgets whose visible content is just a placeholder */
+        document.querySelectorAll('.ast-woo-sidebar-widget').forEach(function (w) {
+            var visibleText = (w.textContent || '').replace(/\s+/g, '').length;
+            var hasInteractive = w.querySelector('input, select, button, a, ul, ol, img');
+            if (visibleText < 3 && !hasInteractive) {
+                w.style.display = 'none';
+            }
         });
 
     })();
