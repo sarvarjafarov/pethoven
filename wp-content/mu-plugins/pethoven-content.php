@@ -631,8 +631,8 @@ function pethoven_rewrite_content( $html ) {
      * ============================================ */
 
     if ( preg_match( '/<img[^>]*organic[^>]*>/i', $html ) ) {
-        $logo_1x = esc_url( $base_url . '/pethoven-logo-white-1x.png' );
-        $logo_2x = esc_url( $base_url . '/pethoven-logo-white-2x.png' );
+        $logo_1x = esc_url( $base_url . '/pethoven-logo-1x.png' );
+        $logo_2x = esc_url( $base_url . '/pethoven-logo-2x.png' );
         $name    = esc_attr( get_bloginfo( 'name' ) );
 
         $logo_replacement = sprintf(

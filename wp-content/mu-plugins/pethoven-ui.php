@@ -140,15 +140,24 @@ function pethoven_ui_css() {
      * ========================================================== */
 
     /* ==========================================================
-     * 3b. FOOTER — brand-consistent dark green
+     * 3b. FOOTER — cream to match body
      *
      * Astra's footer defaults to #111111 on .site-footer and
      * #000000 on both the primary-footer-builder and
-     * below-footer-builder wraps. Against the cream body, this
-     * reads as a harsh black band. Switch everything to the same
-     * dark forest green used by the announcement bar and the
-     * 20% off promo card so the page has cohesive dark-green
-     * bookends framing the cream content.
+     * below-footer-builder wraps. A black footer against the
+     * cream body reads as a harsh band at the bottom of every
+     * scroll.
+     *
+     * We previously tried dark forest green to match the brand,
+     * but that clashed with the 20% off promo card (also dark
+     * green) — the two regions visually merged into one dark
+     * block with no clear separation.
+     *
+     * Solution: make the footer the same cream as the body. The
+     * lower half of the page now reads as one calm light surface,
+     * the dark-green promo card stands out cleanly against it,
+     * and the footer content reads as part of the page — not a
+     * separate dark slab at the end.
      * ========================================================== */
 
     .site-footer,
@@ -157,15 +166,58 @@ function pethoven_ui_css() {
     [data-section="section-primary-footer-builder"],
     [data-section="section-below-footer-builder"],
     .ast-builder-footer-grid-row {
-        background-color: #1a3a2a !important;
+        background-color: #fbfbf7 !important;
         background-image: none !important;
     }
 
-    /* Ensure the top border between primary-footer and below-footer
-     * blends into the new green instead of a stark grey line. */
-    [data-section="section-below-footer-builder"] {
-        border-top-color: rgba(255, 255, 255, 0.08) !important;
+    /* Text and links — dark on cream */
+    .site-footer,
+    .site-footer p,
+    .site-footer span,
+    .site-footer li {
+        color: #2a2a2a !important;
     }
+
+    .site-footer h1,
+    .site-footer h2,
+    .site-footer h3,
+    .site-footer h4,
+    .site-footer h5,
+    .site-footer h6,
+    .site-footer .widget-title,
+    .site-footer .ast-widget-title {
+        color: #1a1a1a !important;
+    }
+
+    .site-footer a {
+        color: #4a4a4a !important;
+        transition: color 0.2s ease;
+    }
+
+    .site-footer a:hover {
+        color: var(--ast-global-color-1, #6a9739) !important;
+    }
+
+    /* Social icons — dark on cream, green on hover */
+    .site-footer .ast-builder-social-element,
+    .site-footer .ast-builder-social-element svg,
+    .site-footer .ast-builder-social-element path {
+        color: #4a4a4a !important;
+        fill: currentColor !important;
+    }
+
+    .site-footer .ast-builder-social-element:hover,
+    .site-footer .ast-builder-social-element:hover svg,
+    .site-footer .ast-builder-social-element:hover path {
+        color: var(--ast-global-color-1, #6a9739) !important;
+        fill: currentColor !important;
+    }
+
+    /* Subtle divider line between primary-footer and below-footer */
+    [data-section="section-below-footer-builder"] {
+        border-top-color: rgba(0, 0, 0, 0.06) !important;
+    }
+
 
     /* ==========================================================
      * 4a. HOMEPAGE BODY WASH

@@ -119,8 +119,8 @@ function pethoven_replace_footer_widget_logo( $instance, $widget, $args ) {
 
     if ( $html && preg_match( '/<img[^>]*organic[^>]*>/i', $html ) ) {
         $base_url = content_url( 'mu-plugins/assets' );
-        $logo_1x  = esc_url( $base_url . '/pethoven-logo-white-1x.png' );
-        $logo_2x  = esc_url( $base_url . '/pethoven-logo-white-2x.png' );
+        $logo_1x  = esc_url( $base_url . '/pethoven-logo-1x.png' );
+        $logo_2x  = esc_url( $base_url . '/pethoven-logo-2x.png' );
         $name     = esc_attr( get_bloginfo( 'name' ) );
 
         $replacement = sprintf(
@@ -158,8 +158,8 @@ function pethoven_footer_ob_end() {
 
     if ( $html && preg_match( '/<img[^>]*organic[^>]*>/i', $html ) ) {
         $base_url = content_url( 'mu-plugins/assets' );
-        $logo_1x  = esc_url( $base_url . '/pethoven-logo-white-1x.png' );
-        $logo_2x  = esc_url( $base_url . '/pethoven-logo-white-2x.png' );
+        $logo_1x  = esc_url( $base_url . '/pethoven-logo-1x.png' );
+        $logo_2x  = esc_url( $base_url . '/pethoven-logo-2x.png' );
         $name     = esc_attr( get_bloginfo( 'name' ) );
 
         $replacement = sprintf(
@@ -221,14 +221,14 @@ function pethoven_logo_styles() {
         }
 
         /* ---- Footer logo (replaced widget) ---- */
-        .site-footer img[srcset*="pethoven-logo-white"] {
+        .site-footer img[srcset*="pethoven-logo-"] {
             max-height: 50px;
             width: auto;
             height: auto;
         }
 
         @media (max-width: 544px) {
-            .site-footer img[srcset*="pethoven-logo-white"] {
+            .site-footer img[srcset*="pethoven-logo-"] {
                 max-height: 38px;
             }
         }
