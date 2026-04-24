@@ -218,6 +218,261 @@ function pethoven_ui_css() {
         border-top-color: rgba(0, 0, 0, 0.06) !important;
     }
 
+    /* ==========================================================
+     * 3c. FOOTER — structural polish
+     *
+     * Addresses the "sparse / unfinished" look of the default
+     * Astra footer: kills the italic tagline, tightens column
+     * gutters so the middle void disappears, adds a green accent
+     * under each column heading, lifts link hover into a small
+     * horizontal shift, and re-styles the below-footer so the
+     * legal line + social row reads as a proper copyright bar.
+     * ========================================================== */
+
+    /* Contain the primary footer row and pull columns inward so
+     * they don't drift to the page edges. Grid-row is already a
+     * flex row in Astra; we just cap it and re-distribute. */
+    .site-footer .site-primary-footer-wrap,
+    .site-footer .site-below-footer-wrap {
+        max-width: 1280px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding-left: 32px !important;
+        padding-right: 32px !important;
+    }
+
+    .site-footer .ast-builder-grid-row {
+        gap: 48px !important;
+        align-items: flex-start !important;
+    }
+
+    /* Soft top border so the footer reads as its own section
+     * against the cream body wash, without introducing a dark slab */
+    .site-footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+    }
+
+    /* Tagline under the logo — kill italic, tighten width, warm up color */
+    .site-footer .ast-builder-html-element,
+    .site-footer [data-section="section-fb-html-"],
+    .site-footer .ast-footer-widget-1-area p,
+    .site-footer .ast-footer-widget-1-area em,
+    .site-footer .ast-footer-widget-1-area i {
+        font-style: normal !important;
+    }
+
+    .site-footer [data-section^="section-fb-html-"] p,
+    .site-footer .ast-builder-html-element p {
+        font-size: 14.5px !important;
+        line-height: 1.65 !important;
+        color: #4a4a4a !important;
+        max-width: 320px !important;
+        margin: 0 0 14px 0 !important;
+    }
+
+    /* Column headings — add a short green accent underline + set
+     * a consistent size / weight / tracking across all four widget
+     * areas, regardless of which heading level the widget renders */
+    .site-footer .widget-title,
+    .site-footer .ast-widget-title,
+    .site-footer h2.widget-title,
+    .site-footer h3.widget-title,
+    .site-footer h4.widget-title {
+        position: relative !important;
+        font-size: 13px !important;
+        font-weight: 800 !important;
+        letter-spacing: 2px !important;
+        text-transform: uppercase !important;
+        color: #1a1a1a !important;
+        margin: 0 0 22px 0 !important;
+        padding-bottom: 10px !important;
+    }
+
+    .site-footer .widget-title::after,
+    .site-footer .ast-widget-title::after {
+        content: "" !important;
+        position: absolute !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: 28px !important;
+        height: 3px !important;
+        background: var(--ast-global-color-1, #6a9739) !important;
+        border-radius: 2px !important;
+    }
+
+    /* Nav link columns — tighten list rhythm and add a hover shift */
+    .site-footer .widget ul,
+    .site-footer .menu {
+        list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .site-footer .widget ul li,
+    .site-footer .menu li {
+        margin: 0 0 10px 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+    }
+
+    .site-footer .widget ul li a,
+    .site-footer .menu li a {
+        display: inline-block !important;
+        font-size: 14.5px !important;
+        font-weight: 500 !important;
+        color: #4a4a4a !important;
+        text-decoration: none !important;
+        transition: color 0.2s ease, transform 0.2s ease !important;
+    }
+
+    .site-footer .widget ul li a:hover,
+    .site-footer .menu li a:hover {
+        color: var(--ast-global-color-1, #6a9739) !important;
+        transform: translateX(3px) !important;
+    }
+
+    /* Below-footer — cleaner legal/copyright bar */
+    .site-footer .site-below-footer-wrap {
+        padding-top: 20px !important;
+        padding-bottom: 20px !important;
+        border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .site-footer .site-below-footer-wrap p,
+    .site-footer .ast-footer-copyright,
+    .site-footer .ast-footer-copyright p {
+        font-size: 13px !important;
+        color: #6a6a6a !important;
+        margin: 0 !important;
+        line-height: 1.55 !important;
+    }
+
+    /* Social icons — small constant-size pills instead of bare SVGs
+     * that felt orphaned in the corner */
+    .site-footer .ast-builder-social-element {
+        width: 34px !important;
+        height: 34px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 50% !important;
+        background: rgba(255, 255, 255, 0.6) !important;
+        margin-left: 6px !important;
+    }
+
+    .site-footer .ast-builder-social-element:hover {
+        border-color: var(--ast-global-color-1, #6a9739) !important;
+        background: rgba(139, 195, 74, 0.1) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .site-footer .ast-builder-social-element svg {
+        width: 15px !important;
+        height: 15px !important;
+    }
+
+    /* ----- Injected contact block (see JS section N2) -----
+     * Adds support email + location + response time below the
+     * tagline so the logo column doesn't feel half-empty. */
+    .pt-footer-contact {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pt-footer-contact-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 13.5px;
+        color: #4a4a4a;
+        line-height: 1.4;
+    }
+
+    .pt-footer-contact-row svg {
+        width: 15px;
+        height: 15px;
+        margin-top: 2px;
+        flex-shrink: 0;
+        color: var(--ast-global-color-1, #6a9739);
+    }
+
+    .pt-footer-contact-row a {
+        color: #4a4a4a !important;
+        text-decoration: none !important;
+        transition: color 0.2s ease !important;
+    }
+
+    .pt-footer-contact-row a:hover {
+        color: var(--ast-global-color-1, #6a9739) !important;
+    }
+
+    .pt-footer-contact-row strong {
+        color: #1a1a1a;
+        font-weight: 600;
+    }
+
+    /* ----- Injected copyright bar (see JS section N2) -----
+     * A proper bottom strip with © year + legal entity + a small
+     * "Made with care in NYC" credit. Replaces the orphan
+     * "Pethoven is the brand operating under..." paragraph. */
+    .pt-footer-copybar {
+        max-width: 1280px;
+        margin: 32px auto 0;
+        padding: 20px 32px 28px;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px 32px;
+        font-size: 13px;
+        color: #6a6a6a;
+    }
+
+    .pt-footer-copybar-left,
+    .pt-footer-copybar-right {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 18px;
+    }
+
+    .pt-footer-copybar-right {
+        color: #8a8a8a;
+    }
+
+    .pt-footer-copybar-sep {
+        color: rgba(0, 0, 0, 0.2);
+    }
+
+    .pt-footer-copybar-heart {
+        color: var(--ast-global-color-1, #6a9739);
+        font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+        .site-footer .ast-builder-grid-row {
+            gap: 32px !important;
+        }
+        .site-footer .site-primary-footer-wrap,
+        .site-footer .site-below-footer-wrap {
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+        }
+        .pt-footer-copybar {
+            padding: 20px 20px 24px;
+            justify-content: center;
+            text-align: center;
+        }
+        .pt-footer-copybar-left,
+        .pt-footer-copybar-right {
+            justify-content: center;
+        }
+    }
+
 
     /* ==========================================================
      * 4a. HOMEPAGE BODY WASH
@@ -3848,6 +4103,92 @@ function pethoven_ui_js() {
                 });
             newsletter.parentNode.insertBefore(trust, newsletter.nextSibling);
         }
+
+        /* ----------------------------------------------------------
+         * N2. Footer — contact block under the logo + copyright bar
+         *     The stock footer leaves the logo column sparse (just a
+         *     tagline) and drops the legal entity line into an
+         *     orphan paragraph at the bottom. We inject a proper
+         *     contact block under the tagline (support email +
+         *     location) and replace the orphan line with a clean
+         *     copyright bar that renders © + year + entity on the
+         *     left and a "Made with care in NYC" credit on the right.
+         * ---------------------------------------------------------- */
+        (function () {
+            var footerRoot = document.querySelector('.site-footer');
+            if (!footerRoot) return;
+
+            // --- Contact block: append under the tagline paragraph
+            //     in the first footer widget area (which holds the
+            //     logo + tagline). Guard against double-injection.
+            var logoCol = footerRoot.querySelector(
+                '.ast-footer-widget-1-area, [data-section="section-fb-widget-1"]'
+            );
+            if (logoCol && !logoCol.querySelector('.pt-footer-contact')) {
+                var contact = document.createElement('div');
+                contact.className = 'pt-footer-contact';
+                contact.innerHTML =
+                    '<div class="pt-footer-contact-row">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                            '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>' +
+                            '<polyline points="22,6 12,13 2,6"/>' +
+                        '</svg>' +
+                        '<span><a href="mailto:support@pethoven.com">support@pethoven.com</a><br>' +
+                        '<span style="font-size:12px;color:#8a8a8a;">We reply within one business day</span></span>' +
+                    '</div>' +
+                    '<div class="pt-footer-contact-row">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                            '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>' +
+                            '<circle cx="12" cy="10" r="3"/>' +
+                        '</svg>' +
+                        '<span>New York, NY<br>' +
+                        '<span style="font-size:12px;color:#8a8a8a;">Formulated &amp; shipped from the USA</span></span>' +
+                    '</div>';
+                logoCol.appendChild(contact);
+            }
+
+            // --- Copyright bar: suppress the stock legal-entity line
+            //     inside the below-footer (if present) and append a
+            //     new flex bar with © year + entity + "made with care"
+            //     credit. The stock below-footer keeps the social row.
+            if (!footerRoot.querySelector('.pt-footer-copybar')) {
+                // Hide any stock paragraph that contains the legal
+                // entity — it looks orphaned and we're replacing it.
+                var killPatterns = [
+                    'pethoven is the brand operating under',
+                    'global tail goods llc'
+                ];
+                footerRoot.querySelectorAll('p, span, div').forEach(function (el) {
+                    var t = (el.textContent || '').trim().toLowerCase();
+                    if (!t || t.length > 200) return;
+                    if (el.querySelector('a, svg, input, button')) return;
+                    for (var i = 0; i < killPatterns.length; i++) {
+                        if (t.indexOf(killPatterns[i]) !== -1 &&
+                            t.indexOf('©') === -1 &&
+                            t.indexOf('pethoven ·') === -1) {
+                            el.style.display = 'none';
+                            break;
+                        }
+                    }
+                });
+
+                var bar = document.createElement('div');
+                bar.className = 'pt-footer-copybar';
+                var year = new Date().getFullYear();
+                bar.innerHTML =
+                    '<div class="pt-footer-copybar-left">' +
+                        '<span>© ' + year + ' Pethoven</span>' +
+                        '<span class="pt-footer-copybar-sep">·</span>' +
+                        '<span>A brand of Global Tail Goods LLC</span>' +
+                        '<span class="pt-footer-copybar-sep">·</span>' +
+                        '<span>All rights reserved</span>' +
+                    '</div>' +
+                    '<div class="pt-footer-copybar-right">' +
+                        '<span>Made with <span class="pt-footer-copybar-heart" aria-hidden="true">♥</span> in New York</span>' +
+                    '</div>';
+                footerRoot.appendChild(bar);
+            }
+        })();
 
         /* ----------------------------------------------------------
          * H0. Homepage Best Sellers section — eyebrow, subtitle, CTA
