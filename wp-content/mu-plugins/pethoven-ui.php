@@ -140,6 +140,34 @@ function pethoven_ui_css() {
      * ========================================================== */
 
     /* ==========================================================
+     * 3b. FOOTER — brand-consistent dark green
+     *
+     * Astra's footer defaults to #111111 on .site-footer and
+     * #000000 on both the primary-footer-builder and
+     * below-footer-builder wraps. Against the cream body, this
+     * reads as a harsh black band. Switch everything to the same
+     * dark forest green used by the announcement bar and the
+     * 20% off promo card so the page has cohesive dark-green
+     * bookends framing the cream content.
+     * ========================================================== */
+
+    .site-footer,
+    .site-footer .site-primary-footer-wrap,
+    .site-footer .site-below-footer-wrap,
+    [data-section="section-primary-footer-builder"],
+    [data-section="section-below-footer-builder"],
+    .ast-builder-footer-grid-row {
+        background-color: #1a3a2a !important;
+        background-image: none !important;
+    }
+
+    /* Ensure the top border between primary-footer and below-footer
+     * blends into the new green instead of a stark grey line. */
+    [data-section="section-below-footer-builder"] {
+        border-top-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    /* ==========================================================
      * 4a. HOMEPAGE BODY WASH
      *
      * Give the homepage a very subtle warm-white base color so
@@ -2498,13 +2526,19 @@ function pethoven_ui_css() {
      * branded card with an icon, coupon pill, and white CTA.
      * ========================================================== */
 
-    .elementor-element-28fc7dc {
-        padding: 36px 20px 60px !important;
+    .elementor-element-28fc7dc,
+    .elementor-95 .elementor-element.elementor-element-28fc7dc,
+    .elementor-95 .elementor-element.elementor-element-28fc7dc:not(.elementor-motion-effects-element-type-background) {
+        padding: 36px 20px 48px !important;
         position: relative;
         /* The section has a dark background set in the Elementor
-         * customizer, which shows as a black band around our
-         * injected green card. Force the outer section to
-         * transparent so only our ::before card renders. */
+         * customizer customizer (#111111 via astglobalcolor2),
+         * which shows as a black band around our injected green
+         * card. Force the outer section + its Elementor-generated
+         * nested wrappers transparent so only our ::before card
+         * renders. We repeat the selectors that Elementor itself
+         * uses so our rule wins on specificity as well as
+         * !important. */
         background: transparent !important;
         background-color: transparent !important;
         background-image: none !important;
@@ -2532,7 +2566,7 @@ function pethoven_ui_css() {
         left: max(20px, 50% - 620px);
         right: max(20px, 50% - 620px);
         top: 36px;
-        bottom: 60px;
+        bottom: 48px;
         background:
             radial-gradient(circle at 12% 18%, rgba(139,195,74,0.26) 0%, transparent 55%),
             radial-gradient(circle at 88% 82%, rgba(139,195,74,0.18) 0%, transparent 50%),
@@ -2642,12 +2676,15 @@ function pethoven_ui_css() {
      * at the bottom of the section.
      * ========================================================== */
 
-    .elementor-element-ea9e0d9 {
+    .elementor-element-ea9e0d9,
+    .elementor-95 .elementor-element.elementor-element-ea9e0d9,
+    .elementor-95 .elementor-element.elementor-element-ea9e0d9:not(.elementor-motion-effects-element-type-background) {
         padding: 60px 0 !important;
-        /* The section has a gradient preset via Elementor
-         * (data-settings background_background=gradient), which
-         * renders as a dark band on the page. Force transparent
-         * so the homepage body cream shows through instead. */
+        /* Elementor renders a white→cream linear-gradient plus a
+         * decorative leaf image ::before on this section. Nuke
+         * both so the cream body shows through uniformly. Matching
+         * Elementor's selector depth so our rule wins on
+         * specificity as well as !important. */
         background: transparent !important;
         background-color: transparent !important;
         background-image: none !important;
@@ -2656,6 +2693,14 @@ function pethoven_ui_css() {
     .elementor-element-ea9e0d9 > .elementor-background-overlay,
     .elementor-element-ea9e0d9 > .elementor-background-video-container,
     .elementor-element-ea9e0d9 .elementor-shape {
+        display: none !important;
+    }
+
+    /* Kill the leaf background image Elementor stacks on the
+     * section's ::before pseudo-element */
+    .elementor-95 .elementor-element.elementor-element-ea9e0d9::before {
+        background-image: none !important;
+        content: none !important;
         display: none !important;
     }
 
