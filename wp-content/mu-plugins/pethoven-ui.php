@@ -2578,22 +2578,17 @@ function pethoven_ui_css() {
      * branded card with an icon, coupon pill, and white CTA.
      * ========================================================== */
 
+    /* Section hidden per user request — the Elementor dark
+     * background kept bleeding around our injected green card no
+     * matter how we overrode it (likely cached CSS from a CDN or
+     * an Elementor inline style we couldn't reach cleanly). The
+     * "first-order 20% off" message still lives in the rotating
+     * announcement bar at the top of the site, so we're not
+     * losing the offer — just removing the problematic section. */
     .elementor-element-28fc7dc,
     .elementor-95 .elementor-element.elementor-element-28fc7dc,
     .elementor-95 .elementor-element.elementor-element-28fc7dc:not(.elementor-motion-effects-element-type-background) {
-        padding: 36px 20px 48px !important;
-        position: relative;
-        /* The section has a dark background set in the Elementor
-         * customizer customizer (#111111 via astglobalcolor2),
-         * which shows as a black band around our injected green
-         * card. Force the outer section + its Elementor-generated
-         * nested wrappers transparent so only our ::before card
-         * renders. We repeat the selectors that Elementor itself
-         * uses so our rule wins on specificity as well as
-         * !important. */
-        background: transparent !important;
-        background-color: transparent !important;
-        background-image: none !important;
+        display: none !important;
     }
 
     /* Kill any Elementor background overlay layered on top */
