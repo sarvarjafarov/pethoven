@@ -150,15 +150,23 @@ function pethoven_ui_css() {
      * ========================================================== */
 
     body.home,
-    body.page.home {
+    body.page.home,
+    html body.home {
         background-color: #fbfbf7 !important;
+        background-image: none !important;
     }
 
-    /* Make sure the site-content container inherits this so the
-     * sections don't paint white over it. */
+    /* Make sure the content wrappers (site-content / #content,
+     * Astra's .ast-page-builder-template wrapper, the main tag)
+     * don't paint white/dark over the body cream. */
+    body.home #content,
     body.home .site-content,
-    body.page.home .site-content {
+    body.home .site-content > .ast-container,
+    body.home main,
+    body.home .ast-page-builder-template .site-content,
+    body.home.ast-page-builder-template #content {
         background-color: transparent !important;
+        background: transparent !important;
     }
 
     /* ==========================================================
@@ -2636,6 +2644,25 @@ function pethoven_ui_css() {
 
     .elementor-element-ea9e0d9 {
         padding: 60px 0 !important;
+        /* The section has a gradient preset via Elementor
+         * (data-settings background_background=gradient), which
+         * renders as a dark band on the page. Force transparent
+         * so the homepage body cream shows through instead. */
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+    }
+
+    .elementor-element-ea9e0d9 > .elementor-background-overlay,
+    .elementor-element-ea9e0d9 > .elementor-background-video-container,
+    .elementor-element-ea9e0d9 .elementor-shape {
+        display: none !important;
+    }
+
+    .elementor-element-ea9e0d9 > .elementor-container,
+    .elementor-element-ea9e0d9 > .e-con-inner {
+        background: transparent !important;
+        background-color: transparent !important;
     }
 
     /* Testimonial cards */
