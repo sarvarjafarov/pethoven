@@ -22,57 +22,31 @@ on:
       - staging
       - main
   workflow_dispatch:
-    inputs:
-      target:
-        description: "Target environment"
-        required: true
-        default: staging
-        type: choice
-        options:
-          - staging
-          - production
+
+env:
+  RSYNC_ARGS: >-
+    -az --delete --delete-excluded
+    --exclude=wp-content/uploads/**
+    --exclude=wp-content/cache/**
+    --exclude=wp-content/upgrade/**
+    --exclude=wp-content/debug.log
+    --exclude=.git/**
+    --exclude=.github/**
+    --exclude=.htaccess
+    --exclude=.env
+    --exclude=.env.*
+    --exclude=scripts/**
+    --exclude=docker-compose.yml
+    --exclude=README.md
+    --exclude=CNAME
 
 jobs:
-  deploy:
-    name: Deploy (${{ github.ref_name }})
+  deploy-staging:
+    name: Deploy → staging (opossum)
+    if: github.ref_name == 'staging'
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Resolve target directory
-        id: target
-        run: |
-          # Deploy target is picked by branch on push, or by input on manual run.
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            TARGET="${{ inputs.target }}"
-          else
-            TARGET="${{ github.ref_name }}"
-          fi
-
-          case "$TARGET" in
-            main|production)
-              echo "env_name=production" >> "$GITHUB_OUTPUT"
-              echo "remote_dir=${{ secrets.HOSTINGER_PROD_DIR }}" >> "$GITHUB_OUTPUT"
-              ;;
-            staging)
-              echo "env_name=staging" >> "$GITHUB_OUTPUT"
-              echo "remote_dir=${{ secrets.HOSTINGER_STAGING_DIR }}" >> "$GITHUB_OUTPUT"
-              ;;
-            *)
-              echo "::error::Unsupported branch/input '$TARGET' — only staging and main deploy." >&2
-              exit 1
-              ;;
-          esac
-
-      - name: Guard against empty remote dir
-        run: |
-          if [ -z "${{ steps.target.outputs.remote_dir }}" ]; then
-            echo "::error::Missing secret for ${{ steps.target.outputs.env_name }} remote dir — set HOSTINGER_STAGING_DIR / HOSTINGER_PROD_DIR." >&2
-            exit 1
-          fi
-
+      - uses: actions/checkout@v4
       - name: Sync files via rsync over SSH
         uses: easingthemes/ssh-deploy@v4
         with:
@@ -82,19 +56,23 @@ jobs:
           REMOTE_USER: ${{ secrets.HOSTINGER_USERNAME }}
           REMOTE_PORT: 65002
           SOURCE: ./
-          TARGET: ${{ steps.target.outputs.remote_dir }}
-          ARGS: >-
-            -az --delete --delete-excluded
-            --exclude='wp-content/uploads/**'
-            --exclude='wp-content/cache/**'
-            --exclude='wp-content/upgrade/**'
-            --exclude='wp-content/debug.log'
-            --exclude='.git/**'
-            --exclude='.github/**'
-            --exclude='.htaccess'
-            --exclude='.env'
-            --exclude='.env.*'
-            --exclude='scripts/**'
-            --exclude='docker-compose.yml'
-            --exclude='README.md'
-            --exclude='CNAME'
+          TARGET: ${{ secrets.HOSTINGER_STAGING_DIR }}
+          ARGS: ${{ env.RSYNC_ARGS }}
+
+  deploy-production:
+    name: Deploy → production (pethoven.com)
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sync files via rsync over SSH
+        uses: easingthemes/ssh-deploy@v4
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          SSH_CMD_ARGS: -o StrictHostKeyChecking=no
+          REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
+          REMOTE_USER: ${{ secrets.HOSTINGER_USERNAME }}
+          REMOTE_PORT: 65002
+          SOURCE: ./
+          TARGET: ${{ secrets.HOSTINGER_PROD_DIR }}
+          ARGS: ${{ env.RSYNC_ARGS }}
