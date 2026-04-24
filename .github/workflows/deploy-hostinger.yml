@@ -23,23 +23,6 @@ on:
       - main
   workflow_dispatch:
 
-env:
-  RSYNC_ARGS: >-
-    -az --delete --delete-excluded
-    --exclude=wp-content/uploads/**
-    --exclude=wp-content/cache/**
-    --exclude=wp-content/upgrade/**
-    --exclude=wp-content/debug.log
-    --exclude=.git/**
-    --exclude=.github/**
-    --exclude=.htaccess
-    --exclude=.env
-    --exclude=.env.*
-    --exclude=scripts/**
-    --exclude=docker-compose.yml
-    --exclude=README.md
-    --exclude=CNAME
-
 jobs:
   deploy-staging:
     name: Deploy → staging (opossum)
@@ -57,7 +40,21 @@ jobs:
           REMOTE_PORT: 65002
           SOURCE: ./
           TARGET: ${{ secrets.HOSTINGER_STAGING_DIR }}
-          ARGS: ${{ env.RSYNC_ARGS }}
+          ARGS: >-
+            -az --delete --delete-excluded
+            --exclude='wp-content/uploads/**'
+            --exclude='wp-content/cache/**'
+            --exclude='wp-content/upgrade/**'
+            --exclude='wp-content/debug.log'
+            --exclude='.git/**'
+            --exclude='.github/**'
+            --exclude='.htaccess'
+            --exclude='.env'
+            --exclude='.env.*'
+            --exclude='scripts/**'
+            --exclude='docker-compose.yml'
+            --exclude='README.md'
+            --exclude='CNAME'
 
   deploy-production:
     name: Deploy → production (pethoven.com)
@@ -75,4 +72,18 @@ jobs:
           REMOTE_PORT: 65002
           SOURCE: ./
           TARGET: ${{ secrets.HOSTINGER_PROD_DIR }}
-          ARGS: ${{ env.RSYNC_ARGS }}
+          ARGS: >-
+            -az --delete --delete-excluded
+            --exclude='wp-content/uploads/**'
+            --exclude='wp-content/cache/**'
+            --exclude='wp-content/upgrade/**'
+            --exclude='wp-content/debug.log'
+            --exclude='.git/**'
+            --exclude='.github/**'
+            --exclude='.htaccess'
+            --exclude='.env'
+            --exclude='.env.*'
+            --exclude='scripts/**'
+            --exclude='docker-compose.yml'
+            --exclude='README.md'
+            --exclude='CNAME'
