@@ -3132,42 +3132,71 @@ function pethoven_ui_css() {
     /* ==========================================================
      * 28. FOOTER NEWSLETTER (injected via JS)
      *
-     * Sits at the top of the footer and gives visitors a reason
-     * to hand over an email. Simple input + black pill button.
+     * Sits at the top of the footer as a proper card (cream-green
+     * tinted panel with a decorative leaf). Left: text hook.
+     * Right: email input + Subscribe button + wrapping status line.
      * ========================================================== */
 
     .pt-footer-newsletter {
         max-width: 1200px;
-        margin: 0 auto 32px;
-        padding: 36px 24px;
+        margin: 0 auto 40px;
+        padding: 40px 48px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        gap: 24px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        gap: 32px;
+        background: linear-gradient(135deg, rgba(139,195,74,0.08) 0%, rgba(139,195,74,0.02) 100%);
+        border: 1px solid rgba(139, 195, 74, 0.18);
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Decorative bloom in the corner */
+    .pt-footer-newsletter::before {
+        content: '';
+        position: absolute;
+        top: -80px;
+        right: -80px;
+        width: 240px;
+        height: 240px;
+        background: radial-gradient(circle, rgba(139, 195, 74, 0.22), transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .pt-footer-newsletter > * {
+        position: relative;
+        z-index: 1;
     }
 
     .pt-footer-newsletter-text {
-        flex: 1 1 280px;
+        flex: 1 1 320px;
         min-width: 0;
     }
 
     .pt-footer-newsletter-eyebrow {
+        display: inline-block;
         font-size: 11px;
         font-weight: 800;
         letter-spacing: 2.5px;
         text-transform: uppercase;
         color: var(--ast-global-color-1, #6a9739);
-        margin-bottom: 8px;
+        background: rgba(139, 195, 74, 0.14);
+        padding: 4px 12px;
+        border-radius: 100px;
+        margin-bottom: 12px;
     }
 
     .pt-footer-newsletter-title {
-        font-size: 22px;
+        font-family: inherit !important;
+        font-size: 26px;
         font-weight: 800;
         color: #1a1a1a;
-        line-height: 1.25;
-        letter-spacing: -0.3px;
+        line-height: 1.2;
+        letter-spacing: -0.4px;
         margin: 0;
     }
 
@@ -3175,39 +3204,50 @@ function pethoven_ui_css() {
         display: block;
         font-size: 14px;
         font-weight: 500;
-        color: #666;
-        margin-top: 4px;
+        color: #5a5a5a;
+        margin-top: 6px;
         letter-spacing: 0;
+        line-height: 1.5;
     }
 
+    /* Form container is its own flex row so we can wrap the status
+     * line to a second row cleanly */
     .pt-footer-newsletter-form {
-        flex: 1 1 380px;
+        flex: 1 1 360px;
+        max-width: 520px;
         display: flex;
+        flex-wrap: wrap;
         gap: 8px;
-        max-width: 480px;
+        align-items: center;
     }
 
     .pt-footer-newsletter-input {
-        flex: 1;
-        padding: 12px 18px;
-        border: 1px solid #dcdcdc;
+        flex: 1 1 220px;
+        min-width: 0;
+        padding: 14px 20px;
+        border: 1px solid #e2e2e2;
         border-radius: 100px;
         background: #ffffff;
         font-size: 14px;
         font-family: inherit;
         color: #1a1a1a;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        min-width: 0;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .pt-footer-newsletter-input::placeholder {
+        color: #a8a8a8;
     }
 
     .pt-footer-newsletter-input:focus {
         outline: none;
         border-color: var(--ast-global-color-1, #6a9739);
-        box-shadow: 0 0 0 3px rgba(106, 151, 57, 0.12);
+        box-shadow: 0 0 0 3px rgba(106, 151, 57, 0.14);
     }
 
     .pt-footer-newsletter-btn {
-        padding: 12px 26px;
+        flex: 0 0 auto;
+        padding: 14px 30px;
         background: #1a1a1a;
         color: #ffffff;
         border: none;
@@ -3228,24 +3268,33 @@ function pethoven_ui_css() {
         box-shadow: 0 10px 24px rgba(106, 151, 57, 0.22);
     }
 
+    /* Status line is its own 100% row — wraps below input + button.
+     * Zero height until populated so it doesn't leave an awkward
+     * empty gap in the layout by default. */
     .pt-footer-newsletter-status {
-        flex: 1 1 100%;
+        flex: 0 0 100%;
         font-size: 13px;
+        font-weight: 500;
         color: var(--ast-global-color-1, #6a9739);
         margin: 0;
-        min-height: 18px;
+        min-height: 0;
+        padding: 0 6px;
+    }
+
+    .pt-footer-newsletter-status:empty {
+        display: none;
     }
 
     /* Certification / trust row below the newsletter */
     .pt-footer-trust {
         max-width: 1200px;
-        margin: 0 auto 28px;
-        padding: 8px 24px 0;
+        margin: 0 auto 32px;
+        padding: 0 24px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
-        gap: 28px 44px;
+        gap: 16px 40px;
         font-size: 12px;
         font-weight: 600;
         letter-spacing: 0.4px;
@@ -3259,25 +3308,41 @@ function pethoven_ui_css() {
     }
 
     .pt-footer-trust-item svg {
-        width: 18px;
-        height: 18px;
+        width: 16px;
+        height: 16px;
         color: var(--ast-global-color-1, #6a9739);
         flex-shrink: 0;
+    }
+
+    @media (max-width: 921px) {
+        .pt-footer-newsletter {
+            padding: 32px 32px;
+            gap: 24px;
+        }
+        .pt-footer-newsletter-title { font-size: 22px; }
     }
 
     @media (max-width: 544px) {
         .pt-footer-newsletter {
             padding: 28px 20px;
-            gap: 18px;
+            gap: 20px;
+            border-radius: 20px;
         }
-        .pt-footer-newsletter-title { font-size: 18px; }
-        .pt-footer-newsletter-form { flex-wrap: wrap; }
+        .pt-footer-newsletter::before {
+            top: -40px;
+            right: -40px;
+            width: 140px;
+            height: 140px;
+        }
+        .pt-footer-newsletter-title { font-size: 20px; }
+        .pt-footer-newsletter-title small { font-size: 13px; }
         .pt-footer-newsletter-input,
         .pt-footer-newsletter-btn {
             flex: 1 1 100%;
         }
+        .pt-footer-newsletter-btn { padding: 14px 24px; }
         .pt-footer-trust {
-            gap: 16px 24px;
+            gap: 12px 24px;
             font-size: 11px;
         }
     }
