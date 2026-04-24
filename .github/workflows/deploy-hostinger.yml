@@ -50,50 +50,53 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -p 65002 -H "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
 
+      - name: Probe SSH connectivity
+        run: |
+          ssh -i ~/.ssh/deploy_key -p 65002 -o StrictHostKeyChecking=no \
+            "${{ secrets.HOSTINGER_USERNAME }}@${{ secrets.HOSTINGER_HOST }}" \
+            "echo SSH_OK; hostname; pwd; ls -d '${{ steps.t.outputs.dir }}'"
+
       - name: Rsync to ${{ steps.t.outputs.env_name }}
         run: |
-          set -o pipefail
+          # Build exclude list into a file to avoid any shell-quoting
+          # surprises around glob patterns.
+          cat > /tmp/rsync-excludes <<'EXCLUDES'
+          wp-content/uploads/**
+          wp-content/cache/**
+          wp-content/upgrade/**
+          wp-content/debug.log
+          .git/**
+          .github/**
+          .htaccess
+          .env
+          .env.*
+          scripts/**
+          docker-compose.yml
+          README.md
+          CNAME
+          EXCLUDES
 
-          # Rsync exit codes we treat as non-fatal on Hostinger shared hosting:
-          #   23 — partial transfer (LiteSpeed cache files often not writable)
-          #   24 — some files vanished during transfer (temp files)
-          # Any other non-zero is a real failure.
-
+          # --delete removes stale files from target, but NEVER files
+          # matching --exclude-from (that requires --delete-excluded,
+          # which we deliberately do NOT pass).
+          #
+          # Accept rsync exit codes 23/24 as success — Hostinger's
+          # LiteSpeed sometimes leaves cache files that the deploy
+          # user can't touch, producing "partial transfer" warnings
+          # even though all actual code synced correctly.
           set +e
-          # NO --delete-excluded: that flag DELETES files on target matching
-          # --exclude patterns, which would wipe .env / .htaccess / uploads
-          # that only exist on the server. --delete alone removes stale
-          # files from target that are missing from source AND not excluded.
-          rsync -az --delete \
-            --filter='protect .env' \
-            --filter='protect .env.*' \
-            --filter='protect .htaccess' \
-            --filter='protect wp-content/uploads/***' \
-            --filter='protect wp-content/cache/***' \
-            --filter='protect wp-content/upgrade/***' \
-            --exclude='wp-content/uploads/**' \
-            --exclude='wp-content/cache/**' \
-            --exclude='wp-content/upgrade/**' \
-            --exclude='wp-content/debug.log' \
-            --exclude='.git/**' \
-            --exclude='.github/**' \
-            --exclude='.htaccess' \
-            --exclude='.env' \
-            --exclude='.env.*' \
-            --exclude='scripts/**' \
-            --exclude='docker-compose.yml' \
-            --exclude='README.md' \
-            --exclude='CNAME' \
+          rsync -az --delete -v --stats \
+            --exclude-from=/tmp/rsync-excludes \
             -e "ssh -i ~/.ssh/deploy_key -p 65002 -o StrictHostKeyChecking=no" \
             ./ \
             "${{ secrets.HOSTINGER_USERNAME }}@${{ secrets.HOSTINGER_HOST }}:${{ steps.t.outputs.dir }}/"
           rc=$?
           set -e
 
-          if [ $rc -eq 0 ] || [ $rc -eq 23 ] || [ $rc -eq 24 ]; then
-            echo "rsync completed (exit $rc — ${rc/0/clean}${rc/23/partial, non-fatal on Hostinger}${rc/24/vanished files, non-fatal})"
-            exit 0
-          else
-            echo "::error::rsync failed with exit code $rc"
-            exit $rc
-          fi
+          echo "rsync exit code: $rc"
+          case $rc in
+            0)  echo "clean sync"; exit 0 ;;
+            23) echo "partial transfer (non-fatal on Hostinger); continuing"; exit 0 ;;
+            24) echo "some files vanished mid-transfer (non-fatal); continuing"; exit 0 ;;
+            *)  echo "::error::rsync failed with code $rc"; exit $rc ;;
+          esac
