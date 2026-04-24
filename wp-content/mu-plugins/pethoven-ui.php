@@ -242,21 +242,8 @@ function pethoven_ui_css() {
     }
 
     .site-footer .ast-builder-grid-row {
-        gap: 56px !important;
+        gap: 40px !important;
         align-items: flex-start !important;
-    }
-
-    /* Rebalance the 3-column primary footer so Website + Site Links
-     * sit closer together — default Astra layout puts them on the
-     * far edges, leaving a wide empty gap in the middle. We give
-     * the logo column more room and let the nav columns be tighter. */
-    .site-footer .site-primary-footer-wrap .ast-builder-grid-row-container-inner,
-    .site-footer .site-primary-footer-wrap .ast-builder-grid-row {
-        grid-template-columns: 1.6fr 1fr 1fr !important;
-    }
-
-    .site-footer .site-primary-footer-wrap .ast-builder-grid-row-layout-3-equal > * + * {
-        justify-self: start !important;
     }
 
     /* Soft top border so the footer reads as its own section
