@@ -234,7 +234,7 @@ function pethoven_ui_css() {
      * flex row in Astra; we just cap it and re-distribute. */
     .site-footer .site-primary-footer-wrap,
     .site-footer .site-below-footer-wrap {
-        max-width: 1280px !important;
+        max-width: 1120px !important;
         margin-left: auto !important;
         margin-right: auto !important;
         padding-left: 32px !important;
@@ -244,6 +244,26 @@ function pethoven_ui_css() {
     .site-footer .ast-builder-grid-row {
         gap: 40px !important;
         align-items: flex-start !important;
+    }
+
+    /* Force the primary footer to 3 equal columns.
+     *
+     * Astra's `.ast-builder-grid-row` defaults to
+     * `grid-template-columns: auto auto` (2 tracks). The 3-equal
+     * layout class is supposed to override that, but in our setup
+     * it isn't always applied — the result was the logo column
+     * collapsing to its own row and leaving Website/Site Links
+     * floating in a wide 2-column row.
+     *
+     * `min-width: 0` on children is required so grid items can
+     * shrink below their intrinsic content width — without it a
+     * single tall child can force the other columns to wrap. */
+    .site-footer .site-primary-footer-wrap .ast-builder-grid-row {
+        grid-template-columns: 1fr 1fr 1fr !important;
+    }
+
+    .site-footer .site-primary-footer-wrap .ast-builder-grid-row > * {
+        min-width: 0 !important;
     }
 
     /* Soft top border so the footer reads as its own section
@@ -427,7 +447,7 @@ function pethoven_ui_css() {
      * below-footer row which left the icons floating in an empty
      * strip with no balance. */
     .pt-footer-copybar {
-        max-width: 1280px;
+        max-width: 1120px;
         margin: 0 auto;
         padding: 22px 32px 28px;
         border-top: 1px solid rgba(0, 0, 0, 0.08);
