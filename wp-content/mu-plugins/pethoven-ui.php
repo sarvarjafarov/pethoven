@@ -3847,16 +3847,20 @@ function pethoven_ui_js() {
 
         /* ----------------------------------------------------------
          * B. Dedupe footer columns.
-         *    The footer currently has three columns with heavy
-         *    overlap (Website / Quick Links / Site Links). We hide
-         *    the "Quick Links" column since its contents are a
-         *    subset of the others.
+         *    Astra's footer is configured with 4 zones but only 3
+         *    of them hold unique content — the 3rd zone is a
+         *    "Quick Links" menu whose entries duplicate Website +
+         *    Site Links. We hide the entire grid cell (not just the
+         *    inner widget) so the footer grid collapses cleanly to
+         *    3 visible columns; otherwise the empty zone would
+         *    leave a ghost track in the grid and force Site Links
+         *    to wrap to a new row.
          * ---------------------------------------------------------- */
         document.querySelectorAll('.site-footer .widget-title, .site-footer h2, .site-footer h3, .site-footer h4').forEach(function (h) {
             var t = (h.textContent || '').trim().toLowerCase();
             if (t === 'quick links') {
-                var col = h.closest('.widget, .elementor-widget, .wp-block-group, .ast-footer-widget-1-area, .ast-footer-widget-2-area, .ast-footer-widget-3-area, .ast-footer-widget-4-area');
-                (col || h.parentElement || h).style.display = 'none';
+                var gridCell = h.closest('[class*="site-footer-primary-section-"], [class*="site-footer-section-"], .ast-footer-widget-1-area, .ast-footer-widget-2-area, .ast-footer-widget-3-area, .ast-footer-widget-4-area');
+                (gridCell || h.parentElement || h).style.display = 'none';
             }
         });
 
