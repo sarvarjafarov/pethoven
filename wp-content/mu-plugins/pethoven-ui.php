@@ -3202,6 +3202,32 @@ function pethoven_ui_css() {
         display: none !important;
     }
 
+    /* Kill the yellow-pepper Unsplash background on the middle
+     * promo container (element-79f6103). Elementor sets this via
+     * per-post CSS — we reset it so the Buy 2 Get 1 card renders
+     * as the clean cream-green card styled below. */
+    .elementor-95 .elementor-element.elementor-element-79f6103,
+    .elementor-element-79f6103,
+    .elementor-element-79f6103:not(.elementor-motion-effects-element-type-background),
+    .elementor-element-79f6103 > .elementor-motion-effects-container > .elementor-motion-effects-layer {
+        background-image: none !important;
+        background-color: transparent !important;
+    }
+
+    /* Hide the decorative leaf-branch image (logo-leaf-new.png)
+     * that the grocery template placed between the heading and
+     * the testimonial cards. It's off-brand and adds vertical
+     * noise without earning its space. */
+    .elementor-element-ea9e0d9 .elementor-element-0270db5,
+    .elementor-element-ea9e0d9 .elementor-widget-image img[src*="logo-leaf"],
+    .elementor-element-ea9e0d9 .elementor-widget-image img[src*="logo-leaf-new"] {
+        display: none !important;
+    }
+
+    .elementor-element-ea9e0d9 .elementor-widget-image:has(img[src*="logo-leaf"]) {
+        display: none !important;
+    }
+
     .elementor-element-ea9e0d9 .elementor-widget-image-box {
         background: linear-gradient(135deg, #f5f7f0 0%, #eef2e8 100%);
         border: 1px solid rgba(139, 195, 74, 0.2);
@@ -3423,7 +3449,7 @@ function pethoven_ui_css() {
         width: 100% !important;
         text-align: center;
         padding: 0 20px;
-        margin: 0 auto 48px;
+        margin: 0 auto 32px;
         box-sizing: border-box;
     }
 

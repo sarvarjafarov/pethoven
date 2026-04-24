@@ -238,6 +238,21 @@ function pethoven_rewrite_content( $html ) {
     $replacements = array(
 
         /* ============================================
+         * TESTIMONIAL PLACEHOLDERS — MUST RUN FIRST
+         *
+         * Both testimonial cards share the same placeholder text:
+         *   "Click edit button to change this text. Lorem ipsum..."
+         * PHP str_replace processes array keys in order, and the
+         * hero Lorem replacement below (line ~253) would consume
+         * the inner Lorem segment before this specific key could
+         * match. Wipe the full testimonial phrase to an empty
+         * string FIRST, leaving <p></p> for the preg_replace at
+         * the end of this function to inject unique reviews into.
+         * ============================================ */
+        'Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.'
+            => '',
+
+        /* ============================================
          * HERO SECTION
          * ============================================ */
 
@@ -314,14 +329,12 @@ function pethoven_rewrite_content( $html ) {
 
         /* ============================================
          * TESTIMONIALS
+         * (the full "Click edit button..." placeholder is
+         * cleared near the top of this array — see note there)
          * ============================================ */
 
         'Customers Reviews'
             => 'What Dog Owners Say',
-
-        // Both testimonials have the same placeholder
-        'Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.'
-            => '',
 
         'Mila Kunis'
             => 'Sarah K.',
