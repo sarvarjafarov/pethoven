@@ -3202,16 +3202,35 @@ function pethoven_ui_css() {
         display: none !important;
     }
 
-    /* Kill the yellow-pepper Unsplash background on the middle
-     * promo container (element-79f6103). Elementor sets this via
-     * per-post CSS — we reset it so the Buy 2 Get 1 card renders
-     * as the clean cream-green card styled below. */
+    /* Kill everything the grocery template put on the middle promo
+     * container (element-79f6103): the pepper Unsplash photo, the
+     * Elementor overlay ::before that paints a dark grey over it,
+     * the drop shadow, and the forced width. We want this container
+     * to be a transparent pass-through so only the Buy 2 Get 1 card
+     * inside it renders. */
     .elementor-95 .elementor-element.elementor-element-79f6103,
     .elementor-element-79f6103,
     .elementor-element-79f6103:not(.elementor-motion-effects-element-type-background),
     .elementor-element-79f6103 > .elementor-motion-effects-container > .elementor-motion-effects-layer {
         background-image: none !important;
         background-color: transparent !important;
+        box-shadow: none !important;
+        --overlay-opacity: 0 !important;
+    }
+
+    /* Elementor's overlay ::before on the container still paints a
+     * dark grey via `background-color: var(--e-global-color-astglobalcolor3)`.
+     * Remove it entirely so the container is truly transparent. */
+    .elementor-95 .elementor-element.elementor-element-79f6103::before,
+    .elementor-element-79f6103::before,
+    .elementor-element-79f6103 > .elementor-background-video-container::before,
+    .elementor-element-79f6103 > .e-con-inner > .elementor-background-video-container::before,
+    .elementor-element-79f6103 > .elementor-background-slideshow::before,
+    .elementor-element-79f6103 > .e-con-inner > .elementor-background-slideshow::before {
+        content: none !important;
+        display: none !important;
+        background-color: transparent !important;
+        background-image: none !important;
     }
 
     /* Hide the decorative leaf-branch image (logo-leaf-new.png)

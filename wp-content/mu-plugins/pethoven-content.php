@@ -478,23 +478,26 @@ function pethoven_rewrite_content( $html ) {
     );
 
     // Fix the two testimonials individually since both had identical placeholder text.
-    // After the first pass they're now empty. Inject real reviews.
+    // After the earlier str_replace cleared the Lorem, the testimonial content
+    // divs end up as EMPTY divs — <div class="elementor-testimonial-content"></div>
+    // (WordPress strips the empty <p></p> wrapper). So we match empty divs here,
+    // not <p></p> pairs. The [^>]* tolerates extra attributes Elementor sometimes
+    // adds (role, itemprop), and \s* tolerates any whitespace WP left behind.
     $review_1 = 'Our golden retriever had flaky skin for months. Two washes with the Sensitive Skin formula and it cleared up completely. Coat is softer than it has been in years.';
     $review_2 = 'I tried five different dog shampoos before Pethoven. This is the only one that actually removes that wet dog smell and keeps his coat shiny for days.';
 
-    // Find testimonial wrappers and inject content
     $html = preg_replace(
-        '/(<div class="elementor-testimonial-content">)\s*(<p>)\s*(<\/p>)/i',
-        '$1$2' . esc_html( $review_1 ) . '$3',
+        '/<div class="elementor-testimonial-content"([^>]*)>\s*(?:<p>\s*<\/p>)?\s*<\/div>/i',
+        '<div class="elementor-testimonial-content"$1><p>' . esc_html( $review_1 ) . '</p></div>',
         $html,
-        1 // Only first match
+        1
     );
 
     $html = preg_replace(
-        '/(<div class="elementor-testimonial-content">)\s*(<p>)\s*(<\/p>)/i',
-        '$1$2' . esc_html( $review_2 ) . '$3',
+        '/<div class="elementor-testimonial-content"([^>]*)>\s*(?:<p>\s*<\/p>)?\s*<\/div>/i',
+        '<div class="elementor-testimonial-content"$1><p>' . esc_html( $review_2 ) . '</p></div>',
         $html,
-        1 // Second match (now the first remaining empty one)
+        1
     );
 
     /* ============================================
