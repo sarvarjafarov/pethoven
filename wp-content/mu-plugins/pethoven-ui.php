@@ -263,7 +263,7 @@ function pethoven_ui_css() {
             rgba(241, 244, 236, 0.75) 18%,
             rgba(241, 244, 236, 0.75) 82%,
             rgba(241, 244, 236, 0) 100%) !important;
-        padding: 80px 0 90px !important;
+        padding: 80px 0 !important;
         position: relative;
         overflow: hidden;
     }
@@ -2726,7 +2726,7 @@ function pethoven_ui_css() {
     .elementor-element-ea9e0d9,
     .elementor-95 .elementor-element.elementor-element-ea9e0d9,
     .elementor-95 .elementor-element.elementor-element-ea9e0d9:not(.elementor-motion-effects-element-type-background) {
-        padding: 60px 0 !important;
+        padding: 80px 0 !important;
         /* Elementor renders a white→cream linear-gradient plus a
          * decorative leaf image ::before on this section. Nuke
          * both so the cream body shows through uniformly. Matching
@@ -2970,6 +2970,26 @@ function pethoven_ui_css() {
         box-shadow: 0 14px 32px rgba(106, 151, 57, 0.28) !important;
     }
 
+    /* Style the "Vet-Approved. Organic. Effective." eyebrow as a
+     * tiny green pill so it reads as a branded label rather than
+     * a stray heading above the H1. */
+    .elementor-element-3849851 h5,
+    .elementor-element-3849851 .elementor-widget-heading h5,
+    .elementor-element-3849851 .hfe-infocard-sub-title {
+        display: inline-block;
+        font-family: inherit !important;
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        letter-spacing: 2.5px !important;
+        text-transform: uppercase !important;
+        color: var(--ast-global-color-1, #6a9739) !important;
+        background: rgba(139, 195, 74, 0.12);
+        padding: 6px 14px !important;
+        border-radius: 100px !important;
+        margin-bottom: 18px !important;
+        line-height: 1.3 !important;
+    }
+
     /* ==========================================================
      * 26. HOMEPAGE — SECTION RHYTHM
      *
@@ -3023,6 +3043,242 @@ function pethoven_ui_css() {
         }
         .elementor-element-ea9e0d9 .elementor-testimonial-wrapper {
             padding: 28px 24px;
+        }
+    }
+
+    /* ==========================================================
+     * 27. TESTIMONIALS HEADING BLOCK (injected via JS)
+     *
+     * Matches the eyebrow + heading + subtitle treatment used by
+     * Best Sellers and Category Cards so the section hierarchy
+     * on the page feels consistent.
+     * ========================================================== */
+
+    .pt-testimonials-header {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        text-align: center;
+        padding: 0 20px;
+        margin: 0 auto 48px;
+        box-sizing: border-box;
+    }
+
+    .pt-testimonials-eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--ast-global-color-1, #6a9739);
+        text-align: center;
+        margin: 0 auto 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .pt-testimonials-eyebrow::before,
+    .pt-testimonials-eyebrow::after {
+        content: '';
+        width: 28px;
+        height: 1.5px;
+        background: var(--ast-global-color-1, #6a9739);
+        opacity: 0.5;
+        border-radius: 2px;
+    }
+
+    .pt-testimonials-heading {
+        font-family: inherit !important;
+        font-size: 40px;
+        font-weight: 800;
+        color: #1a1a1a;
+        text-align: center;
+        margin: 0 auto 14px;
+        letter-spacing: -0.5px;
+        line-height: 1.1;
+    }
+
+    .pt-testimonials-subtitle {
+        font-size: 16px;
+        color: #666;
+        text-align: center;
+        margin: 0 auto;
+        max-width: 540px;
+        line-height: 1.55;
+    }
+
+    /* Hide the default small "What Dog Owners Say" heading the
+     * template ships with — our injected block replaces it */
+    .elementor-element-ea9e0d9 .elementor-widget-heading:has(.elementor-heading-title) {
+        display: none !important;
+    }
+
+    /* Breathing room between the testimonials grid and the Buy 2
+     * Get 1 bundle card below it — they were feeling jammed */
+    .elementor-element-ea9e0d9 .elementor-widget-image-box {
+        margin-top: 72px !important;
+    }
+
+    @media (max-width: 921px) {
+        .pt-testimonials-heading { font-size: 32px !important; }
+        .elementor-element-ea9e0d9 .elementor-widget-image-box { margin-top: 56px !important; }
+    }
+
+    @media (max-width: 544px) {
+        .pt-testimonials-heading { font-size: 26px !important; }
+        .pt-testimonials-subtitle { font-size: 14px !important; }
+    }
+
+    /* ==========================================================
+     * 28. FOOTER NEWSLETTER (injected via JS)
+     *
+     * Sits at the top of the footer and gives visitors a reason
+     * to hand over an email. Simple input + black pill button.
+     * ========================================================== */
+
+    .pt-footer-newsletter {
+        max-width: 1200px;
+        margin: 0 auto 32px;
+        padding: 36px 24px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .pt-footer-newsletter-text {
+        flex: 1 1 280px;
+        min-width: 0;
+    }
+
+    .pt-footer-newsletter-eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        color: var(--ast-global-color-1, #6a9739);
+        margin-bottom: 8px;
+    }
+
+    .pt-footer-newsletter-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1a1a1a;
+        line-height: 1.25;
+        letter-spacing: -0.3px;
+        margin: 0;
+    }
+
+    .pt-footer-newsletter-title small {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #666;
+        margin-top: 4px;
+        letter-spacing: 0;
+    }
+
+    .pt-footer-newsletter-form {
+        flex: 1 1 380px;
+        display: flex;
+        gap: 8px;
+        max-width: 480px;
+    }
+
+    .pt-footer-newsletter-input {
+        flex: 1;
+        padding: 12px 18px;
+        border: 1px solid #dcdcdc;
+        border-radius: 100px;
+        background: #ffffff;
+        font-size: 14px;
+        font-family: inherit;
+        color: #1a1a1a;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        min-width: 0;
+    }
+
+    .pt-footer-newsletter-input:focus {
+        outline: none;
+        border-color: var(--ast-global-color-1, #6a9739);
+        box-shadow: 0 0 0 3px rgba(106, 151, 57, 0.12);
+    }
+
+    .pt-footer-newsletter-btn {
+        padding: 12px 26px;
+        background: #1a1a1a;
+        color: #ffffff;
+        border: none;
+        border-radius: 100px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background-color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+    }
+
+    .pt-footer-newsletter-btn:hover {
+        background: var(--ast-global-color-1, #6a9739);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(106, 151, 57, 0.22);
+    }
+
+    .pt-footer-newsletter-status {
+        flex: 1 1 100%;
+        font-size: 13px;
+        color: var(--ast-global-color-1, #6a9739);
+        margin: 0;
+        min-height: 18px;
+    }
+
+    /* Certification / trust row below the newsletter */
+    .pt-footer-trust {
+        max-width: 1200px;
+        margin: 0 auto 28px;
+        padding: 8px 24px 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 28px 44px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        color: #555;
+    }
+
+    .pt-footer-trust-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .pt-footer-trust-item svg {
+        width: 18px;
+        height: 18px;
+        color: var(--ast-global-color-1, #6a9739);
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 544px) {
+        .pt-footer-newsletter {
+            padding: 28px 20px;
+            gap: 18px;
+        }
+        .pt-footer-newsletter-title { font-size: 18px; }
+        .pt-footer-newsletter-form { flex-wrap: wrap; }
+        .pt-footer-newsletter-input,
+        .pt-footer-newsletter-btn {
+            flex: 1 1 100%;
+        }
+        .pt-footer-trust {
+            gap: 16px 24px;
+            font-size: 11px;
         }
     }
 
@@ -3435,6 +3691,97 @@ function pethoven_ui_js() {
                 });
                 heroButton.parentNode.insertBefore(trust, heroButton.nextSibling);
             }
+        }
+
+        /* ----------------------------------------------------------
+         * M. Homepage — Testimonials section heading block
+         *    Give testimonials a proper eyebrow + H2 + subtitle so
+         *    it matches Best Sellers and Category Cards.
+         * ---------------------------------------------------------- */
+        var testSection = document.querySelector('.elementor-element-ea9e0d9');
+        if (testSection && !testSection.querySelector('.pt-testimonials-heading')) {
+            var testColumnsRow = testSection.querySelector(':scope > .elementor-container, :scope > .e-con-inner');
+            if (!testColumnsRow) {
+                testColumnsRow = testSection.querySelector('.elementor-container, .e-con-inner');
+            }
+
+            var testHead = document.createElement('div');
+            testHead.className = 'pt-testimonials-header';
+            testHead.innerHTML =
+                '<div class="pt-testimonials-eyebrow">Real reviews from real dogs\' people</div>' +
+                '<h2 class="pt-testimonials-heading">What dog owners say</h2>' +
+                '<p class="pt-testimonials-subtitle">Thousands of coats cleaned. Here\'s what a few of them thought afterward.</p>';
+
+            if (testColumnsRow && testColumnsRow.parentNode) {
+                testColumnsRow.parentNode.insertBefore(testHead, testColumnsRow);
+            } else {
+                testSection.insertBefore(testHead, testSection.firstChild);
+            }
+        }
+
+        /* ----------------------------------------------------------
+         * N. Footer — newsletter signup + trust row
+         *    Prepends a simple email capture and a row of
+         *    certification claims to the top of the footer. Submit
+         *    is a no-op that shows a thank-you message; wire up to
+         *    a real ESP later.
+         * ---------------------------------------------------------- */
+        var footer = document.querySelector('.site-footer');
+        if (footer && !footer.querySelector('.pt-footer-newsletter')) {
+            var newsletter = document.createElement('div');
+            newsletter.className = 'pt-footer-newsletter';
+            newsletter.innerHTML =
+                '<div class="pt-footer-newsletter-text">' +
+                    '<div class="pt-footer-newsletter-eyebrow">Join the pack</div>' +
+                    '<h3 class="pt-footer-newsletter-title">Get 10% off your first order' +
+                        '<small>Plus dog-care tips and early access to new formulas.</small>' +
+                    '</h3>' +
+                '</div>' +
+                '<form class="pt-footer-newsletter-form" novalidate>' +
+                    '<input type="email" class="pt-footer-newsletter-input" placeholder="your@email.com" aria-label="Email address" required>' +
+                    '<button type="submit" class="pt-footer-newsletter-btn">Subscribe</button>' +
+                    '<p class="pt-footer-newsletter-status" role="status" aria-live="polite"></p>' +
+                '</form>';
+
+            footer.insertBefore(newsletter, footer.firstChild);
+
+            var form = newsletter.querySelector('form');
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var input = form.querySelector('.pt-footer-newsletter-input');
+                var status = form.querySelector('.pt-footer-newsletter-status');
+                var email = (input.value || '').trim();
+                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    status.textContent = 'Please enter a valid email address.';
+                    status.style.color = '#c23b3b';
+                    return;
+                }
+                // Store locally until an ESP is wired up
+                try {
+                    var list = JSON.parse(localStorage.getItem('pt_newsletter') || '[]');
+                    if (list.indexOf(email) === -1) list.push(email);
+                    localStorage.setItem('pt_newsletter', JSON.stringify(list));
+                } catch (err) {}
+                status.textContent = "You're in. Check your inbox for the discount code.";
+                status.style.color = 'var(--ast-global-color-1, #6a9739)';
+                input.value = '';
+            });
+
+            // Trust row under the newsletter
+            var trust = document.createElement('div');
+            trust.className = 'pt-footer-trust';
+            var checkIcon =
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
+                    '<polyline points="5 12 10 17 19 7"/>' +
+                '</svg>';
+            ['Made in the USA', 'Sulfate & paraben free', 'Cruelty-free', 'Backed by vets']
+                .forEach(function (label) {
+                    var item = document.createElement('span');
+                    item.className = 'pt-footer-trust-item';
+                    item.innerHTML = checkIcon + '<span>' + label + '</span>';
+                    trust.appendChild(item);
+                });
+            newsletter.parentNode.insertBefore(trust, newsletter.nextSibling);
         }
 
         /* ----------------------------------------------------------
