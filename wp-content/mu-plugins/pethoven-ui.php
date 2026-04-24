@@ -242,8 +242,21 @@ function pethoven_ui_css() {
     }
 
     .site-footer .ast-builder-grid-row {
-        gap: 48px !important;
+        gap: 56px !important;
         align-items: flex-start !important;
+    }
+
+    /* Rebalance the 3-column primary footer so Website + Site Links
+     * sit closer together — default Astra layout puts them on the
+     * far edges, leaving a wide empty gap in the middle. We give
+     * the logo column more room and let the nav columns be tighter. */
+    .site-footer .site-primary-footer-wrap .ast-builder-grid-row-container-inner,
+    .site-footer .site-primary-footer-wrap .ast-builder-grid-row {
+        grid-template-columns: 1.6fr 1fr 1fr !important;
+    }
+
+    .site-footer .site-primary-footer-wrap .ast-builder-grid-row-layout-3-equal > * + * {
+        justify-self: start !important;
     }
 
     /* Soft top border so the footer reads as its own section
@@ -252,12 +265,19 @@ function pethoven_ui_css() {
         border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
     }
 
-    /* Tagline under the logo — kill italic, tighten width, warm up color */
+    /* Tagline under the logo — kill italic, tighten width, warm up color.
+     * The tagline lives inside an HTML builder widget which Astra renders
+     * as <em> inside <p>. Override at every level to defeat inline styles
+     * and the theme's italic default. */
+    .site-footer p,
+    .site-footer p em,
+    .site-footer p i,
+    .site-footer em,
+    .site-footer i,
     .site-footer .ast-builder-html-element,
-    .site-footer [data-section="section-fb-html-"],
-    .site-footer .ast-footer-widget-1-area p,
-    .site-footer .ast-footer-widget-1-area em,
-    .site-footer .ast-footer-widget-1-area i {
+    .site-footer .ast-builder-html-element *,
+    .site-footer [data-section^="section-fb-html-"],
+    .site-footer [data-section^="section-fb-html-"] * {
         font-style: normal !important;
     }
 
@@ -266,7 +286,7 @@ function pethoven_ui_css() {
         font-size: 14.5px !important;
         line-height: 1.65 !important;
         color: #4a4a4a !important;
-        max-width: 320px !important;
+        max-width: 340px !important;
         margin: 0 0 14px 0 !important;
     }
 
@@ -415,13 +435,14 @@ function pethoven_ui_css() {
     }
 
     /* ----- Injected copyright bar (see JS section N2) -----
-     * A proper bottom strip with © year + legal entity + a small
-     * "Made with care in NYC" credit. Replaces the orphan
-     * "Pethoven is the brand operating under..." paragraph. */
+     * A proper bottom strip with © year + legal entity on the left
+     * and the social icons on the right — replaces the default
+     * below-footer row which left the icons floating in an empty
+     * strip with no balance. */
     .pt-footer-copybar {
         max-width: 1280px;
-        margin: 32px auto 0;
-        padding: 20px 32px 28px;
+        margin: 0 auto;
+        padding: 22px 32px 28px;
         border-top: 1px solid rgba(0, 0, 0, 0.08);
         display: flex;
         flex-wrap: wrap;
@@ -440,17 +461,44 @@ function pethoven_ui_css() {
         gap: 6px 18px;
     }
 
-    .pt-footer-copybar-right {
-        color: #8a8a8a;
+    .pt-footer-copybar-left {
+        min-width: 0;
     }
 
     .pt-footer-copybar-sep {
         color: rgba(0, 0, 0, 0.2);
     }
 
-    .pt-footer-copybar-heart {
-        color: var(--ast-global-color-1, #6a9739);
+    /* "Follow us:" label sits before the social icons in the bar */
+    .pt-footer-copybar-sociallabel {
+        font-size: 12px;
         font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: #6a6a6a;
+        margin-right: 4px;
+    }
+
+    /* Social icons, once relocated into the copybar, sit in a tight
+     * inline row with our pill styling. We rely on the pill sizing
+     * set earlier in section 3c so icons look identical wherever
+     * they live. */
+    .pt-footer-copybar .ast-builder-social-element,
+    .pt-footer-copybar [class*="ast-header-social"] .ast-builder-social-element {
+        margin-left: 0 !important;
+    }
+
+    .pt-footer-copybar-social {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Hide the stock below-footer row once we've moved its contents
+     * into our copybar. Without this the old empty strip stays in
+     * the DOM and leaves a ~60px void above our bar. */
+    .site-footer.pt-copybar-active .site-below-footer-wrap {
+        display: none !important;
     }
 
     @media (max-width: 768px) {
@@ -463,7 +511,7 @@ function pethoven_ui_css() {
             padding-right: 20px !important;
         }
         .pt-footer-copybar {
-            padding: 20px 20px 24px;
+            padding: 22px 20px 26px;
             justify-content: center;
             text-align: center;
         }
@@ -4118,12 +4166,40 @@ function pethoven_ui_js() {
             var footerRoot = document.querySelector('.site-footer');
             if (!footerRoot) return;
 
-            // --- Contact block: append under the tagline paragraph
-            //     in the first footer widget area (which holds the
-            //     logo + tagline). Guard against double-injection.
-            var logoCol = footerRoot.querySelector(
-                '.ast-footer-widget-1-area, [data-section="section-fb-widget-1"]'
+            // --- Contact block: find the logo column by walking up
+            //     from the logo image (or the tagline paragraph) to
+            //     the column container Astra renders — the first
+            //     footer widget area OR a builder column.
+            var logoCol = null;
+            var logoImg = footerRoot.querySelector(
+                'img[src*="pethoven-logo"], img[alt*="Pethoven" i], .custom-logo'
             );
+            if (logoImg) {
+                logoCol = logoImg.closest(
+                    '.site-footer-primary-section-1, ' +
+                    '.ast-builder-layout-element, ' +
+                    '[data-section^="section-fb-html-"], ' +
+                    '.ast-footer-widget-1-area'
+                );
+                // Walk up further to the grid cell if we only landed on
+                // the tight image wrapper — we want to be siblings with
+                // the tagline paragraph, not nested inside it.
+                if (logoCol) {
+                    var parent = logoCol.parentElement;
+                    while (parent && parent !== footerRoot &&
+                           !parent.classList.contains('ast-builder-grid-row') &&
+                           !parent.matches('[class*="site-footer-primary-section"]')) {
+                        logoCol = parent;
+                        parent = parent.parentElement;
+                    }
+                }
+            }
+            if (!logoCol) {
+                logoCol = footerRoot.querySelector(
+                    '.ast-footer-widget-1-area, [data-section="section-fb-widget-1"]'
+                );
+            }
+
             if (logoCol && !logoCol.querySelector('.pt-footer-contact')) {
                 var contact = document.createElement('div');
                 contact.className = 'pt-footer-contact';
@@ -4147,13 +4223,49 @@ function pethoven_ui_js() {
                 logoCol.appendChild(contact);
             }
 
-            // --- Copyright bar: suppress the stock legal-entity line
-            //     inside the below-footer (if present) and append a
-            //     new flex bar with © year + entity + "made with care"
-            //     credit. The stock below-footer keeps the social row.
+            // --- Copyright bar: build a single clean row with ©/legal
+            //     on the left and the social icons on the right. We
+            //     relocate the stock social icons into our bar, then
+            //     flag the footer so the now-empty default
+            //     below-footer row is hidden via CSS (avoiding the
+            //     orphan strip of icons floating in empty space).
             if (!footerRoot.querySelector('.pt-footer-copybar')) {
-                // Hide any stock paragraph that contains the legal
-                // entity — it looks orphaned and we're replacing it.
+                var bar = document.createElement('div');
+                bar.className = 'pt-footer-copybar';
+                var year = new Date().getFullYear();
+                bar.innerHTML =
+                    '<div class="pt-footer-copybar-left">' +
+                        '<span>© ' + year + ' Pethoven · A brand of Global Tail Goods LLC · All rights reserved</span>' +
+                    '</div>' +
+                    '<div class="pt-footer-copybar-right">' +
+                        '<span class="pt-footer-copybar-sociallabel">Follow</span>' +
+                        '<span class="pt-footer-copybar-social"></span>' +
+                    '</div>';
+
+                // Find the stock social icons container in the
+                // below-footer and move its individual links into
+                // our bar. Works for Astra builder's typical markup:
+                // .ast-header-social-1-wrap or [data-section=section-fb-social-icons-*]
+                var socialTarget = bar.querySelector('.pt-footer-copybar-social');
+                var socialSource = footerRoot.querySelector(
+                    '[class*="ast-header-social"], ' +
+                    '[data-section^="section-fb-social"], ' +
+                    '.ast-builder-social-element-wrap'
+                );
+                if (socialSource && socialTarget) {
+                    var icons = socialSource.querySelectorAll('.ast-builder-social-element');
+                    if (icons.length) {
+                        icons.forEach(function (icon) {
+                            socialTarget.appendChild(icon);
+                        });
+                    } else {
+                        // fallback: move whatever links are in there
+                        socialTarget.appendChild(socialSource);
+                    }
+                }
+
+                // Hide any stock paragraph that still carries the
+                // legal-entity line (the copy source in pethoven-content.php).
                 var killPatterns = [
                     'pethoven is the brand operating under',
                     'global tail goods llc'
@@ -4162,31 +4274,18 @@ function pethoven_ui_js() {
                     var t = (el.textContent || '').trim().toLowerCase();
                     if (!t || t.length > 200) return;
                     if (el.querySelector('a, svg, input, button')) return;
+                    if (el.closest('.pt-footer-copybar')) return;
                     for (var i = 0; i < killPatterns.length; i++) {
                         if (t.indexOf(killPatterns[i]) !== -1 &&
-                            t.indexOf('©') === -1 &&
-                            t.indexOf('pethoven ·') === -1) {
+                            t.indexOf('©') === -1) {
                             el.style.display = 'none';
                             break;
                         }
                     }
                 });
 
-                var bar = document.createElement('div');
-                bar.className = 'pt-footer-copybar';
-                var year = new Date().getFullYear();
-                bar.innerHTML =
-                    '<div class="pt-footer-copybar-left">' +
-                        '<span>© ' + year + ' Pethoven</span>' +
-                        '<span class="pt-footer-copybar-sep">·</span>' +
-                        '<span>A brand of Global Tail Goods LLC</span>' +
-                        '<span class="pt-footer-copybar-sep">·</span>' +
-                        '<span>All rights reserved</span>' +
-                    '</div>' +
-                    '<div class="pt-footer-copybar-right">' +
-                        '<span>Made with <span class="pt-footer-copybar-heart" aria-hidden="true">♥</span> in New York</span>' +
-                    '</div>';
                 footerRoot.appendChild(bar);
+                footerRoot.classList.add('pt-copybar-active');
             }
         })();
 
