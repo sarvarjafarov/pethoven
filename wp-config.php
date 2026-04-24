@@ -124,17 +124,18 @@ if ( ! function_exists( 'wp_env_int' ) ) {
 }
 
 // ** Database settings - You can get this info from your web host ** //
-/** The name of the database for WordPress */
-define( 'DB_NAME', wp_env_or_default( array( 'WORDPRESS_DB_NAME', 'DB_NAME' ), 'u722617394_pethoven' ) );
+//
+// SAFETY: no hardcoded credential defaults. Each server (staging,
+// production, local) MUST provide DB_NAME/DB_USER/DB_PASSWORD via a
+// .env file placed next to this wp-config.php. If the .env is missing
+// or incomplete, the site will fail to connect — which is the correct
+// behavior. Silent fallback to another environment's DB would be
+// catastrophic (two sites writing to one database).
 
-/** Database username */
-define( 'DB_USER', wp_env_or_default( array( 'WORDPRESS_DB_USER', 'DB_USER' ), 'u722617394_pethoven' ) );
-
-/** Database password */
-define( 'DB_PASSWORD', wp_env_or_default( array( 'WORDPRESS_DB_PASSWORD', 'DB_PASSWORD' ), 'Nsusife123@' ) );
-
-/** Database hostname */
-define( 'DB_HOST', wp_env_or_default( array( 'WORDPRESS_DB_HOST', 'DB_HOST' ), 'localhost' ) );
+define( 'DB_NAME',     wp_env_or_default( array( 'WORDPRESS_DB_NAME', 'DB_NAME' ) ) );
+define( 'DB_USER',     wp_env_or_default( array( 'WORDPRESS_DB_USER', 'DB_USER' ) ) );
+define( 'DB_PASSWORD', wp_env_or_default( array( 'WORDPRESS_DB_PASSWORD', 'DB_PASSWORD' ) ) );
+define( 'DB_HOST',     wp_env_or_default( array( 'WORDPRESS_DB_HOST', 'DB_HOST' ), 'localhost' ) );
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8mb4' );
@@ -212,13 +213,24 @@ define( 'WP_MEMORY_LIMIT', wp_env_or_default( array( 'WP_MEMORY_LIMIT', 'WORDPRE
 define( 'WP_MAX_MEMORY_LIMIT', wp_env_or_default( array( 'WP_MAX_MEMORY_LIMIT', 'WORDPRESS_MAX_MEMORY' ), '256M' ) );
 define( 'EMPTY_TRASH_DAYS', max( 1, wp_env_int( array( 'EMPTY_TRASH_DAYS', 'WORDPRESS_EMPTY_TRASH_DAYS' ), $is_local ? 7 : 30 ) ) );
 
-$wp_home_default   = 'https://seashell-opossum-486356.hostingersite.com';
-$wp_home           = wp_env_or_default( array( 'WP_HOME', 'WORDPRESS_HOME_URL' ), $wp_home_default );
-define( 'WP_HOME', rtrim( $wp_home, '/' ) );
+// SAFETY: no hardcoded URL default. Each server's .env defines its
+// own WP_HOME and WP_SITEURL. If missing, we derive from the request
+// host so the site at least renders, but the correct and required
+// path is a .env file on each server with matching canonical URL.
 
-$wp_siteurl_default = 'https://seashell-opossum-486356.hostingersite.com';
-$wp_siteurl         = wp_env_or_default( array( 'WP_SITEURL', 'WORDPRESS_SITE_URL' ), $wp_siteurl_default );
-define( 'WP_SITEURL', rtrim( $wp_siteurl, '/' ) );
+$wp_request_fallback = ( ! empty( $_SERVER['HTTP_HOST'] ) )
+	? ( ( ! empty( $_SERVER['HTTPS'] ) && 'off' !== $_SERVER['HTTPS'] ) ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST']
+	: '';
+
+$wp_home    = wp_env_or_default( array( 'WP_HOME', 'WORDPRESS_HOME_URL' ), $wp_request_fallback );
+$wp_siteurl = wp_env_or_default( array( 'WP_SITEURL', 'WORDPRESS_SITE_URL' ), $wp_home );
+
+if ( '' !== $wp_home ) {
+	define( 'WP_HOME', rtrim( $wp_home, '/' ) );
+}
+if ( '' !== $wp_siteurl ) {
+	define( 'WP_SITEURL', rtrim( $wp_siteurl, '/' ) );
+}
 
 if ( wp_env_bool( array( 'FORCE_SSL_ADMIN', 'WORDPRESS_FORCE_SSL_ADMIN' ), ! $is_local ) ) {
 	define( 'FORCE_SSL_ADMIN', true );

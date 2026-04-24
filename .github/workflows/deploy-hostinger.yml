@@ -1,19 +1,77 @@
 name: Deploy to Hostinger
 
+# Branch-gated deploys:
+#   push to `staging` → opossum test site
+#   push to `main`    → pethoven.com production
+#
+# Prereqs (set as GitHub Actions secrets on this repo):
+#   HOSTINGER_SSH_KEY      — private key with access to the Hostinger SSH user
+#   HOSTINGER_HOST         — Hostinger SSH host (same for both sites on the shared plan)
+#   HOSTINGER_USERNAME     — Hostinger SSH user (usually u########)
+#   HOSTINGER_STAGING_DIR  — absolute remote path to the opossum site's public_html
+#   HOSTINGER_PROD_DIR     — absolute remote path to pethoven.com's public_html
+#
+# Each server MUST carry its own .env file next to wp-config.php with:
+#   - WORDPRESS_DB_NAME / DB_USER / DB_PASSWORD (that site's database)
+#   - WP_HOME / WP_SITEURL (that site's canonical URL)
+# Without these, the site will fail visibly — which is safer than cross-talk.
+
 on:
   push:
     branches:
+      - staging
       - main
   workflow_dispatch:
+    inputs:
+      target:
+        description: "Target environment"
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
 
 jobs:
-  ftp-deploy:
-    name: Upload WordPress to Hostinger
+  deploy:
+    name: Deploy (${{ github.ref_name }})
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Resolve target directory
+        id: target
+        run: |
+          # Deploy target is picked by branch on push, or by input on manual run.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TARGET="${{ inputs.target }}"
+          else
+            TARGET="${{ github.ref_name }}"
+          fi
+
+          case "$TARGET" in
+            main|production)
+              echo "env_name=production" >> "$GITHUB_OUTPUT"
+              echo "remote_dir=${{ secrets.HOSTINGER_PROD_DIR }}" >> "$GITHUB_OUTPUT"
+              ;;
+            staging)
+              echo "env_name=staging" >> "$GITHUB_OUTPUT"
+              echo "remote_dir=${{ secrets.HOSTINGER_STAGING_DIR }}" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "::error::Unsupported branch/input '$TARGET' — only staging and main deploy." >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Guard against empty remote dir
+        run: |
+          if [ -z "${{ steps.target.outputs.remote_dir }}" ]; then
+            echo "::error::Missing secret for ${{ steps.target.outputs.env_name }} remote dir — set HOSTINGER_STAGING_DIR / HOSTINGER_PROD_DIR." >&2
+            exit 1
+          fi
 
       - name: Sync files via rsync over SSH
         uses: easingthemes/ssh-deploy@v4
@@ -24,7 +82,7 @@ jobs:
           REMOTE_USER: ${{ secrets.HOSTINGER_USERNAME }}
           REMOTE_PORT: 65002
           SOURCE: ./
-          TARGET: ${{ secrets.HOSTINGER_REMOTE_DIR }}
+          TARGET: ${{ steps.target.outputs.remote_dir }}
           ARGS: >-
             -az --delete --delete-excluded
             --exclude='wp-content/uploads/**'
@@ -34,8 +92,9 @@ jobs:
             --exclude='.git/**'
             --exclude='.github/**'
             --exclude='.htaccess'
+            --exclude='.env'
+            --exclude='.env.*'
             --exclude='scripts/**'
             --exclude='docker-compose.yml'
             --exclude='README.md'
             --exclude='CNAME'
-            --exclude='.env*'
