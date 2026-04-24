@@ -24,66 +24,66 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-staging:
-    name: Deploy → staging (opossum)
-    if: github.ref_name == 'staging'
+  deploy:
+    name: Deploy (${{ github.ref_name }})
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Sync files via rsync over SSH
-        uses: easingthemes/ssh-deploy@v4
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
-          SSH_CMD_ARGS: -o StrictHostKeyChecking=no
-          REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
-          REMOTE_USER: ${{ secrets.HOSTINGER_USERNAME }}
-          REMOTE_PORT: 65002
-          SOURCE: ./
-          TARGET: ${{ secrets.HOSTINGER_STAGING_DIR }}
-          ARGS: >-
-            -az --delete --delete-excluded
-            --exclude='wp-content/uploads/**'
-            --exclude='wp-content/cache/**'
-            --exclude='wp-content/upgrade/**'
-            --exclude='wp-content/debug.log'
-            --exclude='.git/**'
-            --exclude='.github/**'
-            --exclude='.htaccess'
-            --exclude='.env'
-            --exclude='.env.*'
-            --exclude='scripts/**'
-            --exclude='docker-compose.yml'
-            --exclude='README.md'
-            --exclude='CNAME'
 
-  deploy-production:
-    name: Deploy → production (pethoven.com)
-    if: github.ref_name == 'main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Sync files via rsync over SSH
-        uses: easingthemes/ssh-deploy@v4
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
-          SSH_CMD_ARGS: -o StrictHostKeyChecking=no
-          REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
-          REMOTE_USER: ${{ secrets.HOSTINGER_USERNAME }}
-          REMOTE_PORT: 65002
-          SOURCE: ./
-          TARGET: ${{ secrets.HOSTINGER_PROD_DIR }}
-          ARGS: >-
-            -az --delete --delete-excluded
-            --exclude='wp-content/uploads/**'
-            --exclude='wp-content/cache/**'
-            --exclude='wp-content/upgrade/**'
-            --exclude='wp-content/debug.log'
-            --exclude='.git/**'
-            --exclude='.github/**'
-            --exclude='.htaccess'
-            --exclude='.env'
-            --exclude='.env.*'
-            --exclude='scripts/**'
-            --exclude='docker-compose.yml'
-            --exclude='README.md'
-            --exclude='CNAME'
+      - name: Resolve target dir
+        id: t
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "dir=${{ secrets.HOSTINGER_PROD_DIR }}" >> "$GITHUB_OUTPUT"
+            echo "env_name=production" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.ref_name }}" = "staging" ]; then
+            echo "dir=${{ secrets.HOSTINGER_STAGING_DIR }}" >> "$GITHUB_OUTPUT"
+            echo "env_name=staging" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::Unsupported branch ${{ github.ref_name }}"; exit 1
+          fi
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p 65002 -H "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Rsync to ${{ steps.t.outputs.env_name }}
+        run: |
+          set -o pipefail
+
+          # Rsync exit codes we treat as non-fatal on Hostinger shared hosting:
+          #   23 — partial transfer (LiteSpeed cache files often not writable)
+          #   24 — some files vanished during transfer (temp files)
+          # Any other non-zero is a real failure.
+
+          set +e
+          rsync -az --delete --delete-excluded \
+            --exclude='wp-content/uploads/**' \
+            --exclude='wp-content/cache/**' \
+            --exclude='wp-content/upgrade/**' \
+            --exclude='wp-content/debug.log' \
+            --exclude='.git/**' \
+            --exclude='.github/**' \
+            --exclude='.htaccess' \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            --exclude='scripts/**' \
+            --exclude='docker-compose.yml' \
+            --exclude='README.md' \
+            --exclude='CNAME' \
+            -e "ssh -i ~/.ssh/deploy_key -p 65002 -o StrictHostKeyChecking=no" \
+            ./ \
+            "${{ secrets.HOSTINGER_USERNAME }}@${{ secrets.HOSTINGER_HOST }}:${{ steps.t.outputs.dir }}/"
+          rc=$?
+          set -e
+
+          if [ $rc -eq 0 ] || [ $rc -eq 23 ] || [ $rc -eq 24 ]; then
+            echo "rsync completed (exit $rc — ${rc/0/clean}${rc/23/partial, non-fatal on Hostinger}${rc/24/vanished files, non-fatal})"
+            exit 0
+          else
+            echo "::error::rsync failed with exit code $rc"
+            exit $rc
+          fi
