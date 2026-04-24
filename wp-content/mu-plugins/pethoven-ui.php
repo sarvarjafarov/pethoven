@@ -2676,18 +2676,20 @@ function pethoven_ui_css() {
 
     /* Section spacing */
     .elementor-element-d349891 {
-        padding: 80px 0 !important;
+        padding: 72px 0 88px !important;
     }
 
     /* Injected heading wrapper — sits above the 3-card row and
-     * takes a full-width slot even when the parent is a flex row. */
+     * takes a full-width slot even when the parent is a flex row.
+     * Margin below is small because the subtitle inside already
+     * carries its own 40px bottom margin (was double-stacked). */
     .pt-cats-header {
         flex: 0 0 100% !important;
         width: 100% !important;
         max-width: 100% !important;
         text-align: center;
         padding: 0 20px;
-        margin: 0 auto 48px;
+        margin: 0 auto 8px;
         box-sizing: border-box;
     }
 
@@ -2731,7 +2733,7 @@ function pethoven_ui_css() {
         font-size: 16px;
         color: #666;
         text-align: center;
-        margin: 0 auto 48px;
+        margin: 0 auto 40px;
         max-width: 540px;
         line-height: 1.55;
         padding: 0 20px;
@@ -2802,11 +2804,12 @@ function pethoven_ui_css() {
         top: 0;
         left: 50%;
         transform: translateX(-50%) scale(1);
-        width: 72px;
-        height: 72px;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
-        background: linear-gradient(135deg, rgba(139,195,74,0.24) 0%, rgba(106,151,57,0.06) 100%);
+        background: linear-gradient(135deg, rgba(139,195,74,0.28) 0%, rgba(106,151,57,0.08) 100%);
         transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 8px 20px rgba(106, 151, 57, 0.12);
     }
 
     .elementor-element-d349891 > .elementor-container > .elementor-column:hover .elementor-widget-image-box .elementor-image-box-wrapper::before,
@@ -2817,12 +2820,63 @@ function pethoven_ui_css() {
     /* Per-card color variation: 1 bright green, 2 deep green, 3 warm peach */
     .elementor-element-d349891 > .elementor-container > .elementor-column:nth-child(2) .elementor-widget-image-box .elementor-image-box-wrapper::before,
     .elementor-element-d349891 > .e-con-inner > .e-con.e-child:nth-child(2) .elementor-widget-image-box .elementor-image-box-wrapper::before {
-        background: linear-gradient(135deg, rgba(38, 84, 61, 0.22) 0%, rgba(26, 58, 42, 0.08) 100%);
+        background: linear-gradient(135deg, rgba(38, 84, 61, 0.28) 0%, rgba(26, 58, 42, 0.08) 100%);
+        box-shadow: 0 8px 20px rgba(38, 84, 61, 0.14);
     }
 
     .elementor-element-d349891 > .elementor-container > .elementor-column:nth-child(3) .elementor-widget-image-box .elementor-image-box-wrapper::before,
     .elementor-element-d349891 > .e-con-inner > .e-con.e-child:nth-child(3) .elementor-widget-image-box .elementor-image-box-wrapper::before {
-        background: linear-gradient(135deg, rgba(245, 183, 120, 0.32) 0%, rgba(255, 216, 168, 0.1) 100%);
+        background: linear-gradient(135deg, rgba(245, 183, 120, 0.38) 0%, rgba(255, 216, 168, 0.1) 100%);
+        box-shadow: 0 8px 20px rgba(230, 160, 90, 0.16);
+    }
+
+    /* SVG icon injected via JS, positioned on top of the gradient disc.
+     * One icon per card; color tinted per card to match the disc. */
+    .pt-cat-icon {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 80px;
+        height: 80px;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 1;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .pt-cat-icon svg {
+        width: 36px;
+        height: 36px;
+        color: var(--ast-global-color-1, #6a9739);
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Filled paw icon for the puppy card */
+    .pt-cat-icon.pt-cat-icon--filled svg {
+        fill: currentColor;
+        stroke: none;
+    }
+
+    .elementor-element-d349891 > .elementor-container > .elementor-column:nth-child(2) .pt-cat-icon svg,
+    .elementor-element-d349891 > .e-con-inner > .e-con.e-child:nth-child(2) .pt-cat-icon svg {
+        color: #26543d;
+    }
+
+    .elementor-element-d349891 > .elementor-container > .elementor-column:nth-child(3) .pt-cat-icon svg,
+    .elementor-element-d349891 > .e-con-inner > .e-con.e-child:nth-child(3) .pt-cat-icon svg {
+        color: #c87d3a;
+    }
+
+    .elementor-element-d349891 > .elementor-container > .elementor-column:hover .pt-cat-icon,
+    .elementor-element-d349891 > .e-con-inner > .e-con.e-child:hover .pt-cat-icon {
+        transform: translateX(-50%) scale(1.08);
     }
 
     /* Title + description */
@@ -4018,6 +4072,56 @@ function pethoven_ui_js() {
                 // Last-resort fallback
                 catsSection.insertBefore(catsHead, catsSection.firstChild);
             }
+        }
+
+        /* ----------------------------------------------------------
+         * J2. Homepage — Category card icons
+         *     Each card has a gradient disc (CSS ::before) where the
+         *     basil-leaf image used to live. We killed the image,
+         *     which left the disc empty. Inject a meaningful SVG
+         *     icon into each card so the disc has a subject:
+         *       1. Sensitive Skin  → leaf (soothing, natural)
+         *       2. Deep Clean      → water droplet
+         *       3. Puppy Collection→ paw print
+         * ---------------------------------------------------------- */
+        if (catsSection) {
+            var leafSvg =
+                '<svg viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">' +
+                    '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.8 2c1 5 .5 10-2 13.5-1.5 2-5 4.5-6.8 4.5z"/>' +
+                    '<path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>' +
+                '</svg>';
+            var dropSvg =
+                '<svg viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">' +
+                    '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>' +
+                    '<path d="M8.5 14c.5 1.5 1.8 2.5 3.5 2.5" stroke-linecap="round"/>' +
+                '</svg>';
+            var pawSvg =
+                '<svg viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">' +
+                    '<ellipse cx="6" cy="11" rx="2.2" ry="2.6"/>' +
+                    '<ellipse cx="18" cy="11" rx="2.2" ry="2.6"/>' +
+                    '<ellipse cx="9.5" cy="6" rx="2" ry="2.4"/>' +
+                    '<ellipse cx="14.5" cy="6" rx="2" ry="2.4"/>' +
+                    '<path d="M12 13.2c-3.2 0-5.6 2.7-5.6 5.3 0 1.4 1.1 2.5 2.5 2.5 1 0 1.5-.5 3.1-.5s2.1.5 3.1.5c1.4 0 2.5-1.1 2.5-2.5 0-2.6-2.4-5.3-5.6-5.3z"/>' +
+                '</svg>';
+
+            var icons = [leafSvg, dropSvg, pawSvg];
+            var iconModifier = ['', '', 'pt-cat-icon--filled']; // paw is filled, others are line
+
+            // Find each card column (works for both Elementor legacy columns and flex containers)
+            var cards = catsSection.querySelectorAll(
+                ':scope > .elementor-container > .elementor-column, ' +
+                ':scope > .e-con-inner > .e-con.e-child'
+            );
+
+            cards.forEach(function (card, i) {
+                if (i >= icons.length) return;
+                var wrapper = card.querySelector('.elementor-image-box-wrapper');
+                if (!wrapper || wrapper.querySelector('.pt-cat-icon')) return;
+                var iconEl = document.createElement('span');
+                iconEl.className = 'pt-cat-icon' + (iconModifier[i] ? ' ' + iconModifier[i] : '');
+                iconEl.innerHTML = icons[i];
+                wrapper.insertBefore(iconEl, wrapper.firstChild);
+            });
         }
 
         /* ----------------------------------------------------------
