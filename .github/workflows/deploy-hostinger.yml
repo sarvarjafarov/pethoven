@@ -63,7 +63,13 @@ jobs:
         run: |
           # Build exclude list into a file to avoid any shell-quoting
           # surprises around glob patterns.
+          # CRITICAL: wp-content/plugins and wp-content/uploads are
+          # SERVER-MANAGED and must NEVER be touched by deploy — they
+          # hold installed plugins and user uploads that aren't in git.
+          # Excluding them means rsync doesn't sync AND doesn't delete
+          # anything inside them.
           cat > /tmp/rsync-excludes <<'EXCLUDES'
+          wp-content/plugins/**
           wp-content/uploads/**
           wp-content/cache/**
           wp-content/upgrade/**
