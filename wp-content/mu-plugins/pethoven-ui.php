@@ -1083,7 +1083,14 @@ function pethoven_ui_css() {
         .pt-features-bar .e-con.e-child:last-child:hover { border-radius: 0 0 16px 0 !important; }
     }
 
-    /* ---- Mobile: single column ---- */
+    /* ---- Mobile: 2×2 grid, icon-on-top centered ----
+     * Previous mobile layout stacked the 4 cards vertically. Icon
+     * sat on the LEFT with text on the right — which with icon
+     * sizes and mobile padding read as "left-aligned" and loose.
+     * The 2×2 grid with icon-on-top, content centered, is denser
+     * and feels balanced on a phone. Dividers stay as subtle
+     * 1px lines between rows and between columns.
+     */
     @media (max-width: 544px) {
         .pt-features-bar {
             margin-top: -16px !important;
@@ -1092,35 +1099,63 @@ function pethoven_ui_css() {
 
         .pt-features-bar > .e-con-inner {
             border-radius: 14px;
+            flex-wrap: wrap !important;
         }
 
         .pt-features-bar .e-con.e-child {
-            flex: 1 1 100% !important;
-            padding: 20px !important;
-            border-right: none !important;
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+            padding: 18px 10px !important;
+            border: none !important;
+            text-align: center !important;
         }
 
-        .pt-features-bar .e-con.e-child:not(:last-child) {
+        /* Column divider between col 1 and col 2 */
+        .pt-features-bar .e-con.e-child:nth-child(odd) {
+            border-right: 1px solid #f0f0f0 !important;
+        }
+        /* Row divider between row 1 and row 2 */
+        .pt-features-bar .e-con.e-child:nth-child(1),
+        .pt-features-bar .e-con.e-child:nth-child(2) {
             border-bottom: 1px solid #f0f0f0 !important;
         }
 
-        .pt-features-bar .e-con.e-child:nth-child(1),
-        .pt-features-bar .e-con.e-child:nth-child(2) {
-            border-right: none;
+        /* Stack icon on top, center everything */
+        .pt-features-bar .elementor-icon-box-wrapper {
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center !important;
+            gap: 8px !important;
+        }
+        .pt-features-bar .elementor-icon-box-icon,
+        .pt-features-bar .elementor-icon-box-content {
+            text-align: center !important;
+            margin: 0 auto !important;
         }
 
         .pt-features-bar .elementor-icon {
-            width: 44px !important;
-            height: 44px !important;
+            width: 40px !important;
+            height: 40px !important;
+            margin: 0 auto !important;
+        }
+        .pt-features-bar .elementor-icon i,
+        .pt-features-bar .elementor-icon svg {
+            font-size: 16px !important;
+            width: 16px !important;
+            height: 16px !important;
+        }
+        .pt-features-bar .elementor-icon-box-title,
+        .pt-features-bar .elementor-icon-box-title a {
+            font-size: 13px !important;
+            line-height: 1.25 !important;
+        }
+        .pt-features-bar .elementor-icon-box-description {
+            font-size: 11px !important;
+            line-height: 1.35 !important;
+            margin-top: 2px !important;
         }
 
-        .pt-features-bar .elementor-icon i {
-            font-size: 18px !important;
-        }
-
-        .pt-features-bar .e-con.e-child:hover { border-radius: 0 !important; }
-        .pt-features-bar .e-con.e-child:first-child:hover { border-radius: 14px 14px 0 0 !important; }
-        .pt-features-bar .e-con.e-child:last-child:hover { border-radius: 0 0 14px 14px !important; }
+        .pt-features-bar .e-con.e-child:hover { border-radius: 0 !important; transform: none !important; }
     }
 
     /* Generic icon-box hover (for icon boxes outside the features bar) */
@@ -3468,7 +3503,7 @@ function pethoven_ui_css() {
         width: 100% !important;
         text-align: center;
         padding: 0 20px;
-        margin: 0 auto 32px;
+        margin: 0 auto 16px;
         box-sizing: border-box;
     }
 
@@ -3784,6 +3819,775 @@ function pethoven_ui_css() {
         }
     }
 
+    /* ==========================================================
+     * 28a. OUR PRODUCTS section + Best Sellers hide
+     *
+     * Injected via JS at runtime (see section P in the JS block).
+     * 3-card block linking to real WooCommerce products:
+     *   /product/sensitive-skin/  ($45)
+     *   /product/deep-clean/      ($36)
+     *   /product/puppy-collection/ ($57)
+     * The original "Best Sellers" [products] shortcode block is
+     * tagged by JS and hidden here.
+     * ========================================================== */
+    .pt-hide-best-sellers {
+        display: none !important;
+    }
+
+    .pt-our-products {
+        max-width: 1200px;
+        margin: 0 auto;
+        /* Top padding is intentionally smaller than bottom because the
+         * features bar (floating card, margin-top:-40px) already eats
+         * ~40px of implicit spacing above. 56/80 produces a balanced
+         * "one rhythm unit" gap on both sides of the Our Products block.
+         * See section 31 for the site-wide vertical rhythm scale. */
+        padding: 56px 24px 80px;
+        /* Homepage content container is flex-column with CSS `order`
+         * on every section (see pethoven-content.php). Sit where Best
+         * Sellers used to be. */
+        order: 3 !important;
+        width: 100%;
+    }
+    .pt-our-products-head {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .pt-our-products-eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--ast-global-color-1, #6a9739);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+    .pt-our-products-eyebrow::before,
+    .pt-our-products-eyebrow::after {
+        content: '';
+        width: 28px;
+        height: 1.5px;
+        background: var(--ast-global-color-1, #6a9739);
+        opacity: 0.5;
+        border-radius: 2px;
+    }
+    .pt-our-products-heading {
+        font-family: inherit;
+        font-size: 38px;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0 0 14px;
+        letter-spacing: -0.5px;
+        line-height: 1.15;
+    }
+    .pt-our-products-subtitle {
+        font-size: 16px;
+        color: #666;
+        max-width: 540px;
+        line-height: 1.55;
+        margin: 0 auto;
+    }
+    .pt-our-products-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+    }
+    .pt-product-card {
+        background: #ffffff;
+        border: 1px solid #f0f0ec;
+        border-radius: 24px;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                    border-color 0.35s ease,
+                    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    .pt-product-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--ast-global-color-0, #8bc34a), var(--ast-global-color-1, #6a9739));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .pt-product-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(139, 195, 74, 0.32);
+        box-shadow: 0 20px 42px rgba(106, 151, 57, 0.1),
+                    0 6px 16px rgba(0, 0, 0, 0.04);
+    }
+    .pt-product-card:hover::before { transform: scaleX(1); }
+
+    .pt-product-image {
+        aspect-ratio: 1;
+        background: linear-gradient(135deg, rgba(139,195,74,0.14) 0%, rgba(106,151,57,0.04) 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 22px;
+        overflow: hidden;
+    }
+    .pt-product-image svg {
+        width: 56px;
+        height: 56px;
+        color: var(--ast-global-color-1, #6a9739);
+    }
+    .pt-product-card:nth-child(2) .pt-product-image {
+        background: linear-gradient(135deg, rgba(38,84,61,0.14) 0%, rgba(26,58,42,0.04) 100%);
+    }
+    .pt-product-card:nth-child(2) .pt-product-image svg { color: #26543d; }
+    .pt-product-card:nth-child(3) .pt-product-image {
+        background: linear-gradient(135deg, rgba(245,183,120,0.22) 0%, rgba(255,216,168,0.06) 100%);
+    }
+    .pt-product-card:nth-child(3) .pt-product-image svg { color: #c87d3a; }
+
+    .pt-product-name {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0 0 10px;
+        letter-spacing: -0.3px;
+    }
+    .pt-product-desc {
+        font-size: 14.5px;
+        color: #666;
+        line-height: 1.55;
+        margin: 0 0 18px;
+        flex-grow: 1;
+    }
+    .pt-product-price {
+        font-size: 20px;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0 0 18px;
+    }
+    .pt-product-price small {
+        font-size: 13px;
+        font-weight: 500;
+        color: #8a8a8a;
+        margin-left: 6px;
+    }
+    .pt-product-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 22px;
+        background: #1a1a1a;
+        color: #ffffff !important;
+        border: none;
+        border-radius: 100px;
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        text-decoration: none !important;
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        align-self: flex-start;
+    }
+    .pt-product-cta:hover {
+        background: var(--ast-global-color-1, #6a9739);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(106, 151, 57, 0.28);
+    }
+
+    @media (max-width: 921px) {
+        .pt-our-products-grid { grid-template-columns: 1fr; gap: 20px; }
+        .pt-our-products-heading { font-size: 28px; }
+        .pt-our-products { padding: 32px 20px 48px; }
+    }
+
+    /* ==========================================================
+     * 28b. HERO — tighter vertical padding
+     *
+     * Elementor's per-post CSS defined padding-top/bottom: 120px
+     * via the --padding-* CSS vars. Reduce to 90px desktop, 56px
+     * mobile so the next section shows sooner but the hero still
+     * has breathing room.
+     * ========================================================== */
+    .elementor-95 .elementor-element.elementor-element-3849851,
+    .elementor-element-3849851 {
+        --padding-top: 90px !important;
+        --padding-bottom: 90px !important;
+        padding-top: 90px !important;
+        padding-bottom: 90px !important;
+    }
+    @media (max-width: 921px) {
+        .elementor-95 .elementor-element.elementor-element-3849851,
+        .elementor-element-3849851 {
+            --padding-top: 56px !important;
+            --padding-bottom: 56px !important;
+            padding-top: 56px !important;
+            padding-bottom: 56px !important;
+        }
+    }
+
+    /* ==========================================================
+     * 28c. HIDE "Find your formula" section
+     *
+     * Per 2026-04-24 product direction: not shipping the 3-card
+     * category section for now. Hide the Elementor container.
+     * ========================================================== */
+    .elementor-95 .elementor-element.elementor-element-d349891,
+    .elementor-element-d349891 {
+        display: none !important;
+    }
+
+    /* ==========================================================
+     * 29. SHOP ARCHIVE — hide left sidebar, full-width grid
+     *
+     * Scoped to body.post-type-archive-product only so individual
+     * product detail pages (/product/xyz/) keep their sidebar if
+     * they have one. Uses Astra's existing ast-left-sidebar body
+     * class to reverse layout geometry cleanly.
+     * ========================================================== */
+    body.post-type-archive-product #secondary,
+    body.woocommerce-shop #secondary {
+        display: none !important;
+    }
+    body.post-type-archive-product #primary,
+    body.woocommerce-shop #primary {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        float: none !important;
+        /* Astra's ast-left-sidebar layout paints a 1px border-left on
+         * #primary (and right for ast-right-sidebar). With the sidebar
+         * hidden, that border renders as an orphan vertical line down
+         * the whole page — visible as the thin grey stripe on the left
+         * of /shop/. Kill the full border so neither layout shows it. */
+        border: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    /* Astra's left-sidebar layout reserves a margin on #primary we
+     * need to unset as well, otherwise the grid stays offset. */
+    body.post-type-archive-product.ast-left-sidebar #primary,
+    body.post-type-archive-product.ast-right-sidebar #primary,
+    body.woocommerce-shop.ast-left-sidebar #primary,
+    body.woocommerce-shop.ast-right-sidebar #primary {
+        margin: 0 auto !important;
+    }
+
+    /* ==========================================================
+     * 29b. SHOP ARCHIVE — header, noise hide, centered grid
+     *
+     * With only 3 real products, WooCommerce's default affordances
+     * (result count, sort dropdown, pagination) are noise. Hide
+     * them. Make the page title a proper brand header with eyebrow
+     * and subtitle. Center the 3-card grid so it doesn't sit flush
+     * left with a giant empty right side.
+     * ========================================================== */
+
+    /* Branded page title */
+    body.post-type-archive-product .woocommerce-products-header__title,
+    body.woocommerce-shop .woocommerce-products-header__title {
+        font-family: inherit !important;
+        font-size: 44px !important;
+        font-weight: 800 !important;
+        color: #1a1a1a !important;
+        text-align: center !important;
+        margin: 0 auto 16px !important;
+        letter-spacing: -0.6px !important;
+        line-height: 1.1 !important;
+    }
+    /* Eyebrow + subtitle injected via JS (see section "S" in JS block) */
+    .pt-shop-eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--ast-global-color-1, #6a9739);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+    .pt-shop-eyebrow::before,
+    .pt-shop-eyebrow::after {
+        content: '';
+        width: 28px;
+        height: 1.5px;
+        background: var(--ast-global-color-1, #6a9739);
+        opacity: 0.5;
+        border-radius: 2px;
+    }
+    .pt-shop-subtitle {
+        text-align: center;
+        font-size: 16px;
+        line-height: 1.55;
+        color: #666;
+        max-width: 540px;
+        margin: 0 auto 48px;
+    }
+
+    /* Products header container — add room above */
+    body.post-type-archive-product .woocommerce-products-header,
+    body.woocommerce-shop .woocommerce-products-header {
+        text-align: center !important;
+        padding: 48px 20px 0 !important;
+        margin: 0 auto !important;
+        max-width: 1200px !important;
+    }
+
+    /* Hide the noise: result count + sort + pagination when <= 3 products */
+    body.post-type-archive-product .woocommerce-result-count,
+    body.post-type-archive-product .woocommerce-ordering,
+    body.post-type-archive-product .woocommerce-pagination,
+    body.woocommerce-shop .woocommerce-result-count,
+    body.woocommerce-shop .woocommerce-ordering,
+    body.woocommerce-shop .woocommerce-pagination {
+        display: none !important;
+    }
+    body.post-type-archive-product .woocommerce-notices-wrapper:empty,
+    body.woocommerce-shop .woocommerce-notices-wrapper:empty {
+        display: none !important;
+    }
+
+    /* Center the products grid — with 3 items, give each ~340px */
+    body.post-type-archive-product ul.products,
+    body.woocommerce-shop ul.products {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 340px)) !important;
+        justify-content: center !important;
+        gap: 28px !important;
+        max-width: 1120px !important;
+        margin: 0 auto 56px !important;
+        padding: 0 20px !important;
+        float: none !important;
+        list-style: none !important;
+    }
+    body.post-type-archive-product ul.products li.product,
+    body.woocommerce-shop ul.products li.product {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        float: none !important;
+    }
+
+    /* Mobile: single column */
+    @media (max-width: 768px) {
+        body.post-type-archive-product .woocommerce-products-header__title,
+        body.woocommerce-shop .woocommerce-products-header__title {
+            font-size: 30px !important;
+        }
+        body.post-type-archive-product .woocommerce-products-header,
+        body.woocommerce-shop .woocommerce-products-header {
+            padding: 32px 16px 0 !important;
+        }
+        .pt-shop-subtitle {
+            font-size: 14.5px;
+            margin-bottom: 32px;
+        }
+        body.post-type-archive-product ul.products,
+        body.woocommerce-shop ul.products {
+            grid-template-columns: 1fr !important;
+            max-width: 440px !important;
+            gap: 20px !important;
+        }
+    }
+
+    /* ==========================================================
+     * 30b. TESTIMONIALS — custom rebuild
+     *
+     * The default Astra/Elementor testimonial layout had four real
+     * problems:
+     *   1. Bundle promo widget sat in the middle column of a
+     *      testimonials grid (breaks the "trust" narrative; users
+     *      expect reviews there)
+     *   2. Star rating was a separate widget sibling to the
+     *      testimonial — visually floated, disconnected from the
+     *      card below it
+     *   3. Quote text lived inside a second nested card (the
+     *      wrapper I styled + the inner testimonial-wrapper), so
+     *      users saw "card-in-card" which read as broken styling
+     *   4. Avatar URLs pointed to uploads that no longer exist —
+     *      rendering alt text like "client02 free img"
+     *
+     * Solution: hide everything the section originally rendered
+     * (except my injected heading) and build a proper 2-card grid
+     * from scratch via JS. Cards use initials-in-circle avatars
+     * (which can't 404), a single flat card, clean typography.
+     * ========================================================== */
+
+    /* Hide legacy Elementor children inside the testimonials section.
+     * .pt-testimonials-header (injected) and .pt-testimonials-grid
+     * (injected) stay visible. */
+    .elementor-element-ea9e0d9 > .e-con-inner > .e-con.e-child,
+    .elementor-element-ea9e0d9 > .e-con-inner > .elementor-widget,
+    .elementor-element-ea9e0d9 > .e-con-inner > .elementor-element:not(.pt-testimonials-header):not(.pt-testimonials-grid) {
+        display: none !important;
+    }
+
+    /* Section container — make it a clean centered flex column */
+    .elementor-element-ea9e0d9 > .e-con-inner {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        max-width: 1040px !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        padding: 0 24px !important;
+    }
+
+    .pt-testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 440px));
+        gap: 28px;
+        width: 100%;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    .pt-testimonial-card {
+        background: #ffffff;
+        border: 1px solid #f0f0ec;
+        border-radius: 22px;
+        padding: 34px 30px 28px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                    border-color 0.3s ease,
+                    box-shadow 0.35s ease;
+    }
+    .pt-testimonial-card::before {
+        content: "\201C";
+        position: absolute;
+        top: 16px;
+        right: 22px;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 68px;
+        color: rgba(139, 195, 74, 0.22);
+        line-height: 1;
+        pointer-events: none;
+    }
+    .pt-testimonial-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(139, 195, 74, 0.32);
+        box-shadow: 0 20px 40px rgba(106, 151, 57, 0.08),
+                    0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .pt-testimonial-stars {
+        color: #f5a623;
+        font-size: 15px;
+        letter-spacing: 3px;
+        line-height: 1;
+        margin-bottom: 16px;
+        font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .pt-testimonial-quote {
+        font-size: 15.5px;
+        line-height: 1.65;
+        color: #2a2a2a;
+        margin: 0 0 24px;
+        font-family: inherit;
+        font-style: normal;
+        font-weight: 400;
+        flex-grow: 1;
+        border: none;
+        padding: 0;
+        quotes: none;
+    }
+    .pt-testimonial-quote::before,
+    .pt-testimonial-quote::after { content: none; }
+
+    .pt-testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding-top: 18px;
+        border-top: 1px solid #f0f0ec;
+    }
+
+    .pt-testimonial-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 17px;
+        flex-shrink: 0;
+    }
+    .pt-testimonial-avatar--green {
+        background: linear-gradient(135deg, rgba(139,195,74,0.26), rgba(106,151,57,0.08));
+        color: #6a9739;
+    }
+    .pt-testimonial-avatar--peach {
+        background: linear-gradient(135deg, rgba(245,183,120,0.32), rgba(255,216,168,0.1));
+        color: #c87d3a;
+    }
+
+    .pt-testimonial-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .pt-testimonial-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a1a1a;
+        line-height: 1.3;
+    }
+    .pt-testimonial-role {
+        font-size: 12px;
+        color: #8a8a8a;
+        line-height: 1.3;
+    }
+
+    @media (max-width: 768px) {
+        .pt-testimonials-grid {
+            grid-template-columns: 1fr;
+            max-width: 440px;
+            gap: 18px;
+        }
+        .pt-testimonial-card {
+            padding: 28px 24px 22px;
+        }
+        .pt-testimonial-card::before {
+            font-size: 56px;
+            top: 12px;
+            right: 18px;
+        }
+    }
+
+    /* ==========================================================
+     * 30c. MOBILE POLISH — homepage
+     *
+     * Targeted fixes for phone-sized screens (≤768px). Focus areas:
+     *  - Hero H1 was scaling to ~40px+ on mobile (Astra + Elementor
+     *    defaults); cap at a readable 30px
+     *  - Hero description + button sized for thumb-readability
+     *  - Product cards: comfortable internal padding, real touch
+     *    targets (min 44px) on the "Shop Now" CTA
+     *  - Section headings pared to ~26-28px so they don't dominate
+     *  - 20% off promo heading scales down from 38px → 24px
+     *  - Brand-logo row spacing tightened to prevent wrap chaos
+     *  - Footer: explicit stack + centered alignment, less cramped
+     * ========================================================== */
+
+    @media (max-width: 768px) {
+        /* -------- HERO -------- */
+        .elementor-element-3849851 .hfe-infocard-title,
+        .elementor-element-3849851 h1,
+        .elementor-element-3849851 .elementor-heading-title {
+            font-size: 30px !important;
+            line-height: 1.18 !important;
+            letter-spacing: -0.4px !important;
+        }
+        .elementor-element-3849851 .hfe-infocard-text,
+        .elementor-element-3849851 p {
+            font-size: 15px !important;
+            line-height: 1.6 !important;
+        }
+        .elementor-element-3849851 .elementor-button {
+            font-size: 12px !important;
+            padding: 14px 28px !important;
+            min-height: 46px;
+        }
+        /* Hero eyebrow pill already OK from section 26 */
+
+        /* -------- OUR PRODUCTS -------- */
+        .pt-our-products-heading {
+            font-size: 26px !important;
+            line-height: 1.2 !important;
+        }
+        .pt-our-products-subtitle { font-size: 14.5px !important; }
+        .pt-product-card { padding: 24px 22px !important; }
+        .pt-product-image { margin-bottom: 18px !important; }
+        .pt-product-name { font-size: 20px !important; }
+        .pt-product-desc { font-size: 14px !important; }
+        .pt-product-price { font-size: 18px !important; }
+        .pt-product-cta {
+            padding: 14px 24px !important;
+            min-height: 46px;
+            align-self: stretch !important;  /* full-width CTA on phones */
+            text-align: center;
+        }
+
+        /* -------- 20% OFF PROMO -------- */
+        .elementor-element-28fc7dc .elementor-heading-title,
+        .elementor-element-28fc7dc h1,
+        .elementor-element-28fc7dc h2 {
+            font-size: 24px !important;
+            line-height: 1.2 !important;
+        }
+        .elementor-element-28fc7dc .elementor-button {
+            font-size: 12px !important;
+            padding: 14px 24px !important;
+            min-height: 46px !important;
+        }
+
+        /* -------- TESTIMONIALS -------- */
+        .pt-testimonials-heading { font-size: 26px !important; line-height: 1.2 !important; }
+        .pt-testimonials-subtitle { font-size: 14px !important; }
+        .pt-testimonial-quote { font-size: 15px !important; }
+
+        /* -------- QUIZ -------- */
+        .elementor-element-778c9e4 .elementor-heading-title,
+        .elementor-element-778c9e4 h3 {
+            font-size: 22px !important;
+            line-height: 1.25 !important;
+        }
+        .elementor-element-778c9e4 .elementor-button {
+            padding: 14px 24px !important;
+            min-height: 46px !important;
+        }
+
+        /* -------- BRAND LOGOS -------- */
+        .elementor-element-357f4cd .elementor-widget-image {
+            flex: 1 1 33% !important;
+            max-width: 33% !important;
+            padding: 4px 10px !important;
+        }
+        .elementor-element-357f4cd .elementor-widget-image img {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
+        /* -------- FOOTER — hide primary footer block on mobile --------
+         *
+         * Designer call (2026-04-24): the entire primary footer wrap
+         * (logo + tagline + contact rows + Website/Site Links
+         * columns) is removed on phones. It was eating ~5 screens of
+         * scroll for content the user can reach from the header nav
+         * or the Contact page.
+         *
+         * Kept on mobile: the newsletter card (.pt-footer-newsletter,
+         * inserted before the wrap) and the copyright bar
+         * (.pt-footer-copybar, appended after the wrap) — both are
+         * siblings of .site-primary-footer-wrap, not children, so
+         * hiding the wrap doesn't affect them.
+         *
+         * Earlier attempts at a "compact mobile layout" lived here;
+         * removed in favour of this simpler hide rule.
+         */
+        .site-footer .site-primary-footer-wrap {
+            display: none !important;
+        }
+
+        /* Newsletter card (above the footer grid): lighter padding */
+        .pt-footer-newsletter { padding: 24px 18px !important; text-align: center !important; margin-bottom: 24px !important; }
+        .pt-footer-newsletter-title { text-align: center !important; font-size: 19px !important; }
+        .pt-footer-newsletter-title small { font-size: 12px !important; }
+        .pt-footer-newsletter-form { flex-direction: column !important; gap: 10px !important; }
+        .pt-footer-newsletter-input,
+        .pt-footer-newsletter-btn { width: 100% !important; min-height: 46px !important; }
+
+        /* Copyright bar: tighter + stacked */
+        .pt-footer-copybar {
+            padding: 16px 16px 22px !important;
+            gap: 10px 14px !important;
+            font-size: 12px !important;
+        }
+        .pt-footer-copybar-left,
+        .pt-footer-copybar-right {
+            justify-content: center !important;
+            gap: 4px 12px !important;
+        }
+
+        /* Announcement bar — smaller font + trimmed padding */
+        .pt-announcement-bar { font-size: 11.5px !important; }
+        .pt-announcement-inner { padding: 8px 20px !important; }
+
+        /* -------- Generic: kill any horizontal overflow -------- */
+        body { overflow-x: hidden !important; }
+    }
+
+    @media (max-width: 480px) {
+        /* Very small phones — slightly tighter again */
+        .elementor-element-3849851 .hfe-infocard-title,
+        .elementor-element-3849851 h1 { font-size: 26px !important; }
+        .pt-our-products-heading,
+        .pt-testimonials-heading { font-size: 24px !important; }
+        .pt-testimonial-card { padding: 22px 20px 18px !important; }
+    }
+
+    /* ==========================================================
+     * 31. HOMEPAGE VERTICAL RHYTHM — consolidated scale
+     *
+     * Every visible section below the hero uses ONE rhythm unit —
+     * 80px vertical padding on desktop, 48px on mobile. Goal: the
+     * page reads as evenly-spaced rather than a jumble of per-
+     * section Elementor defaults (which ranged from 40px to 120px).
+     *
+     * Keep specific exceptions documented:
+     *   - Hero keeps its own 90/90 (handled in section 28b above)
+     *   - Features bar keeps 35/30 + negative margin-top (floating
+     *     card lifting over the hero boundary)
+     *   - Our Products uses 56 top / 80 bottom because the features
+     *     bar above already absorbs ~40px of implicit gap
+     * ========================================================== */
+
+    /* Testimonials section — match rhythm (was 80/80 → overridden
+     * to 56/56 earlier; restoring to rhythm 80/80 desktop. Internal
+     * heading→cards gap stays tight via .pt-testimonials-header rule) */
+    .elementor-95 .elementor-element.elementor-element-ea9e0d9,
+    .elementor-element-ea9e0d9 {
+        padding-top: 80px !important;
+        padding-bottom: 80px !important;
+    }
+
+    /* 20% off promo — bump 60/60 → 80/80 */
+    .elementor-95 .elementor-element.elementor-element-28fc7dc,
+    .elementor-element-28fc7dc {
+        padding-top: 80px !important;
+        padding-bottom: 80px !important;
+    }
+
+    /* Quiz CTA — was 0/0, give it breathing room 40/40 */
+    .elementor-95 .elementor-element.elementor-element-778c9e4,
+    .elementor-element-778c9e4 {
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
+    }
+
+    /* Brand logos — was 0 top / 40 bottom, balance to 60/60 */
+    .elementor-95 .elementor-element.elementor-element-357f4cd,
+    .elementor-element-357f4cd {
+        padding-top: 60px !important;
+        padding-bottom: 60px !important;
+    }
+
+    /* Mobile rhythm — half the desktop scale so sections don't
+     * feel oversized on phones */
+    @media (max-width: 768px) {
+        .elementor-95 .elementor-element.elementor-element-ea9e0d9,
+        .elementor-element-ea9e0d9,
+        .elementor-95 .elementor-element.elementor-element-28fc7dc,
+        .elementor-element-28fc7dc {
+            padding-top: 48px !important;
+            padding-bottom: 48px !important;
+        }
+        .elementor-95 .elementor-element.elementor-element-778c9e4,
+        .elementor-element-778c9e4 {
+            padding-top: 24px !important;
+            padding-bottom: 24px !important;
+        }
+        .elementor-95 .elementor-element.elementor-element-357f4cd,
+        .elementor-element-357f4cd {
+            padding-top: 40px !important;
+            padding-bottom: 40px !important;
+        }
+    }
+
     </style>
     <?php
 }
@@ -3913,6 +4717,88 @@ function pethoven_ui_js() {
             priceObserver.observe(price);
         });
 
+    })();
+    </script>
+
+    <script id="pethoven-broken-img-js">
+    /* ----------------------------------------------------------
+     * Hide broken images everywhere.
+     *
+     * The wp-content/uploads/ directory is currently empty (not yet
+     * restored from Hostinger backup). Every reference to a demo
+     * image file (logo-leaf-new.png, product photos, etc.) 404s
+     * and the browser renders a broken-image icon next to its alt
+     * text — e.g. "logo leaf new", "client01 free img".
+     *
+     * Strategy: hide any <img> whose naturalWidth is 0 after load.
+     * Handles three cases:
+     *   1. Already-loaded broken images (immediate scan)
+     *   2. Images still loading on DOM ready (onerror listener)
+     *   3. Images injected later by other scripts (MutationObserver)
+     *
+     * When the uploads dir is eventually restored from the backup,
+     * this code is a harmless no-op — it only acts when an image
+     * actually fails to load.
+     * ---------------------------------------------------------- */
+    (function () {
+        'use strict';
+
+        var handle = function (img) {
+            if (img.dataset.ptBrokenHandled === '1') return;
+            if (!img.getAttribute('src')) { img.style.display = 'none'; return; }
+
+            if (img.complete) {
+                if (img.naturalWidth === 0) {
+                    img.dataset.ptBrokenHandled = '1';
+                    img.style.display = 'none';
+                    // Also hide the wrapping <a> if it only contains this
+                    // image (common for linked logos — otherwise you see
+                    // an empty clickable gap where the image used to be).
+                    var anchor = img.parentElement;
+                    if (anchor && anchor.tagName === 'A' &&
+                        anchor.childElementCount === 1 &&
+                        !anchor.textContent.trim()) {
+                        anchor.style.display = 'none';
+                    }
+                }
+            } else {
+                img.addEventListener('error', function () {
+                    img.dataset.ptBrokenHandled = '1';
+                    img.style.display = 'none';
+                    var a = img.parentElement;
+                    if (a && a.tagName === 'A' && a.childElementCount === 1 && !a.textContent.trim()) {
+                        a.style.display = 'none';
+                    }
+                }, { once: true });
+            }
+        };
+
+        var scan = function (root) {
+            (root || document).querySelectorAll('img').forEach(handle);
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () { scan(); });
+        } else {
+            scan();
+        }
+
+        // Watch for late-injected images (our own JS injections, lazy loaders, etc.)
+        if ('MutationObserver' in window) {
+            var mo = new MutationObserver(function (mutations) {
+                mutations.forEach(function (m) {
+                    m.addedNodes.forEach(function (node) {
+                        if (node.nodeType !== 1) return;
+                        if (node.tagName === 'IMG') handle(node);
+                        else if (node.querySelectorAll) scan(node);
+                    });
+                });
+            });
+            if (document.body) mo.observe(document.body, { childList: true, subtree: true });
+            else document.addEventListener('DOMContentLoaded', function () {
+                mo.observe(document.body, { childList: true, subtree: true });
+            });
+        }
     })();
     </script>
 
@@ -4248,6 +5134,60 @@ function pethoven_ui_js() {
         }
 
         /* ----------------------------------------------------------
+         * N1. Testimonials — custom 2-card grid
+         *
+         * The default Elementor testimonials block has a bundle-promo
+         * column sitting between two testimonial cards (breaks the
+         * trust narrative), a second nested card inside each cell, and
+         * broken avatar image URLs. Rather than patch the layered
+         * Elementor widgets, we inject a clean 2-card grid into the
+         * same .e-con-inner container and hide the legacy widgets via
+         * CSS (see section 30b).
+         * ---------------------------------------------------------- */
+        if (testSection && !testSection.querySelector('.pt-testimonials-grid')) {
+            var inner = testSection.querySelector(':scope > .e-con-inner') ||
+                        testSection.querySelector('.e-con-inner');
+            if (inner) {
+                var reviews = [
+                    {
+                        initial: 'S',
+                        color: 'green',
+                        name: 'Sarah K.',
+                        role: 'Golden retriever mom',
+                        quote: 'Our golden retriever had flaky skin for months. Two washes with the Sensitive Skin formula and it cleared up completely. Coat is softer than it\'s been in years.'
+                    },
+                    {
+                        initial: 'J',
+                        color: 'peach',
+                        name: 'James T.',
+                        role: 'Husky dad, Colorado',
+                        quote: 'I tried five different dog shampoos before Pethoven. This is the only one that actually removes that wet dog smell and keeps his coat shiny for days.'
+                    }
+                ];
+
+                var grid = document.createElement('div');
+                grid.className = 'pt-testimonials-grid';
+                grid.innerHTML = reviews.map(function (r) {
+                    return '<article class="pt-testimonial-card">' +
+                        '<div class="pt-testimonial-stars" aria-label="5 out of 5 stars">' +
+                          '&#9733;&#9733;&#9733;&#9733;&#9733;' +
+                        '</div>' +
+                        '<p class="pt-testimonial-quote">' + r.quote + '</p>' +
+                        '<div class="pt-testimonial-author">' +
+                            '<div class="pt-testimonial-avatar pt-testimonial-avatar--' + r.color + '" aria-hidden="true">' + r.initial + '</div>' +
+                            '<div class="pt-testimonial-meta">' +
+                                '<div class="pt-testimonial-name">' + r.name + '</div>' +
+                                '<div class="pt-testimonial-role">' + r.role + '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</article>';
+                }).join('');
+
+                inner.appendChild(grid);
+            }
+        }
+
+        /* ----------------------------------------------------------
          * N. Footer — newsletter signup + trust row
          *    Prepends a simple email capture and a row of
          *    certification claims to the top of the footer. Submit
@@ -4274,6 +5214,7 @@ function pethoven_ui_js() {
             footer.insertBefore(newsletter, footer.firstChild);
 
             var form = newsletter.querySelector('form');
+            var submitBtn = form.querySelector('.pt-footer-newsletter-btn');
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
                 var input = form.querySelector('.pt-footer-newsletter-input');
@@ -4284,15 +5225,33 @@ function pethoven_ui_js() {
                     status.style.color = '#c23b3b';
                     return;
                 }
-                // Store locally until an ESP is wired up
-                try {
-                    var list = JSON.parse(localStorage.getItem('pt_newsletter') || '[]');
-                    if (list.indexOf(email) === -1) list.push(email);
-                    localStorage.setItem('pt_newsletter', JSON.stringify(list));
-                } catch (err) {}
-                status.textContent = "You're in. Check your inbox for the discount code.";
-                status.style.color = 'var(--ast-global-color-1, #6a9739)';
-                input.value = '';
+
+                // Disable + show "Sending…" state
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.dataset.origText = submitBtn.textContent; submitBtn.textContent = 'Sending…'; }
+                status.textContent = '';
+
+                // POST to our subscribe endpoint — see wp-content/mu-plugins/pethoven-subscribe.php
+                fetch('/wp-json/pethoven/v1/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                }).then(function (r) {
+                    return r.json().then(function (data) { return { ok: r.ok, data: data }; });
+                }).then(function (res) {
+                    if (res.ok && res.data && res.data.ok) {
+                        status.textContent = res.data.message || "You're in. Check your inbox for your 10% off code.";
+                        status.style.color = 'var(--ast-global-color-1, #6a9739)';
+                        input.value = '';
+                    } else {
+                        status.textContent = (res.data && res.data.error) ? res.data.error : 'Something went wrong. Please try again.';
+                        status.style.color = '#c23b3b';
+                    }
+                }).catch(function () {
+                    status.textContent = 'Network error. Please try again.';
+                    status.style.color = '#c23b3b';
+                }).finally(function () {
+                    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitBtn.dataset.origText || 'Subscribe'; }
+                });
             });
 
             // Trust row under the newsletter
@@ -4302,7 +5261,7 @@ function pethoven_ui_js() {
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
                     '<polyline points="5 12 10 17 19 7"/>' +
                 '</svg>';
-            ['Made in the USA', 'Sulfate & paraben free', 'Cruelty-free', 'Backed by vets']
+            ['Made in Estonia', 'Sulfate & paraben free', 'Cruelty-free', 'Backed by vets']
                 .forEach(function (label) {
                     var item = document.createElement('span');
                     item.className = 'pt-footer-trust-item';
@@ -4378,7 +5337,7 @@ function pethoven_ui_js() {
                             '<circle cx="12" cy="10" r="3"/>' +
                         '</svg>' +
                         '<span>New York, NY<br>' +
-                        '<span style="font-size:12px;color:#8a8a8a;">Formulated &amp; shipped from the USA</span></span>' +
+                        '<span style="font-size:12px;color:#8a8a8a;">Formulated &amp; shipped from Estonia</span></span>' +
                     '</div>';
                 logoCol.appendChild(contact);
             }
@@ -4450,56 +5409,108 @@ function pethoven_ui_js() {
         })();
 
         /* ----------------------------------------------------------
-         * H0. Homepage Best Sellers section — eyebrow, subtitle, CTA
-         *     The "Best Sellers" heading is a bare h2 from Elementor.
-         *     Wrap it with an eyebrow above and subtitle below, and
-         *     inject a "View all products" CTA after the grid.
+         * H0 / P. "Our Products" section
+         *
+         * 2026-04-24 direction: replace the "Best Sellers" block
+         * (Astra grocery demo products) with an "Our Products"
+         * 3-card section linking to the real WooCommerce products
+         * for Sensitive Skin / Deep Clean / Puppy Collection.
+         *
+         * Behavior:
+         *  1. Find the "Best Sellers" heading, walk up to its
+         *     Elementor section, and flag it .pt-hide-best-sellers
+         *     (CSS hides it).
+         *  2. Inject the Our Products section at the same position
+         *     so the page flow is uninterrupted.
+         *
+         * Only runs on the homepage (body.home).
          * ---------------------------------------------------------- */
-        var bestSellersHeading = Array.from(document.querySelectorAll('h2, h3')).find(function (h) {
-            return (h.textContent || '').trim() === 'Best Sellers';
-        });
+        (function injectOurProducts() {
+            if (!document.body.classList.contains('home') && !document.body.classList.contains('page-id-95')) return;
+            if (document.querySelector('.pt-our-products')) return;
 
-        if (bestSellersHeading) {
-            // Eyebrow above
-            var headingWidget = bestSellersHeading.closest('.elementor-widget, .elementor-element') || bestSellersHeading.parentNode;
-            if (headingWidget && !headingWidget.querySelector('.pt-products-eyebrow')) {
-                var eyebrow = document.createElement('div');
-                eyebrow.className = 'pt-products-eyebrow';
-                eyebrow.textContent = 'Shop Our Bestsellers';
-                headingWidget.insertBefore(eyebrow, headingWidget.firstChild);
-            }
+            // Locate Best Sellers section (the [products] shortcode block)
+            var bestSellersHeading = Array.from(document.querySelectorAll('h2, h3')).find(function (h) {
+                return (h.textContent || '').trim() === 'Best Sellers';
+            });
 
-            // Subtitle directly after the heading
-            var headingContainer = bestSellersHeading.parentNode;
-            if (headingContainer && !headingContainer.querySelector('.pt-products-subtitle')) {
-                var subtitle = document.createElement('div');
-                subtitle.className = 'pt-products-subtitle';
-                subtitle.textContent = 'The formulas dog owners keep coming back for. Sulfate-free, vet-approved, loved by thousands.';
-                if (bestSellersHeading.nextSibling) {
-                    headingContainer.insertBefore(subtitle, bestSellersHeading.nextSibling);
-                } else {
-                    headingContainer.appendChild(subtitle);
+            var bsSection = null;
+            if (bestSellersHeading) {
+                // Walk up to the top-level Elementor section (e-con.e-parent
+                // for flex containers, or .elementor-top-section for legacy)
+                var cur = bestSellersHeading;
+                for (var _i = 0; _i < 10 && cur; _i++) {
+                    cur = cur.parentElement;
+                    if (cur && (cur.classList.contains('e-parent') ||
+                                cur.classList.contains('elementor-top-section') ||
+                                cur.matches('section.elementor-section'))) {
+                        bsSection = cur;
+                        break;
+                    }
                 }
             }
-        }
 
-        // "View all products" CTA injected at the bottom of the products section
-        var homeProductsSection = document.querySelector('.pt-products-section');
-        if (homeProductsSection && !homeProductsSection.querySelector('.pt-products-cta')) {
-            var grid = homeProductsSection.querySelector('ul.products');
-            if (grid) {
-                var ctaWrap = document.createElement('div');
-                ctaWrap.className = 'pt-products-cta';
-                var ctaLink = document.createElement('a');
-                ctaLink.className = 'pt-products-cta-link';
-                ctaLink.href = '/shop/';
-                ctaLink.innerHTML = 'View all products <span class="pt-products-cta-link-arrow" aria-hidden="true">→</span>';
-                ctaWrap.appendChild(ctaLink);
-                // Append after the closest shortcode/widget wrapper so it sits below the grid
-                var gridWrapper = grid.closest('.elementor-shortcode, .elementor-widget-shortcode, .woocommerce') || grid.parentNode;
-                gridWrapper.parentNode.insertBefore(ctaWrap, gridWrapper.nextSibling);
+            var products = [
+                {
+                    name: 'Sensitive Skin',
+                    desc: 'Oatmeal and aloe formula. Stops itching, repairs dry skin, safe for allergies.',
+                    price: '$45',
+                    priceNote: '12 oz bottle',
+                    href: '/product/sensitive-skin/',
+                    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.8 2c1 5 .5 10-2 13.5-1.5 2-5 4.5-6.8 4.5z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>'
+                },
+                {
+                    name: 'Deep Clean',
+                    desc: 'Mud, odor, buildup — gone. Built for active dogs that get into everything.',
+                    price: '$36',
+                    priceNote: '12 oz bottle',
+                    href: '/product/deep-clean/',
+                    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/><path d="M8.5 14c.5 1.5 1.8 2.5 3.5 2.5" stroke-linecap="round"/></svg>'
+                },
+                {
+                    name: 'Puppy Collection',
+                    desc: 'Tear-free, pH-balanced. Formulated for puppies 8 weeks and older.',
+                    price: '$57',
+                    priceNote: '8 oz bottle',
+                    href: '/product/puppy-collection/',
+                    icon: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="6" cy="11" rx="2.2" ry="2.6"/><ellipse cx="18" cy="11" rx="2.2" ry="2.6"/><ellipse cx="9.5" cy="6" rx="2" ry="2.4"/><ellipse cx="14.5" cy="6" rx="2" ry="2.4"/><path d="M12 13.2c-3.2 0-5.6 2.7-5.6 5.3 0 1.4 1.1 2.5 2.5 2.5 1 0 1.5-.5 3.1-.5s2.1.5 3.1.5c1.4 0 2.5-1.1 2.5-2.5 0-2.6-2.4-5.3-5.6-5.3z"/></svg>'
+                }
+            ];
+
+            var cardsHtml = products.map(function (p) {
+                return '<article class="pt-product-card">' +
+                    '<div class="pt-product-image">' + p.icon + '</div>' +
+                    '<h3 class="pt-product-name">' + p.name + '</h3>' +
+                    '<p class="pt-product-desc">' + p.desc + '</p>' +
+                    '<div class="pt-product-price">' + p.price +
+                        '<small>' + p.priceNote + '</small>' +
+                    '</div>' +
+                    '<a class="pt-product-cta" href="' + p.href + '">Shop Now <span aria-hidden="true">→</span></a>' +
+                  '</article>';
+            }).join('');
+
+            var section = document.createElement('section');
+            section.className = 'pt-our-products';
+            section.innerHTML =
+                '<div class="pt-our-products-head">' +
+                    '<div class="pt-our-products-eyebrow">Three formulas, one standard</div>' +
+                    '<h2 class="pt-our-products-heading">Our Products</h2>' +
+                    '<p class="pt-our-products-subtitle">Targeted, vet-approved shampoos for every coat and every life stage.</p>' +
+                '</div>' +
+                '<div class="pt-our-products-grid">' + cardsHtml + '</div>';
+
+            if (bsSection && bsSection.parentNode) {
+                // Insert new section right before Best Sellers, then hide BS
+                bsSection.parentNode.insertBefore(section, bsSection);
+                bsSection.classList.add('pt-hide-best-sellers');
+            } else {
+                // Fallback: insert after the features bar
+                var featuresBar = document.querySelector('.pt-features-bar, .elementor-element-966d6bb');
+                if (featuresBar && featuresBar.parentNode) {
+                    featuresBar.parentNode.insertBefore(section, featuresBar.nextSibling);
+                }
             }
-        }
+        })();
 
         /* ----------------------------------------------------------
          * H. Shop archive header — decorative brand mark + trust pills
@@ -4508,6 +5519,24 @@ function pethoven_ui_js() {
          *    old text-only trust strip.
          * ---------------------------------------------------------- */
         var archiveHeader = document.querySelector('.woocommerce-products-header');
+
+        /* Branded eyebrow above the page title */
+        if (archiveHeader && !archiveHeader.querySelector('.pt-shop-eyebrow')) {
+            var eyebrow = document.createElement('div');
+            eyebrow.className = 'pt-shop-eyebrow';
+            eyebrow.textContent = 'Built for dogs who deserve better';
+            archiveHeader.insertBefore(eyebrow, archiveHeader.firstChild);
+        }
+
+        /* Subtitle below the title */
+        var pageTitle = archiveHeader && archiveHeader.querySelector('.woocommerce-products-header__title, .page-title');
+        if (pageTitle && !archiveHeader.querySelector('.pt-shop-subtitle')) {
+            var subtitle = document.createElement('p');
+            subtitle.className = 'pt-shop-subtitle';
+            subtitle.textContent = 'Three targeted shampoos — organic, vet-approved, and formulated to actually work.';
+            pageTitle.parentNode.insertBefore(subtitle, pageTitle.nextSibling);
+        }
+
         if (archiveHeader && !archiveHeader.querySelector('.pt-archive-crown')) {
             var crown = document.createElement('div');
             crown.className = 'pt-archive-crown';

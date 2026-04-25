@@ -364,7 +364,7 @@ function pethoven_rewrite_content( $html ) {
          * ============================================ */
 
         'Maecenas mi justo, interdum at consectetur vel, tristique et arcu.'
-            => 'Organic dog shampoos. Made in the USA. Backed by vets. Loved by dogs.',
+            => 'Organic dog shampoos. Made in Estonia. Backed by vets. Loved by dogs.',
 
         'Know More About Us'
             => 'About Us',
