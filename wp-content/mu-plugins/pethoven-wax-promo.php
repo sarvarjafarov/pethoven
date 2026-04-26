@@ -150,6 +150,79 @@ function pt_wax_maybe_auto_add( $cart_item_key, $product_id, $quantity, $variati
 }
 
 /* ----------------------------------------------------------------------
+ * 1b. Safety-net: ensure the wax is in cart whenever the customer
+ *     visits the cart or checkout page with at least one other
+ *     product in cart.
+ *
+ *     The primary `woocommerce_add_to_cart` hook (above) covers the
+ *     normal AJAX-add-from-shop flow. This hook covers edge cases:
+ *
+ *       - Cart was loaded from a persisted session (logged-in user,
+ *         "save cart" plugins) without re-running the add hook.
+ *       - LiteSpeed object cache or page cache intercepted the
+ *         original add and skipped the hook side-effects.
+ *       - A different code path (REST API, CartFlows, etc.) added
+ *         the product without firing woocommerce_add_to_cart.
+ *
+ *     Fires on cart + checkout templates. Cheap when nothing's
+ *     needed (early bails on empty cart / already-present wax /
+ *     session-removed flag / promo expired).
+ * ---------------------------------------------------------------------- */
+
+add_action( 'template_redirect', 'pt_wax_ensure_in_cart', 20 );
+
+function pt_wax_ensure_in_cart() {
+	if ( ! function_exists( 'is_cart' ) ) {
+		return;
+	}
+	if ( ! is_cart() && ! is_checkout() ) {
+		return;
+	}
+	if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+		return;
+	}
+	if ( WC()->cart->is_empty() ) {
+		return;
+	}
+	if ( ! pt_wax_promo_active() ) {
+		return;
+	}
+	if ( pt_wax_session_user_removed() ) {
+		return;
+	}
+
+	$wax_id = pt_wax_product_id();
+	if ( ! $wax_id ) {
+		return;
+	}
+	if ( pt_wax_find_in_cart() ) {
+		return;
+	}
+
+	// Confirm the cart contains at least one non-wax product before
+	// auto-adding (otherwise we'd be adding wax to a cart that was
+	// emptied except for some edge case).
+	$has_other = false;
+	foreach ( WC()->cart->get_cart() as $item ) {
+		if ( (int) $item['product_id'] !== $wax_id ) {
+			$has_other = true;
+			break;
+		}
+	}
+	if ( ! $has_other ) {
+		return;
+	}
+
+	WC()->cart->add_to_cart(
+		$wax_id,
+		1,
+		0,
+		array(),
+		array( 'pt_wax_promo' => true )
+	);
+}
+
+/* ----------------------------------------------------------------------
  * 2. Display "Auto-added — remove if not needed" label on the cart
  *    line item. The wax keeps its normal $10 catalog price; the promo
  *    is just the auto-add behaviour, not a discount.
