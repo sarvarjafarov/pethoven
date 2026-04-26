@@ -4258,24 +4258,20 @@ function pethoven_ui_css() {
         margin: 0 auto 48px;
     }
 
-    /* Hide the shop archive header on /shop/ entirely — designer
-     * call (2026-04-26): the paw crown + "Built for dogs who deserve
-     * better" eyebrow + "Shop" title + subtitle + trust pills row
-     * were all inside .woocommerce-products-header, and the call was
-     * to ship the page with just the breadcrumb above the product
-     * grid. The breadcrumb (nav.woocommerce-breadcrumb) sits OUTSIDE
-     * the products-header, so it stays visible. The grid picks up
-     * its own top breathing room from the .ast-woocommerce-container
-     * padding-top, plus the explicit margin below. */
+    /* Products header container — keep paw crown + eyebrow + subtitle
+     * + trust pills visible, but hide just the "Shop" title word
+     * (designer call 2026-04-26). The eyebrow already sets the
+     * section's voice, the title was redundant. */
     body.post-type-archive-product .woocommerce-products-header,
     body.woocommerce-shop .woocommerce-products-header {
-        display: none !important;
+        text-align: center !important;
+        padding: 48px 20px 40px !important;
+        margin: 0 auto !important;
+        max-width: 1200px !important;
     }
-    /* With the header gone, give the products grid its own top space
-     * so it doesn't sit directly underneath the breadcrumb. */
-    body.post-type-archive-product ul.products,
-    body.woocommerce-shop ul.products {
-        margin-top: 32px !important;
+    body.post-type-archive-product .woocommerce-products-header__title,
+    body.woocommerce-shop .woocommerce-products-header__title {
+        display: none !important;
     }
 
     /* Hide the noise: result count + sort + pagination when <= 3 products */
