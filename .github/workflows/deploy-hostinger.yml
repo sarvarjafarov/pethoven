@@ -49,9 +49,17 @@ jobs:
           ssh-private-key: ${{ secrets.HOSTINGER_SSH_KEY }}
 
       - name: Trust Hostinger host key
+        # ssh-keyscan can fail transiently (Hostinger rate-limits the
+        # GitHub Actions IP ranges after a burst of failed auths) and
+        # the next two steps both pass `-o StrictHostKeyChecking=no`,
+        # so they don't actually need the known_hosts entry to be
+        # populated. Make this step a best-effort warm-up rather than
+        # a hard gate. Show stderr instead of swallowing it so any
+        # genuine new failure mode is visible in the run log.
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p 65002 -H "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -p 65002 -H "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts \
+            || echo "ssh-keyscan failed (non-fatal — downstream steps disable strict host checking)"
 
       - name: Probe SSH connectivity
         run: |

@@ -1657,13 +1657,74 @@ function pethoven_ui_css() {
         color: var(--ast-global-color-1, #6a9739) !important;
     }
 
-    /* Kill zero-star review wrappers in archive */
-    .woocommerce ul.products li.product .review-rating:not(:has(.star-rating[style*="width:"])) {
-        display: none;
+    /* Hide the category badge when it has no real content. Astra's
+     * loop renders <span class="ast-woo-product-category">…whitespace…</span>
+     * for products that aren't assigned a category, and the badge's
+     * padding + background paints it as a tiny green pill above the
+     * product title (the "stray dash" complaint on /shop/). `:empty`
+     * doesn't catch whitespace-only spans, but the populated badge
+     * always wraps its term in an <a>, so :not(:has(a)) cleanly hides
+     * the empty case without needing JS. */
+    .woocommerce ul.products li.product .ast-woo-product-category:not(:has(a)) {
+        display: none !important;
     }
+
+    /* Kill zero-star review widget in archive cards. WooCommerce
+     * renders <span style="width:0%"> inside .star-rating for every
+     * unrated product; without this rule the empty 5-star backdrop
+     * (rendered via .star-rating's ::before pseudo) still paints,
+     * leaving an orphan grey row above the price. We hide both the
+     * inner span (so the value-bar doesn't render) and the .star-rating
+     * itself + its .review-rating wrapper (so no vertical space is
+     * reserved). */
     .woocommerce ul.products li.product .review-rating .star-rating > span[style="width:0%"],
     .woocommerce ul.products li.product .review-rating .star-rating > span[style="width: 0%"] {
-        display: none;
+        display: none !important;
+    }
+    .woocommerce ul.products li.product .review-rating:has(.star-rating > span[style="width:0%"]),
+    .woocommerce ul.products li.product .review-rating:has(.star-rating > span[style="width: 0%"]) {
+        display: none !important;
+    }
+    /* Belt-and-braces fallback: also hide .review-rating that has no
+     * star-rating at all (some Woo versions emit empty wrappers). */
+    .woocommerce ul.products li.product .review-rating:not(:has(.star-rating)) {
+        display: none !important;
+    }
+
+    /* Replace the WooCommerce default placeholder image with a styled
+     * branded fallback. When a product has no image uploaded, Woo
+     * outputs <img class="woocommerce-placeholder"> against a generic
+     * grey 1200×1200 PNG that reads as "broken" or "still loading"
+     * even after settling. Hiding the img and painting a paw glyph
+     * onto the .astra-shop-thumbnail-wrap (which already has the
+     * green-cream gradient background) makes the empty-state read
+     * as intentional brand chrome rather than a missing asset.
+     *
+     * The paw SVG is inlined as a data URI so we don't need an extra
+     * asset request — and so the colour can stay coupled to the
+     * brand greens.
+     *
+     * Only fires when the rendered img has class woocommerce-placeholder,
+     * so once a real photo is uploaded the styling no-ops automatically. */
+    .woocommerce ul.products li.product .astra-shop-thumbnail-wrap:has(img.woocommerce-placeholder) {
+        position: relative;
+    }
+    .woocommerce ul.products li.product .astra-shop-thumbnail-wrap img.woocommerce-placeholder {
+        opacity: 0 !important;
+    }
+    .woocommerce ul.products li.product .astra-shop-thumbnail-wrap:has(img.woocommerce-placeholder)::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 64px;
+        height: 64px;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236a9739' opacity='0.45'><circle cx='5.5' cy='9' r='2'/><circle cx='18.5' cy='9' r='2'/><circle cx='8.5' cy='4.5' r='1.8'/><circle cx='15.5' cy='4.5' r='1.8'/><path d='M12 11c-3.5 0-6 3-6 6 0 1.66 1.34 3 3 3 1 0 1.5-.5 3-.5s2 .5 3 .5c1.66 0 3-1.34 3-3 0-3-2.5-6-6-6z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        pointer-events: none;
     }
 
     .woocommerce ul.products li.product .price {
@@ -4135,11 +4196,15 @@ function pethoven_ui_css() {
         margin: 0 auto 48px;
     }
 
-    /* Products header container — add room above */
+    /* Products header container — add room above and below. Bottom
+     * padding (40px) is what separates the trust-pill row from the
+     * top edge of the product grid; without it the pills sit flush
+     * against the cards, which made the strip read as if it were
+     * attached to the cards rather than to the header copy. */
     body.post-type-archive-product .woocommerce-products-header,
     body.woocommerce-shop .woocommerce-products-header {
         text-align: center !important;
-        padding: 48px 20px 0 !important;
+        padding: 48px 20px 40px !important;
         margin: 0 auto !important;
         max-width: 1200px !important;
     }
@@ -4158,14 +4223,22 @@ function pethoven_ui_css() {
         display: none !important;
     }
 
-    /* Center the products grid — with 3 items, give each ~340px */
+    /* Center the products grid. Uses auto-fit + minmax so the layout
+     * adapts between 3 and 4 products without code changes:
+     *   - 4 products on a wide viewport → 4 columns × 280px
+     *   - 3 products on the same viewport → 3 columns centered
+     *     (auto-fit collapses the empty 4th track)
+     *   - Narrow tablet → 2 columns
+     *   - Phone → 1 column (handled by the 768px override below)
+     * Track max of 280px keeps individual cards from stretching wide
+     * when only 1-2 products fit per row. */
     body.post-type-archive-product ul.products,
     body.woocommerce-shop ul.products {
         display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 340px)) !important;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 280px)) !important;
         justify-content: center !important;
-        gap: 28px !important;
-        max-width: 1120px !important;
+        gap: 24px !important;
+        max-width: 1240px !important;
         margin: 0 auto 56px !important;
         padding: 0 20px !important;
         float: none !important;
@@ -4187,7 +4260,7 @@ function pethoven_ui_css() {
         }
         body.post-type-archive-product .woocommerce-products-header,
         body.woocommerce-shop .woocommerce-products-header {
-            padding: 32px 16px 0 !important;
+            padding: 32px 16px 28px !important;
         }
         .pt-shop-subtitle {
             font-size: 14.5px;
@@ -5535,7 +5608,7 @@ function pethoven_ui_js() {
         if (pageTitle && !archiveHeader.querySelector('.pt-shop-subtitle')) {
             var subtitle = document.createElement('p');
             subtitle.className = 'pt-shop-subtitle';
-            subtitle.textContent = 'Three targeted shampoos — organic, vet-approved, and formulated to actually work.';
+            subtitle.textContent = 'Three targeted shampoos and a finishing wax — organic, vet-approved, and formulated to actually work.';
             pageTitle.parentNode.insertBefore(subtitle, pageTitle.nextSibling);
         }
 
