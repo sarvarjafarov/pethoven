@@ -1,16 +1,19 @@
 <?php
 /**
  * Pethoven Wax Promo — auto-add Coat Wax to every cart for the first
- * 60 orders, free of charge, with the customer able to remove it.
+ * 60 orders, at the regular $10 catalog price, with the customer able
+ * to remove it.
  *
  * Plugin Name: Pethoven Wax Promo
  * Description: While the promo is active (first 60 orders that include
  *              the wax), the Coat Wax (SKU PT-COAT_WAX) is automatically
- *              added to any cart containing another product. The promo
- *              copy of the wax is locked to $0 and quantity 1; if the
- *              customer removes it, we honour that for the rest of the
- *              session and don't re-add. Once 60 promo orders complete,
- *              the wax stops auto-adding and renders at its normal price.
+ *              added to any cart containing another product. The cart
+ *              line carries a "pt_wax_promo" flag and a small "Auto-added"
+ *              sub-label so the customer knows where it came from; price
+ *              is the regular $10 catalog price, quantity is locked to 1.
+ *              If the customer removes it, we honour that for the rest of
+ *              the session. Once 60 promo orders complete, the wax stops
+ *              auto-adding (still buyable manually).
  *
  * Configuration constants
  * -----------------------
@@ -140,40 +143,16 @@ function pt_wax_maybe_auto_add( $cart_item_key, $product_id, $quantity, $variati
 
 	if ( function_exists( 'wc_add_notice' ) ) {
 		wc_add_notice(
-			sprintf(
-				/* translators: %d = promo limit */
-				'Complimentary finishing wax added to your order — limited to the first %d customers.',
-				PETHOVEN_WAX_PROMO_LIMIT
-			),
-			'success'
+			'Coat Wax added to your order. You can remove it from the cart if you don\'t need it.',
+			'notice'
 		);
 	}
 }
 
 /* ----------------------------------------------------------------------
- * 2. Lock the promo wax line price to $0.
- *
- *    Runs every time WC recalculates totals (cart, checkout, mini-cart).
- *    The data carried on the cart item is a clone of the product
- *    object, so set_price() here is per-cart-item only and never
- *    persists to the catalog.
- * ---------------------------------------------------------------------- */
-
-add_action( 'woocommerce_before_calculate_totals', 'pt_wax_zero_price', 10, 1 );
-
-function pt_wax_zero_price( $cart ) {
-	if ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-		return;
-	}
-	foreach ( $cart->get_cart() as $cart_item ) {
-		if ( ! empty( $cart_item['pt_wax_promo'] ) && isset( $cart_item['data'] ) ) {
-			$cart_item['data']->set_price( 0 );
-		}
-	}
-}
-
-/* ----------------------------------------------------------------------
- * 3. Display "Free with first 60 orders" label on the cart line item.
+ * 2. Display "Auto-added — remove if not needed" label on the cart
+ *    line item. The wax keeps its normal $10 catalog price; the promo
+ *    is just the auto-add behaviour, not a discount.
  * ---------------------------------------------------------------------- */
 
 add_filter( 'woocommerce_get_item_data', 'pt_wax_cart_item_label', 10, 2 );
@@ -183,12 +162,8 @@ function pt_wax_cart_item_label( $item_data, $cart_item ) {
 		return $item_data;
 	}
 	$item_data[] = array(
-		'key'     => 'Promotion',
-		'value'   => sprintf(
-			/* translators: %d = promo limit */
-			'Free — first %d orders',
-			PETHOVEN_WAX_PROMO_LIMIT
-		),
+		'key'     => 'Add-on',
+		'value'   => 'Auto-added — remove if not needed',
 		'display' => '',
 	);
 	return $item_data;
@@ -327,60 +302,12 @@ function pt_wax_count_promo_order( $order_id, $order = null ) {
 }
 
 /* ----------------------------------------------------------------------
- * 9. Front-of-shop signal: small badge on the wax product card so
- *    customers know it ships free with their order. Hidden once the
- *    promo limit is hit.
+ * 9. (Removed) Shop-card badge.
+ *
+ *    A previous version painted a green "Free add-on" pill on the
+ *    wax product card. The wax is now auto-added at its normal $10
+ *    catalog price — nothing about the shop archive presentation
+ *    is special, so the badge would have been misleading. The
+ *    auto-add behaviour signals itself via the cart "Add-on:
+ *    auto-added" sub-label when the customer reaches the cart.
  * ---------------------------------------------------------------------- */
-
-add_action( 'wp_head', 'pt_wax_promo_badge_css', 50 );
-
-function pt_wax_promo_badge_css() {
-	if ( is_admin() ) {
-		return;
-	}
-	if ( ! pt_wax_promo_active() ) {
-		return;
-	}
-	?>
-	<style id="pt-wax-promo-badge">
-	/* Free-add-on badge on the wax product card. Targeted by the
-	 * post-id class WooCommerce stamps on the loop <li>; falls back
-	 * to a SKU data attribute on the inner add-to-cart button. */
-	.woocommerce ul.products li.product .pt-wax-promo-badge,
-	.pt-wax-promo-badge {
-		position: absolute;
-		top: 14px;
-		left: 14px;
-		background: var(--ast-global-color-1, #6a9739);
-		color: #ffffff;
-		font-size: 10px;
-		font-weight: 800;
-		letter-spacing: 1.2px;
-		text-transform: uppercase;
-		padding: 5px 12px;
-		border-radius: 100px;
-		line-height: 1.3;
-		box-shadow: 0 4px 14px rgba(106, 151, 57, 0.32);
-		z-index: 3;
-		pointer-events: none;
-	}
-	</style>
-	<script>
-	(function () {
-		document.addEventListener('DOMContentLoaded', function () {
-			document.querySelectorAll('.add_to_cart_button[data-product_sku="<?php echo esc_js( PETHOVEN_WAX_SKU ); ?>"]').forEach(function (btn) {
-				var card = btn.closest('li.product, .product');
-				if (!card) return;
-				var thumb = card.querySelector('.astra-shop-thumbnail-wrap');
-				if (!thumb) return;
-				if (thumb.querySelector('.pt-wax-promo-badge')) return;
-				var b = document.createElement('span');
-				b.className = 'pt-wax-promo-badge';
-				b.textContent = 'Free add-on';
-				thumb.appendChild(b);
-			});
-		});
-	})();
-	</script>
-	<?php
-}
