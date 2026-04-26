@@ -4011,25 +4011,26 @@ function pethoven_ui_css() {
      * 28b. HERO — tighter vertical padding
      *
      * Elementor's per-post CSS defined padding-top/bottom: 120px
-     * via the --padding-* CSS vars. Reduced to 56/56 desktop and
-     * 36/36 mobile (was 90/90 + 56/56) so the hero takes up less
-     * of the first scroll without the headline / CTA / image
-     * feeling cramped against the section edges.
+     * via the --padding-* CSS vars. Trimmed in two passes; current
+     * values are 40/40 desktop and 28/28 mobile (was 120/120 stock,
+     * then 90/90, then 56/36). Goes about as tight as the hero can
+     * before headline + CTA + image start feeling cramped against
+     * the section edges.
      * ========================================================== */
     .elementor-95 .elementor-element.elementor-element-3849851,
     .elementor-element-3849851 {
-        --padding-top: 56px !important;
-        --padding-bottom: 56px !important;
-        padding-top: 56px !important;
-        padding-bottom: 56px !important;
+        --padding-top: 40px !important;
+        --padding-bottom: 40px !important;
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
     }
     @media (max-width: 921px) {
         .elementor-95 .elementor-element.elementor-element-3849851,
         .elementor-element-3849851 {
-            --padding-top: 36px !important;
-            --padding-bottom: 36px !important;
-            padding-top: 36px !important;
-            padding-bottom: 36px !important;
+            --padding-top: 28px !important;
+            --padding-bottom: 28px !important;
+            padding-top: 28px !important;
+            padding-bottom: 28px !important;
         }
     }
 
