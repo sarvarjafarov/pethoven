@@ -126,6 +126,16 @@ function pethoven_ui_css() {
         -webkit-backdrop-filter: blur(10px);
     }
 
+    /* Hide the account / sign-in icon in the header. Designer call
+     * (2026-04-26): not running customer accounts yet, so the icon
+     * was a dead-end — clicking it linked to a generic Astra demo
+     * wp-login URL. Hide both the wrapper and Astra's data-section
+     * marker for belt-and-braces. */
+    .ast-header-account,
+    [data-section="section-header-account"] {
+        display: none !important;
+    }
+
     /* ==========================================================
      * 4. PRODUCT CARDS
      *
@@ -4067,10 +4077,57 @@ function pethoven_ui_css() {
         box-shadow: 0 10px 22px rgba(106, 151, 57, 0.28);
     }
 
+    /* "View all products" CTA row under the Our Products grid.
+     * Sits centered under the 3-card grid, links to /shop/. Outline
+     * pill style — quieter than the per-card "Shop Now" buttons so
+     * it reads as a section-level secondary action, not a 4th card. */
+    .pt-our-products-cta-row {
+        display: flex;
+        justify-content: center;
+        margin: 40px auto 0;
+    }
+    .pt-our-products-cta {
+        display: inline-flex !important;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 28px !important;
+        background: transparent !important;
+        color: #1a1a1a !important;
+        border: 1.5px solid #1a1a1a !important;
+        border-radius: 100px !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1.2px !important;
+        text-transform: uppercase !important;
+        text-decoration: none !important;
+        line-height: 1.3 !important;
+        transition: background-color 0.25s ease,
+                    color 0.25s ease,
+                    transform 0.25s ease,
+                    box-shadow 0.25s ease !important;
+    }
+    .pt-our-products-cta:hover {
+        background: #1a1a1a !important;
+        color: #ffffff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    }
+    .pt-our-products-cta span {
+        transition: transform 0.25s ease;
+    }
+    .pt-our-products-cta:hover span {
+        transform: translateX(4px);
+    }
+
     @media (max-width: 921px) {
         .pt-our-products-grid { grid-template-columns: 1fr; gap: 20px; }
         .pt-our-products-heading { font-size: 28px; }
         .pt-our-products { padding: 32px 20px 48px; }
+        .pt-our-products-cta-row { margin-top: 28px; }
+        .pt-our-products-cta {
+            padding: 12px 22px !important;
+            font-size: 12px !important;
+        }
     }
 
     /* ==========================================================
@@ -4201,17 +4258,24 @@ function pethoven_ui_css() {
         margin: 0 auto 48px;
     }
 
-    /* Products header container — add room above and below. Bottom
-     * padding (40px) is what separates the trust-pill row from the
-     * top edge of the product grid; without it the pills sit flush
-     * against the cards, which made the strip read as if it were
-     * attached to the cards rather than to the header copy. */
+    /* Hide the shop archive header on /shop/ entirely — designer
+     * call (2026-04-26): the paw crown + "Built for dogs who deserve
+     * better" eyebrow + "Shop" title + subtitle + trust pills row
+     * were all inside .woocommerce-products-header, and the call was
+     * to ship the page with just the breadcrumb above the product
+     * grid. The breadcrumb (nav.woocommerce-breadcrumb) sits OUTSIDE
+     * the products-header, so it stays visible. The grid picks up
+     * its own top breathing room from the .ast-woocommerce-container
+     * padding-top, plus the explicit margin below. */
     body.post-type-archive-product .woocommerce-products-header,
     body.woocommerce-shop .woocommerce-products-header {
-        text-align: center !important;
-        padding: 48px 20px 40px !important;
-        margin: 0 auto !important;
-        max-width: 1200px !important;
+        display: none !important;
+    }
+    /* With the header gone, give the products grid its own top space
+     * so it doesn't sit directly underneath the breadcrumb. */
+    body.post-type-archive-product ul.products,
+    body.woocommerce-shop ul.products {
+        margin-top: 32px !important;
     }
 
     /* Hide the noise: result count + sort + pagination when <= 3 products */
@@ -5577,7 +5641,10 @@ function pethoven_ui_js() {
                     '<h2 class="pt-our-products-heading">Our Products</h2>' +
                     '<p class="pt-our-products-subtitle">Targeted, vet-approved shampoos for every coat and every life stage.</p>' +
                 '</div>' +
-                '<div class="pt-our-products-grid">' + cardsHtml + '</div>';
+                '<div class="pt-our-products-grid">' + cardsHtml + '</div>' +
+                '<div class="pt-our-products-cta-row">' +
+                    '<a class="pt-our-products-cta" href="/shop/">View all products <span aria-hidden="true">→</span></a>' +
+                '</div>';
 
             if (bsSection && bsSection.parentNode) {
                 // Insert new section right before Best Sellers, then hide BS
