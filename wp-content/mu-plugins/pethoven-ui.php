@@ -266,10 +266,15 @@ function pethoven_ui_css() {
         min-width: 0 !important;
     }
 
-    /* Soft top border so the footer reads as its own section
-     * against the cream body wash, without introducing a dark slab */
+    /* No border-top on the footer. We previously added a soft 1px line
+     * to separate the footer from the cream body, but the .pt-footer-
+     * newsletter card now sits at the top of the footer (injected as
+     * .site-footer's first child) — and the border rendered as an
+     * orphan horizontal line directly above the newsletter card. The
+     * .pt-footer-copybar's own border-top already provides the only
+     * divider the footer needs. */
     .site-footer {
-        border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+        border-top: 0 !important;
     }
 
     /* Tagline under the logo — kill italic, tighten width, warm up color.
