@@ -4223,14 +4223,22 @@ function pethoven_ui_css() {
         display: none !important;
     }
 
-    /* Center the products grid — with 3 items, give each ~340px */
+    /* Center the products grid. Uses auto-fit + minmax so the layout
+     * adapts between 3 and 4 products without code changes:
+     *   - 4 products on a wide viewport → 4 columns × 280px
+     *   - 3 products on the same viewport → 3 columns centered
+     *     (auto-fit collapses the empty 4th track)
+     *   - Narrow tablet → 2 columns
+     *   - Phone → 1 column (handled by the 768px override below)
+     * Track max of 280px keeps individual cards from stretching wide
+     * when only 1-2 products fit per row. */
     body.post-type-archive-product ul.products,
     body.woocommerce-shop ul.products {
         display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 340px)) !important;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 280px)) !important;
         justify-content: center !important;
-        gap: 28px !important;
-        max-width: 1120px !important;
+        gap: 24px !important;
+        max-width: 1240px !important;
         margin: 0 auto 56px !important;
         padding: 0 20px !important;
         float: none !important;
@@ -5600,7 +5608,7 @@ function pethoven_ui_js() {
         if (pageTitle && !archiveHeader.querySelector('.pt-shop-subtitle')) {
             var subtitle = document.createElement('p');
             subtitle.className = 'pt-shop-subtitle';
-            subtitle.textContent = 'Three targeted shampoos — organic, vet-approved, and formulated to actually work.';
+            subtitle.textContent = 'Three targeted shampoos and a finishing wax — organic, vet-approved, and formulated to actually work.';
             pageTitle.parentNode.insertBefore(subtitle, pageTitle.nextSibling);
         }
 
