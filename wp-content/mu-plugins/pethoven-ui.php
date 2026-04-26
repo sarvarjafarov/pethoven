@@ -4019,18 +4019,18 @@ function pethoven_ui_css() {
      * ========================================================== */
     .elementor-95 .elementor-element.elementor-element-3849851,
     .elementor-element-3849851 {
-        --padding-top: 40px !important;
-        --padding-bottom: 40px !important;
-        padding-top: 40px !important;
-        padding-bottom: 40px !important;
+        --padding-top: 28px !important;
+        --padding-bottom: 28px !important;
+        padding-top: 28px !important;
+        padding-bottom: 28px !important;
     }
     @media (max-width: 921px) {
         .elementor-95 .elementor-element.elementor-element-3849851,
         .elementor-element-3849851 {
-            --padding-top: 28px !important;
-            --padding-bottom: 28px !important;
-            padding-top: 28px !important;
-            padding-bottom: 28px !important;
+            --padding-top: 20px !important;
+            --padding-bottom: 20px !important;
+            padding-top: 20px !important;
+            padding-bottom: 20px !important;
         }
     }
 
