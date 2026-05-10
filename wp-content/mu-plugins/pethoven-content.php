@@ -39,21 +39,103 @@ add_filter( 'astra_woo_shop_product_structure', function ( $structure ) {
 }, 99 );
 
 /**
- * Inject announcement bar before the header.
+ * Announcement bar — content managed from
+ * Dashboard → Appearance → Customize → Announcement Bar.
+ *
+ * Up to 5 slide slots. Leaving a slot empty hides that slide.
+ * The bar itself can be toggled off entirely via the "Show announcement
+ * bar" checkbox in the same section. If fewer than 2 slides are
+ * visible, the prev/next arrows are hidden.
  */
+
+add_action( 'customize_register', 'pethoven_announcement_customizer' );
 add_action( 'astra_header_before', 'pethoven_announcement_bar' );
 
+function pethoven_announcement_customizer( $wp_customize ) {
+    $wp_customize->add_section( 'pethoven_announcement', array(
+        'title'    => 'Announcement Bar',
+        'priority' => 20,
+    ) );
+
+    // On/off toggle
+    $wp_customize->add_setting( 'pethoven_announcement_enabled', array(
+        'default'           => true,
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ) );
+    $wp_customize->add_control( 'pethoven_announcement_enabled', array(
+        'section'     => 'pethoven_announcement',
+        'label'       => 'Show announcement bar',
+        'description' => 'Uncheck to hide the bar site-wide.',
+        'type'        => 'checkbox',
+    ) );
+
+    // Up to 5 slide slots — defaults match the historic hard-coded copy
+    $slot_defaults = array(
+        1 => 'FREE shipping on orders over $25',
+        2 => 'NEW: Avocado-Lavender formula for sensitive skin',
+        3 => 'Bundle any 2 bottles, get 1 FREE',
+        4 => '',
+        5 => '',
+    );
+
+    foreach ( $slot_defaults as $i => $default ) {
+        $wp_customize->add_setting( "pethoven_announcement_slide_{$i}", array(
+            'default'           => $default,
+            'transport'         => 'refresh',
+            'sanitize_callback' => 'sanitize_text_field',
+        ) );
+        $wp_customize->add_control( "pethoven_announcement_slide_{$i}", array(
+            'section'     => 'pethoven_announcement',
+            'label'       => sprintf( 'Slide %d', $i ),
+            'description' => 1 === $i
+                ? 'Leave any slide empty to hide it. Bar auto-rotates between visible slides.'
+                : '',
+            'type'        => 'text',
+        ) );
+    }
+}
+
 function pethoven_announcement_bar() {
+    if ( ! get_theme_mod( 'pethoven_announcement_enabled', true ) ) {
+        return;
+    }
+
+    $slot_defaults = array(
+        1 => 'FREE shipping on orders over $25',
+        2 => 'NEW: Avocado-Lavender formula for sensitive skin',
+        3 => 'Bundle any 2 bottles, get 1 FREE',
+        4 => '',
+        5 => '',
+    );
+
+    $slides = array();
+    foreach ( $slot_defaults as $i => $default ) {
+        $text = trim( (string) get_theme_mod( "pethoven_announcement_slide_{$i}", $default ) );
+        if ( '' !== $text ) {
+            $slides[] = $text;
+        }
+    }
+
+    if ( empty( $slides ) ) {
+        return;
+    }
+
+    $show_arrows = count( $slides ) > 1;
     ?>
     <div id="pt-announcement" class="pt-announcement-bar" role="region" aria-label="Store announcements">
         <div class="pt-announcement-inner">
+            <?php if ( $show_arrows ) : ?>
             <button class="pt-ann-prev" type="button" aria-label="Previous announcement">&lsaquo;</button>
+            <?php endif; ?>
             <div class="pt-ann-slides" aria-live="polite" aria-atomic="true">
-                <div class="pt-ann-slide pt-ann-active">FREE shipping on orders over $25</div>
-                <div class="pt-ann-slide">NEW: Avocado-Lavender formula for sensitive skin</div>
-                <div class="pt-ann-slide">Bundle any 2 bottles, get 1 FREE</div>
+                <?php foreach ( $slides as $idx => $text ) : ?>
+                <div class="pt-ann-slide<?php echo 0 === $idx ? ' pt-ann-active' : ''; ?>"><?php echo esc_html( $text ); ?></div>
+                <?php endforeach; ?>
             </div>
+            <?php if ( $show_arrows ) : ?>
             <button class="pt-ann-next" type="button" aria-label="Next announcement">&rsaquo;</button>
+            <?php endif; ?>
         </div>
     </div>
     <?php
