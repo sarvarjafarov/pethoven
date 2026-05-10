@@ -10,9 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( is_admin() ) {
-    return;
-}
+// NOTE: this file used to early-return on is_admin() as a front-end-only
+// optimization, but the Pethoven Announcements settings page lives in
+// the admin (admin_menu / admin_init hooks), so the gate is gone.
+// Front-end-only filters below are still safe in admin context — they
+// hook into front-end actions (e.g. astra_header_before, the_content)
+// that only fire when rendering the public site.
 
 /**
  * Ensure the Add to Cart button renders on shop archive cards.
@@ -40,86 +43,151 @@ add_filter( 'astra_woo_shop_product_structure', function ( $structure ) {
 
 /**
  * Announcement bar — content managed from
- * Dashboard → Appearance → Customize → Announcement Bar.
+ * Dashboard → Settings → Pethoven Announcements.
  *
  * Up to 5 slide slots. Leaving a slot empty hides that slide.
  * The bar itself can be toggled off entirely via the "Show announcement
- * bar" checkbox in the same section. If fewer than 2 slides are
+ * bar" checkbox on the settings page. If fewer than 2 slides are
  * visible, the prev/next arrows are hidden.
+ *
+ * Storage: one wp_options row `pethoven_announcement_options`
+ * containing { enabled: bool, slides: array<string> }.
  */
 
-// High priority so we register AFTER Astra's customize_register
-// callbacks have set up their panels. Section appears at the top
-// of the panel list (priority 20).
-add_action( 'customize_register', 'pethoven_announcement_customizer', 99 );
+define( 'PETHOVEN_ANNOUNCEMENT_OPT', 'pethoven_announcement_options' );
+define( 'PETHOVEN_ANNOUNCEMENT_SLOTS', 5 );
+
 add_action( 'astra_header_before', 'pethoven_announcement_bar' );
+add_action( 'admin_menu',           'pethoven_announcement_admin_menu' );
+add_action( 'admin_init',           'pethoven_announcement_settings_init' );
 
-function pethoven_announcement_customizer( $wp_customize ) {
-    $wp_customize->add_section( 'pethoven_announcement', array(
-        'title'    => 'Announcement Bar',
-        'priority' => 20,
-    ) );
-
-    // On/off toggle
-    $wp_customize->add_setting( 'pethoven_announcement_enabled', array(
-        'default'           => true,
-        'transport'         => 'refresh',
-        'sanitize_callback' => 'rest_sanitize_boolean',
-    ) );
-    $wp_customize->add_control( 'pethoven_announcement_enabled', array(
-        'section'     => 'pethoven_announcement',
-        'label'       => 'Show announcement bar',
-        'description' => 'Uncheck to hide the bar site-wide.',
-        'type'        => 'checkbox',
-    ) );
-
-    // Up to 5 slide slots — defaults match the historic hard-coded copy
-    $slot_defaults = array(
-        1 => 'FREE shipping on orders over $25',
-        2 => 'NEW: Avocado-Lavender formula for sensitive skin',
-        3 => 'Bundle any 2 bottles, get 1 FREE',
-        4 => '',
-        5 => '',
+/**
+ * Defaults — used both as the seed value when the option is missing
+ * AND as field placeholders so the admin sees a hint of what each
+ * slot is for.
+ */
+function pethoven_announcement_defaults() {
+    return array(
+        'enabled' => true,
+        'slides'  => array(
+            'FREE shipping on orders over $25',
+            'NEW: Avocado-Lavender formula for sensitive skin',
+            'Bundle any 2 bottles, get 1 FREE',
+            '',
+            '',
+        ),
     );
+}
 
-    foreach ( $slot_defaults as $i => $default ) {
-        $wp_customize->add_setting( "pethoven_announcement_slide_{$i}", array(
-            'default'           => $default,
-            'transport'         => 'refresh',
-            'sanitize_callback' => 'sanitize_text_field',
-        ) );
-        $wp_customize->add_control( "pethoven_announcement_slide_{$i}", array(
-            'section'     => 'pethoven_announcement',
-            'label'       => sprintf( 'Slide %d', $i ),
-            'description' => 1 === $i
-                ? 'Leave any slide empty to hide it. Bar auto-rotates between visible slides.'
-                : '',
-            'type'        => 'text',
-        ) );
+function pethoven_announcement_get_options() {
+    $defaults = pethoven_announcement_defaults();
+    $opt      = get_option( PETHOVEN_ANNOUNCEMENT_OPT, $defaults );
+    if ( ! is_array( $opt ) ) {
+        return $defaults;
     }
+    // Normalise shape so a partial save can't break the render.
+    $opt['enabled'] = isset( $opt['enabled'] ) ? (bool) $opt['enabled'] : true;
+    $opt['slides']  = isset( $opt['slides'] ) && is_array( $opt['slides'] ) ? $opt['slides'] : $defaults['slides'];
+    // Pad / trim to exactly PETHOVEN_ANNOUNCEMENT_SLOTS entries.
+    $opt['slides'] = array_slice(
+        array_pad( $opt['slides'], PETHOVEN_ANNOUNCEMENT_SLOTS, '' ),
+        0,
+        PETHOVEN_ANNOUNCEMENT_SLOTS
+    );
+    return $opt;
+}
+
+function pethoven_announcement_admin_menu() {
+    add_options_page(
+        'Pethoven Announcements',           // page title
+        'Pethoven Announcements',           // menu title
+        'manage_options',                   // capability
+        'pethoven-announcements',           // slug
+        'pethoven_announcement_admin_page'  // render callback
+    );
+}
+
+function pethoven_announcement_settings_init() {
+    register_setting(
+        'pethoven_announcement_group',
+        PETHOVEN_ANNOUNCEMENT_OPT,
+        array(
+            'type'              => 'array',
+            'sanitize_callback' => 'pethoven_announcement_sanitize',
+            'default'           => pethoven_announcement_defaults(),
+        )
+    );
+}
+
+function pethoven_announcement_sanitize( $input ) {
+    $out = array(
+        'enabled' => ! empty( $input['enabled'] ),
+        'slides'  => array(),
+    );
+    $slides = isset( $input['slides'] ) && is_array( $input['slides'] ) ? $input['slides'] : array();
+    for ( $i = 0; $i < PETHOVEN_ANNOUNCEMENT_SLOTS; $i++ ) {
+        $out['slides'][] = sanitize_text_field( isset( $slides[ $i ] ) ? $slides[ $i ] : '' );
+    }
+    return $out;
+}
+
+function pethoven_announcement_admin_page() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+    $opt = pethoven_announcement_get_options();
+    ?>
+    <div class="wrap">
+        <h1>Pethoven Announcements</h1>
+        <p>Content for the dark green bar at the top of every page. Leave any slide blank to hide it. Bar auto-rotates between visible slides.</p>
+        <form method="post" action="options.php">
+            <?php settings_fields( 'pethoven_announcement_group' ); ?>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">Show announcement bar</th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="<?php echo esc_attr( PETHOVEN_ANNOUNCEMENT_OPT ); ?>[enabled]" value="1" <?php checked( $opt['enabled'] ); ?>>
+                            Show the bar site-wide
+                        </label>
+                        <p class="description">Uncheck to hide the bar entirely.</p>
+                    </td>
+                </tr>
+                <?php for ( $i = 0; $i < PETHOVEN_ANNOUNCEMENT_SLOTS; $i++ ) : ?>
+                <tr>
+                    <th scope="row"><label for="pt-ann-slide-<?php echo $i; ?>">Slide <?php echo ( $i + 1 ); ?></label></th>
+                    <td>
+                        <input
+                            id="pt-ann-slide-<?php echo $i; ?>"
+                            type="text"
+                            class="regular-text"
+                            name="<?php echo esc_attr( PETHOVEN_ANNOUNCEMENT_OPT ); ?>[slides][]"
+                            value="<?php echo esc_attr( $opt['slides'][ $i ] ); ?>"
+                            placeholder="Empty to hide this slide"
+                            maxlength="160">
+                    </td>
+                </tr>
+                <?php endfor; ?>
+            </table>
+            <?php submit_button(); ?>
+        </form>
+    </div>
+    <?php
 }
 
 function pethoven_announcement_bar() {
-    if ( ! get_theme_mod( 'pethoven_announcement_enabled', true ) ) {
+    $opt = pethoven_announcement_get_options();
+    if ( ! $opt['enabled'] ) {
         return;
     }
 
-    $slot_defaults = array(
-        1 => 'FREE shipping on orders over $25',
-        2 => 'NEW: Avocado-Lavender formula for sensitive skin',
-        3 => 'Bundle any 2 bottles, get 1 FREE',
-        4 => '',
-        5 => '',
-    );
-
     $slides = array();
-    foreach ( $slot_defaults as $i => $default ) {
-        $text = trim( (string) get_theme_mod( "pethoven_announcement_slide_{$i}", $default ) );
+    foreach ( $opt['slides'] as $text ) {
+        $text = trim( (string) $text );
         if ( '' !== $text ) {
             $slides[] = $text;
         }
     }
-
     if ( empty( $slides ) ) {
         return;
     }
