@@ -48,7 +48,10 @@ add_filter( 'astra_woo_shop_product_structure', function ( $structure ) {
  * visible, the prev/next arrows are hidden.
  */
 
-add_action( 'customize_register', 'pethoven_announcement_customizer' );
+// High priority so we register AFTER Astra's customize_register
+// callbacks have set up their panels. Section appears at the top
+// of the panel list (priority 20).
+add_action( 'customize_register', 'pethoven_announcement_customizer', 99 );
 add_action( 'astra_header_before', 'pethoven_announcement_bar' );
 
 function pethoven_announcement_customizer( $wp_customize ) {
