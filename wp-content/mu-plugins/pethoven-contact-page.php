@@ -224,18 +224,28 @@ function pethoven_contact_css() {
 		margin-inline: auto;
 	}
 
-	/* ---- CONTACT CARDS ---- */
+	/* ---- CONTACT CARDS ----
+	 * Grid stretches all 3 cards to the tallest content height by
+	 * default, but Astra's content area sometimes overrides
+	 * align-items. Force every card to share the same min-height
+	 * AND a consistent internal vertical rhythm: icon + label + email
+	 * grouped at the top, note grouped at the bottom (margin-top:auto
+	 * on the note pushes it down so the email line aligns horizontally
+	 * across cards regardless of how many lines the note takes). */
 	.pt-contact-cards {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 18px;
 		margin-bottom: 40px;
+		align-items: stretch;
 	}
 	.pt-contact-card {
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
 		padding: 28px 26px;
+		min-height: 260px;
+		height: 100%;
 		background: #ffffff;
 		border: 1px solid #f0f0ec;
 		border-radius: 18px;
@@ -244,6 +254,7 @@ function pethoven_contact_css() {
 		transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
 		            border-color 0.25s ease,
 		            box-shadow 0.3s ease;
+		box-sizing: border-box;
 	}
 	a.pt-contact-card:hover {
 		transform: translateY(-3px);
@@ -265,6 +276,7 @@ function pethoven_contact_css() {
 		background: linear-gradient(135deg, rgba(139,195,74,0.16), rgba(106,151,57,0.04));
 		border-radius: 12px;
 		margin-bottom: 6px;
+		flex-shrink: 0;
 	}
 	.pt-contact-card-icon svg {
 		width: 20px;
@@ -287,7 +299,8 @@ function pethoven_contact_css() {
 		font-size: 13.5px;
 		line-height: 1.55;
 		color: #5a5a5a;
-		margin-top: 2px;
+		margin-top: auto; /* pushes note to bottom — top-stack stays aligned across cards */
+		padding-top: 12px;
 	}
 
 	/* ---- INFO STRIP ---- */
