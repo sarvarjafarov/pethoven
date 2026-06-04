@@ -47,17 +47,17 @@ function pethoven_about_replace_content( $content ) {
 	?>
 	<section class="pt-about" aria-labelledby="pt-about-headline">
 
-		<!-- Hero -->
-		<div class="pt-about-hero">
-			<div class="pt-about-hero-image">
-				<img src="<?php echo esc_url( $img ); ?>" alt="A woman embracing a golden retriever next to a bottle of Pethoven Hemp Oil-Rosemary Dog Shampoo" width="900" height="900" loading="eager" decoding="async">
-			</div>
-			<div class="pt-about-hero-copy">
-				<div class="pt-about-eyebrow">Why Pethoven</div>
-				<h1 id="pt-about-headline" class="pt-about-headline">A small line of dog shampoos. Honestly made.</h1>
-				<p class="pt-about-lead">We started Pethoven because we couldn't find a dog shampoo we'd actually want to use ourselves. The drugstore stuff was harsh. The premium stuff was overpriced for the same generic formula behind a nicer label.</p>
-			</div>
+		<!-- Intro — text first, centered, breathing -->
+		<div class="pt-about-intro">
+			<div class="pt-about-eyebrow">Why Pethoven</div>
+			<h1 id="pt-about-headline" class="pt-about-headline">A small line of dog shampoos.<br>Honestly made.</h1>
+			<p class="pt-about-lead">We started Pethoven because we couldn't find a dog shampoo we'd actually want to use ourselves. The drugstore stuff was harsh. The premium stuff was overpriced for the same generic formula behind a nicer label.</p>
 		</div>
+
+		<!-- Feature image — full visual, no competing copy next to it -->
+		<figure class="pt-about-feature">
+			<img src="<?php echo esc_url( $img ); ?>" alt="Pethoven Hemp Oil-Rosemary Dog Shampoo styled with a golden retriever — the 'Coat Conductor' formula for a strong, shiny coat." width="1200" height="1200" loading="eager" decoding="async">
+		</figure>
 
 		<!-- Story -->
 		<div class="pt-about-block pt-about-block--story">
@@ -146,75 +146,75 @@ function pethoven_about_css() {
 	.pt-about {
 		max-width: 1180px;
 		margin: 0 auto;
-		padding: 64px 24px 96px;
+		padding: 80px 24px 96px;
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 		color: #1a1a1a;
 	}
 
-	/* ---- HERO ----
-	 * Image column capped at 460px so the square photo doesn't dominate
-	 * and leave dead space next to the shorter text column. Both columns
-	 * vertical-centered so the eye reads a single horizontal band. */
-	.pt-about-hero {
-		display: grid;
-		grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
-		gap: 64px;
-		align-items: center;
-		margin-bottom: 88px;
-	}
-	.pt-about-hero-image {
-		width: 100%;
-		max-width: 460px;
-		aspect-ratio: 1;
-		border-radius: 24px;
-		overflow: hidden;
-		background: #f4f6ee;
-		box-shadow: 0 22px 56px rgba(26, 58, 42, 0.10),
-		            0 4px 14px rgba(26, 58, 42, 0.05);
-	}
-	.pt-about-hero-image img {
-		display: block;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: center;
-	}
-	.pt-about-hero-copy {
-		max-width: 540px;
+	/* ---- INTRO ----
+	 * Text-first, centered, breathing room. No image competing with the
+	 * headline — the page voice owns the first impression. */
+	.pt-about-intro {
+		max-width: 760px;
+		margin: 0 auto 56px;
+		text-align: center;
 	}
 	.pt-about-eyebrow {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
 		font-size: 11px;
 		font-weight: 800;
 		letter-spacing: 3px;
 		text-transform: uppercase;
 		color: #6a9739;
-		margin-bottom: 22px;
+		margin-bottom: 24px;
 	}
-	.pt-about-eyebrow::before {
+	.pt-about-eyebrow::before,
+	.pt-about-eyebrow::after {
 		content: '';
-		display: inline-block;
-		width: 24px;
+		width: 28px;
 		height: 1.5px;
 		background: #6a9739;
-		vertical-align: middle;
-		margin-right: 12px;
-		opacity: 0.6;
+		opacity: 0.55;
+		border-radius: 2px;
 	}
 	.pt-about-headline {
 		font-family: Georgia, 'Times New Roman', serif;
-		font-size: 46px;
+		font-size: 52px;
 		font-weight: 800;
-		line-height: 1.08;
-		letter-spacing: -0.9px;
+		line-height: 1.1;
+		letter-spacing: -1px;
 		color: #1a1a1a;
-		margin: 0 0 26px;
+		margin: 0 0 28px;
 	}
 	.pt-about-lead {
-		font-size: 17px;
-		line-height: 1.65;
+		font-size: 17.5px;
+		line-height: 1.7;
 		color: #3a3a3a;
 		margin: 0;
+		max-width: 620px;
+		margin-inline: auto;
+	}
+
+	/* ---- FEATURE IMAGE ----
+	 * Stands alone below the intro. Square aspect-ratio honours the
+	 * source image composition; soft shadow lifts it off the page. */
+	.pt-about-feature {
+		display: block;
+		max-width: 880px;
+		margin: 0 auto 88px;
+		border-radius: 28px;
+		overflow: hidden;
+		background: #f4f6ee;
+		box-shadow: 0 30px 70px rgba(26, 58, 42, 0.12),
+		            0 6px 18px rgba(26, 58, 42, 0.04);
+	}
+	.pt-about-feature img {
+		display: block;
+		width: 100%;
+		height: auto;
+		object-fit: cover;
 	}
 
 	/* ---- STORY ---- */
@@ -348,22 +348,12 @@ function pethoven_about_css() {
 
 	/* ---- TABLET ---- */
 	@media (max-width: 900px) {
-		.pt-about { padding: 44px 20px 64px; }
-		.pt-about-hero {
-			grid-template-columns: 1fr;
-			gap: 36px;
-			margin-bottom: 56px;
-			justify-items: center;
-			text-align: center;
-		}
-		.pt-about-hero-image {
-			max-width: 380px;
-			margin: 0 auto;
-		}
-		.pt-about-hero-copy { text-align: left; }
-		.pt-about-eyebrow::before { display: none; }
-		.pt-about-headline { font-size: 34px; letter-spacing: -0.6px; }
-		.pt-about-lead { font-size: 15.5px; }
+		.pt-about { padding: 56px 20px 72px; }
+		.pt-about-intro { margin-bottom: 44px; }
+		.pt-about-headline { font-size: 38px; letter-spacing: -0.7px; }
+		.pt-about-headline br { display: none; }
+		.pt-about-lead { font-size: 16px; }
+		.pt-about-feature { margin-bottom: 64px; border-radius: 22px; }
 		.pt-about-grid {
 			grid-template-columns: 1fr;
 			gap: 16px;
@@ -375,13 +365,14 @@ function pethoven_about_css() {
 
 	/* ---- MOBILE ---- */
 	@media (max-width: 540px) {
-		.pt-about { padding: 32px 18px 56px; }
-		.pt-about-hero { gap: 28px; margin-bottom: 44px; }
-		.pt-about-hero-image { max-width: 320px; border-radius: 18px; }
-		.pt-about-hero-copy { text-align: center; }
-		.pt-about-eyebrow { margin-bottom: 16px; }
-		.pt-about-headline { font-size: 28px; letter-spacing: -0.5px; margin-bottom: 18px; }
-		.pt-about-lead { font-size: 15px; }
+		.pt-about { padding: 40px 18px 56px; }
+		.pt-about-intro { margin-bottom: 36px; }
+		.pt-about-eyebrow { margin-bottom: 18px; font-size: 10.5px; letter-spacing: 2.5px; }
+		.pt-about-eyebrow::before,
+		.pt-about-eyebrow::after { width: 20px; }
+		.pt-about-headline { font-size: 30px; letter-spacing: -0.5px; margin-bottom: 20px; line-height: 1.15; }
+		.pt-about-lead { font-size: 15.5px; line-height: 1.65; }
+		.pt-about-feature { margin-bottom: 48px; border-radius: 18px; }
 		.pt-about-card { padding: 22px 20px; }
 		.pt-about-card-label { letter-spacing: 2px; }
 		.pt-about-cta { padding: 14px 28px; font-size: 12px; }
