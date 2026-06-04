@@ -108,12 +108,26 @@ function pethoven_homepage_products_data() {
             $desc  = strlen( $short ) > 120 ? substr( $short, 0, 117 ) . '…' : $short;
         }
 
+        // Featured image URL — prefer the WP-generated 'large' size
+        // (~1024 wide) so the panoramic label downloads at a sensible
+        // resolution for a 300-px-wide card. Falls back to the full
+        // original if 'large' wasn't generated for this attachment.
+        $image_id  = (int) $p->get_image_id();
+        $image_url = '';
+        if ( $image_id ) {
+            $image_url = wp_get_attachment_image_url( $image_id, 'large' );
+            if ( ! $image_url ) {
+                $image_url = wp_get_attachment_image_url( $image_id, 'full' );
+            }
+        }
+
         $cards[] = array(
             'name'      => $p->get_name(),
             'desc'      => $desc,
             'price'     => '$' . number_format( (float) $p->get_price(), 2 ),
             'priceNote' => '300ml',
             'href'      => get_permalink( $p->get_id() ),
+            'image'     => $image_url ? $image_url : '',
         );
 
         if ( count( $cards ) >= 3 ) {

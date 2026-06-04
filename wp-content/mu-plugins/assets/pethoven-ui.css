@@ -3989,6 +3989,27 @@ body.woocommerce .archive-description:has(> p:only-child:empty) {
     height: 56px;
     color: var(--ast-global-color-1, #6a9739);
 }
+
+/* When the card renders a real product image, fill the existing 1:1
+ * image box with the photo. Product images are square 1:1 product
+ * photography (bottle + props centred) so object-fit: cover at the
+ * native ratio shows the full composition with no cropping. The
+ * tinted gradient bg is kept underneath so transparent PNGs blend
+ * cleanly into the card chrome. */
+.pt-product-card-has-image .pt-product-image {
+    padding: 0;
+}
+.pt-product-card-has-image .pt-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pt-product-card-has-image:hover .pt-product-image img {
+    transform: scale(1.04);
+}
 .pt-product-card:nth-child(2) .pt-product-image {
     background: linear-gradient(135deg, rgba(38,84,61,0.14) 0%, rgba(26,58,42,0.04) 100%);
 }
