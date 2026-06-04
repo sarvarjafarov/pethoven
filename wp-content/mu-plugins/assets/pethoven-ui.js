@@ -876,6 +876,7 @@
                     price:     p.price     || '',
                     priceNote: p.priceNote || '',
                     href:      p.href      || '/shop/',
+                    image:     p.image     || '',
                     icon:      icons[idx % icons.length]
                 };
             })
@@ -883,14 +884,23 @@
             // the global — but keeps the script self-sufficient if loaded
             // standalone, e.g. during a partial deploy or local preview).
             : [
-                { name: 'Avocado-Lavender Dog Shampoo',  desc: 'Soothing avocado + lavender for sensitive skin.',     price: '$22.50', priceNote: '300ml', href: '/shop/', icon: icons[0] },
-                { name: 'Coconut-Peppermint Dog Shampoo',desc: 'Detangling, conditioning wash for long-haired coats.', price: '$22.50', priceNote: '300ml', href: '/shop/', icon: icons[1] },
-                { name: 'Hemp Oil-Rosemary Dog Shampoo', desc: 'Strong-and-shiny coat formula for dry or dull coats.', price: '$22.50', priceNote: '300ml', href: '/shop/', icon: icons[2] }
+                { name: 'Avocado-Lavender Dog Shampoo',  desc: 'Soothing avocado + lavender for sensitive skin.',     price: '$22.50', priceNote: '300ml', href: '/shop/', image: '', icon: icons[0] },
+                { name: 'Coconut-Peppermint Dog Shampoo',desc: 'Detangling, conditioning wash for long-haired coats.', price: '$22.50', priceNote: '300ml', href: '/shop/', image: '', icon: icons[1] },
+                { name: 'Hemp Oil-Rosemary Dog Shampoo', desc: 'Strong-and-shiny coat formula for dry or dull coats.', price: '$22.50', priceNote: '300ml', href: '/shop/', image: '', icon: icons[2] }
             ];
 
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
         var cardsHtml = products.map(function (p) {
-            return '<article class="pt-product-card">' +
-                '<div class="pt-product-image">' + p.icon + '</div>' +
+            var imageHtml = p.image
+                ? '<img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async">'
+                : p.icon;
+            return '<article class="pt-product-card' + (p.image ? ' pt-product-card-has-image' : '') + '">' +
+                '<div class="pt-product-image">' + imageHtml + '</div>' +
                 '<h3 class="pt-product-name">' + p.name + '</h3>' +
                 '<p class="pt-product-desc">' + p.desc + '</p>' +
                 '<div class="pt-product-price">' + p.price +
