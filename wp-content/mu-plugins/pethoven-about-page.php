@@ -62,7 +62,7 @@ function pethoven_about_replace_content( $content ) {
 		<!-- Story -->
 		<div class="pt-about-block pt-about-block--story">
 			<p>So we started small. Three shampoos, each formulated for a specific coat condition &mdash; sensitive skin, long coats, dry-and-dull coats &mdash; plus a paw wax for hot pavement and winter salt.</p>
-			<p>Hand-mixed in small batches in <strong>Tartu, Estonia</strong>. Shipped from our warehouse in <strong>Dover, Delaware</strong>.</p>
+			<p>Hand-mixed in small batches in <strong>Tartu, Estonia</strong>.</p>
 			<p>We test every batch on our own dogs first. If they won't use it, it doesn't ship.</p>
 		</div>
 
@@ -94,7 +94,7 @@ function pethoven_about_replace_content( $content ) {
 		<!-- Where + ship -->
 		<div class="pt-about-block pt-about-block--where">
 			<h2 class="pt-about-h2">Where it's made</h2>
-			<p>Each bottle is hand-finished in our workshop in <strong>Tartu, Estonia</strong>, then shipped to our US warehouse in <strong>Dover, Delaware</strong>, and on to your door.</p>
+			<p>Each bottle is hand-finished in our workshop in <strong>Tartu, Estonia</strong>.</p>
 			<p class="pt-about-region">Currently delivering to <strong>NY &middot; NJ &middot; MA &middot; DC &middot; CT &middot; PA</strong>. More regions coming as we scale up batch sizes.</p>
 		</div>
 
@@ -144,27 +144,33 @@ function pethoven_about_css() {
 	}
 
 	.pt-about {
-		max-width: 1100px;
+		max-width: 1180px;
 		margin: 0 auto;
-		padding: 56px 24px 80px;
+		padding: 64px 24px 96px;
 		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 		color: #1a1a1a;
 	}
 
-	/* ---- HERO ---- */
+	/* ---- HERO ----
+	 * Image column capped at 460px so the square photo doesn't dominate
+	 * and leave dead space next to the shorter text column. Both columns
+	 * vertical-centered so the eye reads a single horizontal band. */
 	.pt-about-hero {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 56px;
+		grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
+		gap: 64px;
 		align-items: center;
-		margin-bottom: 72px;
+		margin-bottom: 88px;
 	}
 	.pt-about-hero-image {
+		width: 100%;
+		max-width: 460px;
+		aspect-ratio: 1;
 		border-radius: 24px;
 		overflow: hidden;
 		background: #f4f6ee;
-		aspect-ratio: 1;
-		box-shadow: 0 18px 48px rgba(26, 58, 42, 0.08);
+		box-shadow: 0 22px 56px rgba(26, 58, 42, 0.10),
+		            0 4px 14px rgba(26, 58, 42, 0.05);
 	}
 	.pt-about-hero-image img {
 		display: block;
@@ -173,22 +179,36 @@ function pethoven_about_css() {
 		object-fit: cover;
 		object-position: center;
 	}
+	.pt-about-hero-copy {
+		max-width: 540px;
+	}
 	.pt-about-eyebrow {
+		display: inline-block;
 		font-size: 11px;
 		font-weight: 800;
 		letter-spacing: 3px;
 		text-transform: uppercase;
 		color: #6a9739;
-		margin-bottom: 18px;
+		margin-bottom: 22px;
+	}
+	.pt-about-eyebrow::before {
+		content: '';
+		display: inline-block;
+		width: 24px;
+		height: 1.5px;
+		background: #6a9739;
+		vertical-align: middle;
+		margin-right: 12px;
+		opacity: 0.6;
 	}
 	.pt-about-headline {
 		font-family: Georgia, 'Times New Roman', serif;
-		font-size: 42px;
+		font-size: 46px;
 		font-weight: 800;
-		line-height: 1.12;
-		letter-spacing: -0.8px;
+		line-height: 1.08;
+		letter-spacing: -0.9px;
 		color: #1a1a1a;
-		margin: 0 0 22px;
+		margin: 0 0 26px;
 	}
 	.pt-about-lead {
 		font-size: 17px;
@@ -328,14 +348,21 @@ function pethoven_about_css() {
 
 	/* ---- TABLET ---- */
 	@media (max-width: 900px) {
-		.pt-about { padding: 40px 20px 60px; }
+		.pt-about { padding: 44px 20px 64px; }
 		.pt-about-hero {
 			grid-template-columns: 1fr;
-			gap: 32px;
-			margin-bottom: 48px;
+			gap: 36px;
+			margin-bottom: 56px;
+			justify-items: center;
+			text-align: center;
 		}
-		.pt-about-hero-image { aspect-ratio: 4 / 3; }
-		.pt-about-headline { font-size: 32px; }
+		.pt-about-hero-image {
+			max-width: 380px;
+			margin: 0 auto;
+		}
+		.pt-about-hero-copy { text-align: left; }
+		.pt-about-eyebrow::before { display: none; }
+		.pt-about-headline { font-size: 34px; letter-spacing: -0.6px; }
 		.pt-about-lead { font-size: 15.5px; }
 		.pt-about-grid {
 			grid-template-columns: 1fr;
@@ -343,13 +370,20 @@ function pethoven_about_css() {
 			margin-bottom: 56px;
 		}
 		.pt-about-block { margin-bottom: 48px; }
+		.pt-about-h2 { font-size: 22px; }
 	}
 
 	/* ---- MOBILE ---- */
 	@media (max-width: 540px) {
 		.pt-about { padding: 32px 18px 56px; }
-		.pt-about-headline { font-size: 28px; letter-spacing: -0.5px; }
-		.pt-about-card { padding: 24px 22px; }
+		.pt-about-hero { gap: 28px; margin-bottom: 44px; }
+		.pt-about-hero-image { max-width: 320px; border-radius: 18px; }
+		.pt-about-hero-copy { text-align: center; }
+		.pt-about-eyebrow { margin-bottom: 16px; }
+		.pt-about-headline { font-size: 28px; letter-spacing: -0.5px; margin-bottom: 18px; }
+		.pt-about-lead { font-size: 15px; }
+		.pt-about-card { padding: 22px 20px; }
+		.pt-about-card-label { letter-spacing: 2px; }
 		.pt-about-cta { padding: 14px 28px; font-size: 12px; }
 	}
 	</style>
