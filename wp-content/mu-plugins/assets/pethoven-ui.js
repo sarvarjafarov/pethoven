@@ -848,32 +848,45 @@
             }
         }
 
-        var products = [
-            {
-                name: 'Sensitive Skin',
-                desc: 'Oatmeal and aloe formula. Stops itching, repairs dry skin, safe for allergies.',
-                price: '$45',
-                priceNote: '12 oz bottle',
-                href: '/product/sensitive-skin/',
-                icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.8 2c1 5 .5 10-2 13.5-1.5 2-5 4.5-6.8 4.5z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>'
-            },
-            {
-                name: 'Deep Clean',
-                desc: 'Mud, odor, buildup — gone. Built for active dogs that get into everything.',
-                price: '$36',
-                priceNote: '12 oz bottle',
-                href: '/product/deep-clean/',
-                icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/><path d="M8.5 14c.5 1.5 1.8 2.5 3.5 2.5" stroke-linecap="round"/></svg>'
-            },
-            {
-                name: 'Puppy Collection',
-                desc: 'Tear-free, pH-balanced. Formulated for puppies 8 weeks and older.',
-                price: '$57',
-                priceNote: '8 oz bottle',
-                href: '/product/puppy-collection/',
-                icon: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="6" cy="11" rx="2.2" ry="2.6"/><ellipse cx="18" cy="11" rx="2.2" ry="2.6"/><ellipse cx="9.5" cy="6" rx="2" ry="2.4"/><ellipse cx="14.5" cy="6" rx="2" ry="2.4"/><path d="M12 13.2c-3.2 0-5.6 2.7-5.6 5.3 0 1.4 1.1 2.5 2.5 2.5 1 0 1.5-.5 3.1-.5s2.1.5 3.1.5c1.4 0 2.5-1.1 2.5-2.5 0-2.6-2.4-5.3-5.6-5.3z"/></svg>'
-            }
+        // Three icons used in rotation by index. We don't render real
+        // product images in this section — the cards are tagline-led
+        // and the icons act as quiet visual variation.
+        var icons = [
+            // 0 — leaf (soothing)
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.8 2c1 5 .5 10-2 13.5-1.5 2-5 4.5-6.8 4.5z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>',
+            // 1 — water droplet (fresh)
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/><path d="M8.5 14c.5 1.5 1.8 2.5 3.5 2.5" stroke-linecap="round"/></svg>',
+            // 2 — paw (shine)
+            '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="6" cy="11" rx="2.2" ry="2.6"/><ellipse cx="18" cy="11" rx="2.2" ry="2.6"/><ellipse cx="9.5" cy="6" rx="2" ry="2.4"/><ellipse cx="14.5" cy="6" rx="2" ry="2.4"/><path d="M12 13.2c-3.2 0-5.6 2.7-5.6 5.3 0 1.4 1.1 2.5 2.5 2.5 1 0 1.5-.5 3.1-.5s2.1.5 3.1.5c1.4 0 2.5-1.1 2.5-2.5 0-2.6-2.4-5.3-5.6-5.3z"/></svg>'
         ];
+
+        // PHP pre-renders the catalog into window.PETHOVEN_HOMEPAGE_PRODUCTS
+        // (see pethoven-content.php → pethoven_homepage_products_data).
+        // Each item already has name/desc/price/priceNote/href filled in
+        // from the live WC catalog, so URLs and titles stay in sync as
+        // products are renamed or replaced.
+        var dynamic = Array.isArray(window.PETHOVEN_HOMEPAGE_PRODUCTS)
+            ? window.PETHOVEN_HOMEPAGE_PRODUCTS
+            : [];
+        var products = dynamic.length
+            ? dynamic.slice(0, 3).map(function (p, idx) {
+                return {
+                    name:      p.name      || '',
+                    desc:      p.desc      || '',
+                    price:     p.price     || '',
+                    priceNote: p.priceNote || '',
+                    href:      p.href      || '/shop/',
+                    icon:      icons[idx % icons.length]
+                };
+            })
+            // Fallback (shouldn't trigger on prod/staging — PHP always sets
+            // the global — but keeps the script self-sufficient if loaded
+            // standalone, e.g. during a partial deploy or local preview).
+            : [
+                { name: 'Avocado-Lavender Dog Shampoo',  desc: 'Soothing avocado + lavender for sensitive skin.',     price: '$22.50', priceNote: '300ml', href: '/shop/', icon: icons[0] },
+                { name: 'Coconut-Peppermint Dog Shampoo',desc: 'Detangling, conditioning wash for long-haired coats.', price: '$22.50', priceNote: '300ml', href: '/shop/', icon: icons[1] },
+                { name: 'Hemp Oil-Rosemary Dog Shampoo', desc: 'Strong-and-shiny coat formula for dry or dull coats.', price: '$22.50', priceNote: '300ml', href: '/shop/', icon: icons[2] }
+            ];
 
         var cardsHtml = products.map(function (p) {
             return '<article class="pt-product-card">' +

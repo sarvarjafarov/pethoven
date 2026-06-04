@@ -42,6 +42,94 @@ add_filter( 'astra_woo_shop_product_structure', function ( $structure ) {
 }, 99 );
 
 /**
+ * Homepage "Our Products" cards — server-rendered data.
+ *
+ * The JS at pethoven-ui.js builds the section visually but reads the
+ * product list from window.PETHOVEN_HOMEPAGE_PRODUCTS, which we set
+ * here from the live WooCommerce catalog. That way:
+ *
+ *   - Product renames, slug changes, and price edits flow to the
+ *     homepage automatically (no hardcoded slugs to keep in sync).
+ *   - The same JS bundle runs identically on staging and prod even
+ *     though the product SKUs / slugs differ between them.
+ *
+ * Selection rule: first 3 published products ordered by menu_order,
+ * excluding the wax (it's promoted via auto-add-to-cart, not as a
+ * homepage card).
+ */
+
+add_action( 'wp_head', 'pethoven_homepage_products_data', 25 );
+
+function pethoven_homepage_products_data() {
+    if ( ! is_front_page() && ! is_home() ) {
+        return;
+    }
+    if ( ! function_exists( 'wc_get_products' ) ) {
+        return;
+    }
+
+    $products = wc_get_products( array(
+        'status'  => 'publish',
+        'orderby' => 'menu_order',
+        'order'   => 'ASC',
+        'limit'   => 10, // fetch a few extras; we filter wax out below
+    ) );
+
+    // Hand-written taglines keyed by a normalized SKU suffix so they
+    // match either PT- (staging) or SH- (prod) prefixed SKUs.
+    $taglines = array(
+        'AVOCADO_LAVENDER'   => 'Soothing avocado + lavender for sensitive skin. Mild enough for weekly washes.',
+        'AVOCADO-LAVENDER'   => 'Soothing avocado + lavender for sensitive skin. Mild enough for weekly washes.',
+        'COCONUT_PEPPERMINT' => 'Coconut + sea buckthorn for long coats. Detangles, conditions, leaves a peppermint-fresh finish.',
+        'COCONUT-PEPPERMINT' => 'Coconut + sea buckthorn for long coats. Detangles, conditions, leaves a peppermint-fresh finish.',
+        'HEMP_ROSEMARY'      => 'Hemp seed oil + rosemary for dry, dull coats. Builds shine, strengthens, restores softness.',
+        'HEMP-ROSEMARY'      => 'Hemp seed oil + rosemary for dry, dull coats. Builds shine, strengthens, restores softness.',
+    );
+
+    $cards = array();
+    foreach ( $products as $p ) {
+        $sku = $p->get_sku();
+        // Skip the wax (any SKU containing WAX) — kept off the homepage cards.
+        if ( false !== stripos( $sku, 'WAX' ) ) {
+            continue;
+        }
+
+        // Derive a punchy tagline if we have one for this SKU; otherwise
+        // fall back to the short_description (strip HTML / clip).
+        $desc = '';
+        foreach ( $taglines as $needle => $line ) {
+            if ( false !== strpos( $sku, $needle ) ) {
+                $desc = $line;
+                break;
+            }
+        }
+        if ( '' === $desc ) {
+            $short = wp_strip_all_tags( $p->get_short_description() );
+            $desc  = strlen( $short ) > 120 ? substr( $short, 0, 117 ) . '…' : $short;
+        }
+
+        $cards[] = array(
+            'name'      => $p->get_name(),
+            'desc'      => $desc,
+            'price'     => '$' . number_format( (float) $p->get_price(), 2 ),
+            'priceNote' => '300ml',
+            'href'      => get_permalink( $p->get_id() ),
+        );
+
+        if ( count( $cards ) >= 3 ) {
+            break;
+        }
+    }
+
+    if ( empty( $cards ) ) {
+        return;
+    }
+    ?>
+    <script>window.PETHOVEN_HOMEPAGE_PRODUCTS = <?php echo wp_json_encode( $cards ); ?>;</script>
+    <?php
+}
+
+/**
  * Announcement bar — content managed from
  * Dashboard → Settings → Pethoven Announcements.
  *
