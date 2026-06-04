@@ -3990,15 +3990,13 @@ body.woocommerce .archive-description:has(> p:only-child:empty) {
     color: var(--ast-global-color-1, #6a9739);
 }
 
-/* When the card renders a real product image (panoramic label):
- *   - Switch aspect ratio to 4:3 so the bottle + dogs artwork has
- *     room without leaving huge empty bands above/below
- *   - object-fit: cover crops to the centre of the label, which is
- *     where the brand + dog illustration sit
- *   - Drop the tinted background since the label brings its own */
+/* When the card renders a real product image, fill the existing 1:1
+ * image box with the photo. Product images are square 1:1 product
+ * photography (bottle + props centred) so object-fit: cover at the
+ * native ratio shows the full composition with no cropping. The
+ * tinted gradient bg is kept underneath so transparent PNGs blend
+ * cleanly into the card chrome. */
 .pt-product-card-has-image .pt-product-image {
-    aspect-ratio: 4 / 3;
-    background: #f4f6ee;
     padding: 0;
 }
 .pt-product-card-has-image .pt-product-image img {
