@@ -21,8 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// the_content filter on the About page only
-add_filter( 'the_content', 'pethoven_about_replace_content', 1 );
+// the_content filter on the About page only.
+// Priority 999 so we run AFTER Elementor's apply_builder_in_content
+// (which is hooked at priority 9) and AFTER any other filter that
+// might rewrite the content. If we ran earlier, Elementor would
+// silently overwrite our markup with its own builder output for
+// pages flagged with _elementor_edit_mode.
+add_filter( 'the_content', 'pethoven_about_replace_content', 999 );
 
 function pethoven_about_replace_content( $content ) {
 	// Match by page slug, not ID, so it survives a DB rebuild
