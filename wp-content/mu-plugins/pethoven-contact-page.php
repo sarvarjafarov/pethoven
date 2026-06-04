@@ -225,27 +225,21 @@ function pethoven_contact_css() {
 	}
 
 	/* ---- CONTACT CARDS ----
-	 * Grid stretches all 3 cards to the tallest content height by
-	 * default, but Astra's content area sometimes overrides
-	 * align-items. Force every card to share the same min-height
-	 * AND a consistent internal vertical rhythm: icon + label + email
-	 * grouped at the top, note grouped at the bottom (margin-top:auto
-	 * on the note pushes it down so the email line aligns horizontally
-	 * across cards regardless of how many lines the note takes). */
+	 * Three equal-width columns. Cards size to their natural content;
+	 * CSS Grid's default align-items: stretch keeps them at the same
+	 * height as the tallest. No artificial min-height — would just
+	 * create dead vertical space inside cards. */
 	.pt-contact-cards {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 18px;
 		margin-bottom: 40px;
-		align-items: stretch;
 	}
 	.pt-contact-card {
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
 		padding: 28px 26px;
-		min-height: 260px;
-		height: 100%;
 		background: #ffffff;
 		border: 1px solid #f0f0ec;
 		border-radius: 18px;
@@ -299,8 +293,7 @@ function pethoven_contact_css() {
 		font-size: 13.5px;
 		line-height: 1.55;
 		color: #5a5a5a;
-		margin-top: auto; /* pushes note to bottom — top-stack stays aligned across cards */
-		padding-top: 12px;
+		margin-top: 6px;
 	}
 
 	/* ---- INFO STRIP ---- */
