@@ -291,9 +291,56 @@ function pethoven_blog_css() {
 }
 
 /* ----------------------------------------------------------------------
- * Single-post template polish — apply matching brand styling to
- * individual post pages so reading from the grid into a post feels
- * like one consistent surface. Light overrides only.
+ * Single-post: server-side cleanup.
+ *
+ *   1. Close comments + pings on all posts (brand blog, not a forum)
+ *   2. Replace author display name "admin" with "Pethoven" in meta
+ *   3. Inject a "← Back to blog" link at the end of post content so
+ *      the user can return to the index without a back-button
+ * ---------------------------------------------------------------------- */
+
+// (1) Close comments on every post — open or closed — so even existing
+// posts with comments enabled in the DB don't render the form.
+add_filter( 'comments_open',     'pethoven_blog_close_comments', 99, 2 );
+add_filter( 'pings_open',        'pethoven_blog_close_comments', 99, 2 );
+add_filter( 'comments_array',    '__return_empty_array', 99 );
+
+function pethoven_blog_close_comments( $open, $post_id ) {
+	if ( 'post' === get_post_type( $post_id ) ) {
+		return false;
+	}
+	return $open;
+}
+
+// (2) Replace "admin" author display name in the front-end meta only
+add_filter( 'the_author', 'pethoven_blog_replace_admin_author', 10, 1 );
+
+function pethoven_blog_replace_admin_author( $name ) {
+	if ( is_singular( 'post' ) && in_array( strtolower( (string) $name ), array( 'admin', 'administrator' ), true ) ) {
+		return 'Pethoven';
+	}
+	return $name;
+}
+
+// (3) Append "back to blog" CTA to single-post content
+add_filter( 'the_content', 'pethoven_blog_append_back_link', 9999 );
+
+function pethoven_blog_append_back_link( $content ) {
+	if ( ! is_singular( 'post' ) || ! in_the_loop() || ! is_main_query() ) {
+		return $content;
+	}
+	$back = '<div class="pt-post-back-row"><a class="pt-post-back" href="/sample-page/"><span aria-hidden="true">&larr;</span> All Care Guide posts</a></div>';
+	return $content . $back;
+}
+
+/* ----------------------------------------------------------------------
+ * Single-post: front-end CSS polish.
+ *
+ * Kills the leftover Astra/WP chrome that doesn't belong on a brand
+ * blog (entry-meta byline, comments area, post-navigation, sidebar
+ * stub) and restyles the surviving elements to match the rest of the
+ * site (Georgia serif headline, 720px reading column, green inline
+ * links, generous vertical rhythm).
  * ---------------------------------------------------------------------- */
 
 add_action( 'wp_head', 'pethoven_single_post_css', 41 );
@@ -304,66 +351,213 @@ function pethoven_single_post_css() {
 	}
 	?>
 	<style id="pt-single-post-css">
+	/* ----- HIDE all leftover Astra/WP chrome ----- */
+	body.single-post .entry-meta,
+	body.single-post .post-navigation,
+	body.single-post .comments-area,
+	body.single-post #comments,
+	body.single-post #respond,
+	body.single-post .ast-author-details,
+	body.single-post .related-posts,
+	body.single-post .ast-related-post,
+	body.single-post #secondary {
+		display: none !important;
+	}
+
+	/* ----- LAYOUT: ditch Astra's two-container chrome on posts ----- */
+	body.single-post .ast-container {
+		max-width: 100% !important;
+		padding: 0 !important;
+	}
+	body.single-post #primary,
+	body.single-post #main {
+		width: 100% !important;
+		max-width: 100% !important;
+		padding: 0 !important;
+		margin: 0 !important;
+		float: none !important;
+		background: transparent !important;
+		border: 0 !important;
+	}
+	body.single-post .ast-article-single,
+	body.single-post .ast-article-post {
+		background: transparent !important;
+		padding: 0 !important;
+		border: 0 !important;
+		box-shadow: none !important;
+		margin: 0 !important;
+	}
+	body.single-post #content {
+		background: linear-gradient(180deg, #fbfbf7 0%, #ffffff 320px, #ffffff 100%) !important;
+	}
+
+	/* ----- POST HEADER: featured image as a banner, then title ----- */
+	body.single-post .entry-header {
+		max-width: 880px;
+		margin: 56px auto 0;
+		padding: 0 24px;
+		text-align: left;
+	}
+	body.single-post .post-thumb-img-content,
+	body.single-post .post-thumbnail,
+	body.single-post .post-thumb {
+		display: block;
+		max-width: 880px;
+		margin: 0 auto 32px;
+		border-radius: 22px;
+		overflow: hidden;
+		background: #f4f6ee;
+		box-shadow: 0 22px 56px rgba(26, 58, 42, 0.10),
+		            0 4px 14px rgba(26, 58, 42, 0.04);
+	}
+	body.single-post .post-thumb-img-content img,
+	body.single-post .post-thumbnail img,
+	body.single-post .post-thumb img {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 10;
+		object-fit: cover;
+		object-position: center;
+		border-radius: 22px !important;
+		max-width: 100% !important;
+		margin: 0 !important;
+	}
+
+	/* ----- TITLE ----- */
+	body.single-post .entry-title {
+		font-family: Georgia, 'Times New Roman', serif !important;
+		font-weight: 800 !important;
+		font-style: normal !important;
+		font-size: 40px !important;
+		line-height: 1.15 !important;
+		letter-spacing: -0.7px !important;
+		color: #1a1a1a !important;
+		max-width: 720px;
+		margin: 0 auto 24px !important;
+		padding: 0;
+	}
+
+	/* ----- BODY CONTENT ----- */
 	body.single-post .entry-content {
 		max-width: 720px;
-		margin: 0 auto;
-		font-size: 16.5px;
-		line-height: 1.75;
-		color: #2a2a2a;
-		padding: 24px 24px 64px;
-	}
-	body.single-post .entry-content h2 {
-		font-family: Georgia, 'Times New Roman', serif;
-		font-size: 26px;
-		font-weight: 800;
-		letter-spacing: -0.3px;
-		margin: 44px 0 16px;
-		color: #1a1a1a;
+		margin: 0 auto 24px !important;
+		padding: 0 24px 16px !important;
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+		font-size: 17px !important;
+		line-height: 1.75 !important;
+		color: #2a2a2a !important;
 	}
 	body.single-post .entry-content p {
-		margin: 0 0 18px;
+		margin: 0 0 20px !important;
+		font-size: 17px !important;
+		line-height: 1.75 !important;
+		color: #2a2a2a !important;
+	}
+	body.single-post .entry-content p:first-of-type {
+		font-size: 18.5px !important;
+		line-height: 1.7 !important;
+		color: #1a1a1a !important;
+	}
+	body.single-post .entry-content h2 {
+		font-family: Georgia, 'Times New Roman', serif !important;
+		font-size: 27px !important;
+		font-weight: 800 !important;
+		line-height: 1.25 !important;
+		letter-spacing: -0.3px !important;
+		color: #1a1a1a !important;
+		margin: 48px 0 18px !important;
+	}
+	body.single-post .entry-content h3 {
+		font-size: 20px !important;
+		font-weight: 700 !important;
+		margin: 32px 0 12px !important;
+		color: #1a1a1a !important;
 	}
 	body.single-post .entry-content a {
-		color: #6a9739;
-		text-decoration: underline;
-		text-decoration-thickness: 1.5px;
-		text-underline-offset: 2px;
+		color: #6a9739 !important;
+		text-decoration: underline !important;
+		text-decoration-thickness: 1.5px !important;
+		text-underline-offset: 3px !important;
+		font-weight: 600;
 	}
-	body.single-post .entry-content a:hover { color: #1a3a2a; }
+	body.single-post .entry-content a:hover { color: #1a3a2a !important; }
+	body.single-post .entry-content strong { color: #1a1a1a; font-weight: 700; }
 	body.single-post .entry-content ul,
 	body.single-post .entry-content ol {
-		margin: 0 0 22px;
-		padding-left: 22px;
+		margin: 0 0 22px !important;
+		padding-left: 24px !important;
 	}
 	body.single-post .entry-content li {
 		margin-bottom: 8px;
+		font-size: 17px;
+		line-height: 1.7;
 	}
 	body.single-post .entry-content hr {
-		border: 0;
-		border-top: 1px solid #e8e8e0;
-		margin: 36px 0;
+		border: 0 !important;
+		border-top: 1px solid #e8e8e0 !important;
+		margin: 40px auto !important;
+		max-width: 120px;
 	}
-	body.single-post .entry-title {
-		font-family: Georgia, 'Times New Roman', serif;
-		font-weight: 800;
-		letter-spacing: -0.5px;
-		font-size: 36px !important;
-		line-height: 1.15;
+	body.single-post .entry-content blockquote {
+		border-left: 3px solid #6a9739;
+		padding: 4px 0 4px 20px;
+		margin: 28px 0;
+		font-style: italic;
+		color: #3a3a3a;
+		background: transparent;
+	}
+
+	/* ----- "BACK TO BLOG" link injected at content end ----- */
+	.pt-post-back-row {
 		max-width: 720px;
-		margin: 0 auto 16px;
-		text-align: left;
-		padding: 0 24px;
+		margin: 40px auto 80px;
+		padding: 24px;
+		text-align: center;
+		border-top: 1px solid #f0f0ec;
 	}
-	body.single-post .ast-article-single { padding-top: 32px; }
-	body.single-post .post-thumb-img-content img {
-		max-width: 720px;
-		margin: 0 auto;
-		border-radius: 16px;
+	.pt-post-back {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 12px 24px;
+		background: transparent;
+		color: #1a1a1a !important;
+		border: 1.5px solid #1a1a1a;
+		border-radius: 100px;
+		font-size: 12px;
+		font-weight: 700;
+		letter-spacing: 1.5px;
+		text-transform: uppercase;
+		text-decoration: none !important;
+		transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
 	}
-	@media (max-width: 600px) {
-		body.single-post .entry-title { font-size: 28px !important; }
-		body.single-post .entry-content { font-size: 15.5px; padding: 20px 18px 48px; }
-		body.single-post .entry-content h2 { font-size: 22px; }
+	.pt-post-back:hover {
+		background: #1a1a1a;
+		color: #ffffff !important;
+		transform: translateY(-2px);
+	}
+	.pt-post-back span {
+		transition: transform 0.25s ease;
+	}
+	.pt-post-back:hover span { transform: translateX(-3px); }
+
+	/* ----- MOBILE ----- */
+	@media (max-width: 740px) {
+		body.single-post .entry-header { margin-top: 32px; padding: 0 18px; }
+		body.single-post .post-thumb-img-content,
+		body.single-post .post-thumbnail,
+		body.single-post .post-thumb { border-radius: 16px; margin-bottom: 24px; }
+		body.single-post .post-thumb-img-content img,
+		body.single-post .post-thumbnail img,
+		body.single-post .post-thumb img { aspect-ratio: 4 / 3; border-radius: 16px !important; }
+		body.single-post .entry-title { font-size: 30px !important; letter-spacing: -0.5px !important; }
+		body.single-post .entry-content { font-size: 16px !important; padding: 0 18px 12px !important; }
+		body.single-post .entry-content p,
+		body.single-post .entry-content li { font-size: 16px !important; }
+		body.single-post .entry-content p:first-of-type { font-size: 17px !important; }
+		body.single-post .entry-content h2 { font-size: 22px !important; margin: 36px 0 14px !important; }
+		body.single-post .entry-content h3 { font-size: 18px !important; }
 	}
 	</style>
 	<?php
