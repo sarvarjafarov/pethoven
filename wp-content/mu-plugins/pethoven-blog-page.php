@@ -322,15 +322,33 @@ function pethoven_blog_replace_admin_author( $name ) {
 	return $name;
 }
 
-// (3) Append "back to blog" CTA to single-post content
-add_filter( 'the_content', 'pethoven_blog_append_back_link', 9999 );
+// (3) Prepend a meta strip + append back-to-blog CTA to single-post content
+add_filter( 'the_content', 'pethoven_blog_wrap_content', 9999 );
 
-function pethoven_blog_append_back_link( $content ) {
+function pethoven_blog_wrap_content( $content ) {
 	if ( ! is_singular( 'post' ) || ! in_the_loop() || ! is_main_query() ) {
 		return $content;
 	}
+	$post_id    = get_the_ID();
+	$cats       = get_the_category( $post_id );
+	$cat        = ! empty( $cats ) ? $cats[0]->name : '';
+	$date       = get_the_date( 'M j, Y', $post_id );
+	$word_count = str_word_count( wp_strip_all_tags( get_post_field( 'post_content', $post_id ) ) );
+	$read_min   = max( 1, (int) round( $word_count / 220 ) );
+
+	$meta = '<div class="pt-post-meta">';
+	if ( $cat ) {
+		$meta .= '<span class="pt-post-meta-cat">' . esc_html( $cat ) . '</span>';
+	}
+	$meta .= '<span class="pt-post-meta-dot" aria-hidden="true">·</span>';
+	$meta .= '<span class="pt-post-meta-date">' . esc_html( $date ) . '</span>';
+	$meta .= '<span class="pt-post-meta-dot" aria-hidden="true">·</span>';
+	$meta .= '<span class="pt-post-meta-read">' . (int) $read_min . ' min read</span>';
+	$meta .= '</div>';
+
 	$back = '<div class="pt-post-back-row"><a class="pt-post-back" href="/sample-page/"><span aria-hidden="true">&larr;</span> All Care Guide posts</a></div>';
-	return $content . $back;
+
+	return $meta . $content . $back;
 }
 
 /* ----------------------------------------------------------------------
@@ -391,24 +409,55 @@ function pethoven_single_post_css() {
 		background: linear-gradient(180deg, #fbfbf7 0%, #ffffff 320px, #ffffff 100%) !important;
 	}
 
-	/* ----- POST HEADER: featured image as a banner, then title ----- */
+	/* ----- POST HEADER:
+	 * Reorder via flex so the TITLE renders before the featured
+	 * image — editorial-blog convention (Medium, Substack, NYT) where
+	 * the reader sees the headline first, then the supporting image.
+	 * Cap image height so it never dominates the viewport.
+	 * ----- */
 	body.single-post .entry-header {
-		max-width: 880px;
+		max-width: 720px;
 		margin: 56px auto 0;
 		padding: 0 24px;
 		text-align: left;
+		display: flex;
+		flex-direction: column;
 	}
+	body.single-post .entry-header .entry-title { order: 1; }
+	body.single-post .entry-header .post-thumb-img-content,
+	body.single-post .entry-header .post-thumbnail,
+	body.single-post .entry-header .post-thumb {
+		order: 2;
+	}
+
+	/* ----- TITLE (renders first) ----- */
+	body.single-post .entry-title {
+		font-family: Georgia, 'Times New Roman', serif !important;
+		font-weight: 800 !important;
+		font-style: normal !important;
+		font-size: 38px !important;
+		line-height: 1.18 !important;
+		letter-spacing: -0.6px !important;
+		color: #1a1a1a !important;
+		margin: 0 0 20px !important;
+		padding: 0;
+	}
+
+	/* ----- FEATURED IMAGE (renders below the title)
+	 * Capped at 360px tall so it stays a supporting visual, not a
+	 * page-hijacker. Wider aspect ratio (16:9) gives it a banner
+	 * feel rather than a poster. ----- */
 	body.single-post .post-thumb-img-content,
 	body.single-post .post-thumbnail,
 	body.single-post .post-thumb {
 		display: block;
-		max-width: 880px;
-		margin: 0 auto 32px;
-		border-radius: 22px;
+		max-width: 720px;
+		margin: 8px auto 0 !important;
+		border-radius: 18px;
 		overflow: hidden;
 		background: #f4f6ee;
-		box-shadow: 0 22px 56px rgba(26, 58, 42, 0.10),
-		            0 4px 14px rgba(26, 58, 42, 0.04);
+		box-shadow: 0 18px 44px rgba(26, 58, 42, 0.10),
+		            0 4px 12px rgba(26, 58, 42, 0.04);
 	}
 	body.single-post .post-thumb-img-content img,
 	body.single-post .post-thumbnail img,
@@ -416,27 +465,43 @@ function pethoven_single_post_css() {
 		display: block;
 		width: 100%;
 		height: auto;
-		aspect-ratio: 16 / 10;
+		max-height: 360px;
+		aspect-ratio: 16 / 9;
 		object-fit: cover;
 		object-position: center;
-		border-radius: 22px !important;
+		border-radius: 18px !important;
 		max-width: 100% !important;
 		margin: 0 !important;
 	}
 
-	/* ----- TITLE ----- */
-	body.single-post .entry-title {
-		font-family: Georgia, 'Times New Roman', serif !important;
-		font-weight: 800 !important;
-		font-style: normal !important;
-		font-size: 40px !important;
-		line-height: 1.15 !important;
-		letter-spacing: -0.7px !important;
-		color: #1a1a1a !important;
-		max-width: 720px;
-		margin: 0 auto 24px !important;
-		padding: 0;
+	/* ----- META STRIP (injected via the_content filter at the top
+	 * of the body — category pill + date + reading time) ----- */
+	.pt-post-meta {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin: 0 0 32px !important;
+		padding: 16px 0 18px !important;
+		border-bottom: 1px solid #f0f0ec;
+		font-size: 12px;
+		color: #8a8a8a;
+		font-weight: 600;
+		letter-spacing: 0.4px;
 	}
+	.pt-post-meta-cat {
+		display: inline-flex;
+		padding: 5px 12px;
+		background: rgba(139, 195, 74, 0.14);
+		color: #6a9739 !important;
+		border-radius: 100px;
+		font-size: 11px;
+		font-weight: 800;
+		letter-spacing: 1.6px;
+		text-transform: uppercase;
+	}
+	.pt-post-meta-dot { color: #c8c8c8; }
+	.pt-post-meta-date,
+	.pt-post-meta-read { color: #8a8a8a; }
 
 	/* ----- BODY CONTENT ----- */
 	body.single-post .entry-content {
@@ -545,13 +610,25 @@ function pethoven_single_post_css() {
 	/* ----- MOBILE ----- */
 	@media (max-width: 740px) {
 		body.single-post .entry-header { margin-top: 32px; padding: 0 18px; }
+		body.single-post .entry-title { font-size: 28px !important; letter-spacing: -0.4px !important; }
 		body.single-post .post-thumb-img-content,
 		body.single-post .post-thumbnail,
-		body.single-post .post-thumb { border-radius: 16px; margin-bottom: 24px; }
+		body.single-post .post-thumb { border-radius: 14px; margin-top: 4px !important; }
 		body.single-post .post-thumb-img-content img,
 		body.single-post .post-thumbnail img,
-		body.single-post .post-thumb img { aspect-ratio: 4 / 3; border-radius: 16px !important; }
-		body.single-post .entry-title { font-size: 30px !important; letter-spacing: -0.5px !important; }
+		body.single-post .post-thumb img {
+			max-height: 240px;
+			aspect-ratio: 4 / 3;
+			border-radius: 14px !important;
+		}
+		.pt-post-meta {
+			margin-bottom: 24px !important;
+			padding: 14px 0 14px !important;
+			flex-wrap: wrap;
+			gap: 8px;
+			font-size: 11.5px;
+		}
+		.pt-post-meta-cat { font-size: 10.5px; padding: 4px 10px; letter-spacing: 1.4px; }
 		body.single-post .entry-content { font-size: 16px !important; padding: 0 18px 12px !important; }
 		body.single-post .entry-content p,
 		body.single-post .entry-content li { font-size: 16px !important; }
