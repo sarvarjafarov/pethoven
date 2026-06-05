@@ -382,8 +382,16 @@ function pethoven_single_post_css() {
 		display: none !important;
 	}
 
-	/* ----- LAYOUT: ditch Astra's two-container chrome on posts ----- */
-	body.single-post .ast-container {
+	/* ----- LAYOUT: ditch Astra's two-container chrome on posts.
+	 *
+	 * Scope to the content area only — earlier rule targeted
+	 * `body.single-post .ast-container` which also matched the site
+	 * header's container, breaking the logo + menu layout. The
+	 * #content prefix limits us to .ast-container instances inside
+	 * the main content region, leaving the header (which sits in
+	 * .site-header above #content) untouched. ----- */
+	body.single-post #content > .ast-container,
+	body.single-post .site-content > .ast-container {
 		max-width: 100% !important;
 		padding: 0 !important;
 	}
